@@ -1,0 +1,1302 @@
+[
+  {
+    "id": "np-001",
+    "track": "numpy",
+    "topic": "array creation",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import numpy as np\na = np.arange(2, 11, 3)\nprint(a.tolist())",
+    "options": [
+      "[2, 5, 8]",
+      "[2, 3, 4, 5, 6, 7, 8, 9, 10]",
+      "[3, 6, 9]",
+      "[2, 5, 8, 11]"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "`np.arange(start, stop, step)` stops before `stop`: 2, 5, 8, and the next value 11 is excluded. The third argument is the step, not the count."
+  },
+  {
+    "id": "np-002",
+    "track": "numpy",
+    "topic": "array creation",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import numpy as np\nprint(np.linspace(0, 1, 5).tolist())",
+    "options": [
+      "[0.0, 0.2, 0.4, 0.6, 0.8, 1.0]",
+      "[0.0, 0.25, 0.5, 0.75]",
+      "[0.0, 0.25, 0.5, 0.75, 1.0]",
+      "[0.0, 0.2, 0.4, 0.6, 0.8]"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "`np.linspace(start, stop, num)` returns `num` evenly spaced values and includes `stop` by default, so 5 points from 0 to 1 are 0.25 apart."
+  },
+  {
+    "id": "np-003",
+    "track": "numpy",
+    "topic": "array creation",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "You need exactly 5 evenly spaced values from 0 to 1, including both 0 and 1. Which call gives that?",
+    "options": [
+      "`np.arange(0, 1, 5)`",
+      "`np.linspace(0, 1, 0.25)`",
+      "`np.linspace(0, 1, 5)`",
+      "`np.arange(0, 1, 0.2)`"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "`linspace` takes the number of points and includes the endpoint. `np.arange(0, 1, 0.2)` stops before 1, and `np.arange(0, 1, 5)` treats 5 as the step and gives only `[0]`."
+  },
+  {
+    "id": "np-004",
+    "track": "numpy",
+    "topic": "array creation",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import numpy as np\ni = np.eye(3, dtype=int)\nu = np.eye(3, k=1)\nprint(i.sum(), u.sum(), u[0].tolist())",
+    "options": [
+      "9 2.0 [0.0, 1.0, 0.0]",
+      "3 2.0 [1.0, 1.0, 0.0]",
+      "3 2.0 [0.0, 1.0, 0.0]",
+      "3 3.0 [1.0, 0.0, 0.0]"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "`np.eye(3)` has three ones on the main diagonal. With `k=1` the ones move to the diagonal above it, which has only two cells, and the default dtype is float."
+  },
+  {
+    "id": "np-005",
+    "track": "numpy",
+    "topic": "array creation",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "What happens with `np.array([[1, 2], [3]])` in NumPy 2.x?",
+    "options": [
+      "It silently creates a 1-D object array holding the two lists",
+      "It creates a 2x2 integer array padded with 0",
+      "It raises `ValueError` because the rows have different lengths",
+      "It creates a 2x2 float array padded with NaN"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "Since NumPy 1.24, ragged nested sequences raise `ValueError` unless you pass `dtype=object` explicitly. Older versions created an object array with only a deprecation warning."
+  },
+  {
+    "id": "np-006",
+    "track": "numpy",
+    "topic": "array creation",
+    "difficulty": "easy",
+    "type": "multi",
+    "prompt": "Which of these create a float64 array of three zeros? Select all that apply.",
+    "options": [
+      "`np.full(3, 0.0)`",
+      "`np.array([0, 0, 0])`",
+      "`np.zeros_like(np.arange(3))`",
+      "`np.linspace(0, 0, 3)`",
+      "`np.zeros(3)`"
+    ],
+    "answer": [
+      0,
+      3,
+      4
+    ],
+    "explanation": "`np.zeros` and `np.linspace` default to float64, and `np.full` takes its dtype from the fill value 0.0. `np.array([0, 0, 0])` is an integer array, and `zeros_like` copies the integer dtype of `np.arange(3)`."
+  },
+  {
+    "id": "np-007",
+    "track": "numpy",
+    "topic": "dtype",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import numpy as np\na = np.array([1, 2, 3.5, True])\nprint(a.dtype, a[-1])",
+    "options": [
+      "float64 1.0",
+      "object True",
+      "int64 1",
+      "float64 True"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "An array holds one dtype, so NumPy upcasts bool and int to the most general type present, float64. `True` becomes 1.0."
+  },
+  {
+    "id": "np-008",
+    "track": "numpy",
+    "topic": "dtype",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import numpy as np\na = np.array([1, 2, 3])\na[0] = 9.7\nprint(a.tolist(), a.dtype)",
+    "options": [
+      "[9.7, 2.0, 3.0] float64",
+      "[9.7, 2, 3] float64",
+      "[9, 2, 3] int64",
+      "[10, 2, 3] int64"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "Assigning into an existing array never changes its dtype. 9.7 is cast to the int64 array's type by truncation, so it becomes 9 (not rounded to 10)."
+  },
+  {
+    "id": "np-009",
+    "track": "numpy",
+    "topic": "dtype",
+    "difficulty": "hard",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import numpy as np\na = np.array([200, 100], dtype=np.uint8)\nprint((a + 100).tolist())",
+    "options": [
+      "[255, 200]",
+      "[44, 200]",
+      "[300, 200]",
+      "OverflowError"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "The Python int 100 fits in uint8, so the result stays uint8 and 300 wraps around modulo 256 to 44. Array arithmetic overflows silently; it does not upcast or clip at 255."
+  },
+  {
+    "id": "np-010",
+    "track": "numpy",
+    "topic": "dtype",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "What does `np.array([1, 2, 'three'])` produce?",
+    "options": [
+      "A float64 array where 'three' becomes NaN",
+      "An object array that keeps 1 and 2 as Python ints",
+      "An array where every element is a string, with a Unicode string dtype",
+      "A `TypeError` because the types are mixed"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "NumPy picks one dtype that can hold every element, so the numbers are converted to the strings '1' and '2' (dtype `<U21`). Math on that array then fails, which is a common surprise when reading messy data."
+  },
+  {
+    "id": "np-011",
+    "track": "numpy",
+    "topic": "dtype",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "A float64 array of 10 million values uses about 80 MB. Which change roughly halves the memory, if the lower precision is acceptable?",
+    "options": [
+      "`arr.astype(np.complex64)`",
+      "`arr.astype(np.int64)`",
+      "`arr.astype(np.float32)`",
+      "`arr.astype(np.float16)`"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "float32 uses 4 bytes per value instead of 8, so about 40 MB. float16 would quarter the size, while int64 and complex64 also use 8 bytes per value."
+  },
+  {
+    "id": "np-012",
+    "track": "numpy",
+    "topic": "shape",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import numpy as np\na = np.zeros((2, 3, 4))\nprint(a.ndim, a.size, a.shape[1:])",
+    "options": [
+      "3 24 (3, 4)",
+      "3 9 (3, 4)",
+      "24 3 (3, 4)",
+      "3 24 (2, 3)"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "`ndim` is the number of axes (3), `size` is the total element count 2*3*4 = 24, and `shape[1:]` drops the first axis."
+  },
+  {
+    "id": "np-013",
+    "track": "numpy",
+    "topic": "reshape",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import numpy as np\na = np.arange(12).reshape(-1, 2, 3)\nprint(a.shape)",
+    "options": [
+      "(6, 2, 3)",
+      "(12, 2, 3)",
+      "(2, 2, 3)",
+      "(1, 2, 3)"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "`-1` tells NumPy to infer that dimension from the total size: 12 / (2*3) = 2."
+  },
+  {
+    "id": "np-014",
+    "track": "numpy",
+    "topic": "reshape",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import numpy as np\na = np.arange(10)\nprint(a.reshape(5, -1).shape)\nprint(a.reshape(3, -1).shape)",
+    "options": [
+      "(2, 5)\nValueError",
+      "(5, 2)\n(3, 4)",
+      "(5, 2)\nValueError",
+      "(5, 2)\n(3, 3)"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "`-1` only infers a size when it divides evenly. 10 / 5 = 2 works, but 10 is not divisible by 3, so the second reshape raises `ValueError`; NumPy never pads or drops elements."
+  },
+  {
+    "id": "np-015",
+    "track": "numpy",
+    "topic": "transpose",
+    "difficulty": "hard",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import numpy as np\na = np.ones((2, 3, 4))\nprint(a.T.shape, a.transpose(1, 0, 2).shape)",
+    "options": [
+      "(4, 3, 2) (2, 3, 4)",
+      "(3, 2, 4) (4, 3, 2)",
+      "(2, 4, 3) (3, 2, 4)",
+      "(4, 3, 2) (3, 2, 4)"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "`.T` reverses all axes. `transpose(1, 0, 2)` builds the new shape from the old axes in that order: axis 1 (3), axis 0 (2), axis 2 (4)."
+  },
+  {
+    "id": "np-016",
+    "track": "numpy",
+    "topic": "ravel vs flatten",
+    "difficulty": "hard",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import numpy as np\na = np.arange(6).reshape(2, 3)\nr = a.ravel()\nf = a.flatten()\nr[0] = 100\nf[1] = 200\nprint(a[0].tolist())",
+    "options": [
+      "[100, 1, 2]",
+      "[100, 200, 2]",
+      "[0, 200, 2]",
+      "[0, 1, 2]"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "`ravel()` returns a view when the data is contiguous, so writing to it changes `a`. `flatten()` always returns a copy, so the 200 never reaches `a`."
+  },
+  {
+    "id": "np-017",
+    "track": "numpy",
+    "topic": "reshape",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "`a` has shape `(3,)`. What are the shapes of `a[np.newaxis, :]` and `a[:, None]`?",
+    "options": [
+      "(1, 3) and (3,)",
+      "(3,) and (3,)",
+      "(1, 3) and (3, 1)",
+      "(3, 1) and (1, 3)"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "`np.newaxis` is an alias for `None`, and it inserts a length-1 axis where it appears. Turning a 1-D array into a column `(3, 1)` is the usual first step before broadcasting against a row."
+  },
+  {
+    "id": "np-018",
+    "track": "numpy",
+    "topic": "reshape",
+    "difficulty": "hard",
+    "type": "multi",
+    "prompt": "`a = np.arange(6)`. Which expressions evaluate to an array of shape (2, 3)? Select all that apply.",
+    "options": [
+      "`a.reshape(2, -1, 1)`",
+      "`a.reshape(3, 2).T`",
+      "`a.resize(2, 3)`",
+      "`a.reshape(-1, 3)`",
+      "`a.reshape(3, -1)`",
+      "`np.reshape(a, (2, 3))`"
+    ],
+    "answer": [
+      1,
+      3,
+      5
+    ],
+    "explanation": "`a.reshape(3, 2).T` swaps the axes to (2, 3). `a.reshape(3, -1)` gives (3, 2), `a.reshape(2, -1, 1)` gives (2, 3, 1), and `ndarray.resize` changes `a` in place and returns None."
+  },
+  {
+    "id": "np-019",
+    "track": "numpy",
+    "topic": "slicing",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import numpy as np\na = np.arange(10)\nprint(a[2:8:2].tolist(), a[::-3].tolist())",
+    "options": [
+      "[2, 4, 6] [0, 3, 6, 9]",
+      "[2, 4, 6] [9, 6, 3]",
+      "[2, 4, 6, 8] [9, 6, 3, 0]",
+      "[2, 4, 6] [9, 6, 3, 0]"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "The stop index 8 is excluded, so the first slice is 2, 4, 6. A negative step starts from the end: 9, 6, 3, 0."
+  },
+  {
+    "id": "np-020",
+    "track": "numpy",
+    "topic": "indexing",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import numpy as np\na = np.arange(12).reshape(3, 4)\nprint(a[1, 2], a[:, 1].tolist(), a[1:, ::2].tolist())",
+    "options": [
+      "9 [1, 5, 9] [[4, 6], [8, 10]]",
+      "6 [1, 5, 9] [[4, 6], [8, 10]]",
+      "6 [1, 5, 9] [[5, 7], [9, 11]]",
+      "6 [4, 5, 6, 7] [[4, 6], [8, 10]]"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "Rows are 0-3, 4-7, 8-11. `a[1, 2]` is row 1, column 2 (6); `a[:, 1]` is column 1 of every row; `a[1:, ::2]` takes rows 1-2 and columns 0 and 2."
+  },
+  {
+    "id": "np-021",
+    "track": "numpy",
+    "topic": "views vs copies",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import numpy as np\na = np.array([1, 2, 3, 4])\nb = a[1:3]\nb[0] = 99\nprint(a.tolist())",
+    "options": [
+      "[1, 99, 3, 4]",
+      "[1, 99, 99, 4]",
+      "[1, 2, 3, 4]",
+      "[99, 2, 3, 4]"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "Basic slicing returns a view onto the same memory, so changing `b[0]` changes `a[1]`. Unlike Python lists, NumPy slices do not copy."
+  },
+  {
+    "id": "np-022",
+    "track": "numpy",
+    "topic": "views vs copies",
+    "difficulty": "hard",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import numpy as np\na = np.arange(5)\ns = a[1:3]\nf = a[[1, 2]]\ns[0] = 10\nf[1] = 20\nprint(a.tolist())",
+    "options": [
+      "[0, 1, 20, 3, 4]",
+      "[0, 10, 2, 3, 4]",
+      "[0, 10, 20, 3, 4]",
+      "[0, 1, 2, 3, 4]"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "The slice `a[1:3]` is a view, so its write reaches `a`. Fancy indexing with a list, `a[[1, 2]]`, always returns a copy, so its write does not."
+  },
+  {
+    "id": "np-023",
+    "track": "numpy",
+    "topic": "views vs copies",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "`b = a[2:5]` and then `b[:] = 0` unexpectedly zeroes part of `a`. Which line should replace the first one so that `a` stays unchanged?",
+    "options": [
+      "`b = a[2:5][:]`",
+      "`b = a[2:5].view()`",
+      "`b = a[2:5].copy()`",
+      "`b = np.asarray(a[2:5])`"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "Slicing returns a view; `.copy()` gives `b` its own memory. `.view()`, `np.asarray` on an existing array and slicing the slice again all still share memory with `a`."
+  },
+  {
+    "id": "np-024",
+    "track": "numpy",
+    "topic": "views vs copies",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "`a = np.arange(12)`. Which of these return a view that shares memory with `a`? Select all that apply.",
+    "options": [
+      "`a.reshape(3, 4)`",
+      "`a[::2]`",
+      "`a[2:5]`",
+      "`a[a > 5]`",
+      "`a[[2, 3, 4]]`"
+    ],
+    "answer": [
+      0,
+      1,
+      2
+    ],
+    "explanation": "Basic slices (including steps) and `reshape` of contiguous data return views. Fancy indexing with an integer list and boolean masking always return copies."
+  },
+  {
+    "id": "np-025",
+    "track": "numpy",
+    "topic": "boolean masking",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import numpy as np\na = np.array([3, -1, 4, -5, 2])\na[a < 0] = 0\nprint(a.tolist(), a[a > 2].tolist())",
+    "options": [
+      "[3, 0, 4, 0, 2] [3, 4]",
+      "[0, -1, 0, -5, 0] [3, 4]",
+      "[3, 4, 2] [3, 4]",
+      "[3, 0, 4, 0, 2] [True, False, True, False, False]"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "Assigning through a mask changes only the selected positions, so the negatives become 0. Indexing with a mask returns the matching values, not the booleans."
+  },
+  {
+    "id": "np-026",
+    "track": "numpy",
+    "topic": "boolean masking",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import numpy as np\na = np.array([1, 5, 3, 8, 2])\nprint((a > 2).sum(), (a > 2).mean())",
+    "options": [
+      "[False True True True False] 0.6",
+      "3 0.6",
+      "16 0.6",
+      "3 3.2"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "True counts as 1 and False as 0, so `.sum()` of a mask counts matches (3) and `.mean()` gives the fraction that match (3/5). The values 5, 3, 8 are not summed."
+  },
+  {
+    "id": "np-027",
+    "track": "numpy",
+    "topic": "boolean masking",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import numpy as np\na = np.arange(6)\nprint(a[(a > 1) & (a < 4)].tolist())\nprint(a[(a > 1) and (a < 4)].tolist())",
+    "options": [
+      "[2, 3]\nTypeError",
+      "[1, 2, 3, 4]\nValueError",
+      "[2, 3]\n[2, 3]",
+      "[2, 3]\nValueError"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "`&` combines masks element-wise. Python's `and` needs a single True/False, and the truth value of a multi-element array is ambiguous, so it raises `ValueError`."
+  },
+  {
+    "id": "np-028",
+    "track": "numpy",
+    "topic": "boolean masking",
+    "difficulty": "hard",
+    "type": "mcq",
+    "prompt": "Why does the last line raise `ValueError`?",
+    "code": "import numpy as np\na = np.arange(10)\nmask = a > 2 & a < 5",
+    "options": [
+      "`a < 5` returns a Python list, which cannot be combined with an array",
+      "`&` binds tighter than `>` and `<`, so `2 & a` is computed first and the expression becomes a chained comparison that needs a single True/False",
+      "`&` does not work on boolean arrays; you must use `and` instead",
+      "Comparing an integer array with a Python int is not allowed"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "Without parentheses Python reads it as `a > (2 & a) < 5`, a chained comparison that calls `bool()` on an array. Write `(a > 2) & (a < 5)` instead."
+  },
+  {
+    "id": "np-029",
+    "track": "numpy",
+    "topic": "boolean masking",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "`a = np.arange(10)`. Which expressions return `array([3, 4, 5, 6])`? Select all that apply.",
+    "options": [
+      "`a[a >= 3 & a <= 6]`",
+      "`a[(a >= 3) and (a <= 6)]`",
+      "`a[(a >= 3) & (a <= 6)]`",
+      "`a[(a > 2) & (a < 7)]`",
+      "`a[np.logical_and(a >= 3, a <= 6)]`"
+    ],
+    "answer": [
+      2,
+      3,
+      4
+    ],
+    "explanation": "Element-wise conditions need `&` (or `np.logical_and`) with each comparison in parentheses. `and` raises `ValueError`, and without parentheses `&` binds before the comparisons, which also raises."
+  },
+  {
+    "id": "np-030",
+    "track": "numpy",
+    "topic": "fancy indexing",
+    "difficulty": "hard",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import numpy as np\na = np.arange(9).reshape(3, 3)\nprint(a[[0, 2], [1, 2]].tolist())",
+    "options": [
+      "[2, 7]",
+      "[1, 2, 7, 8]",
+      "[[1, 2], [7, 8]]",
+      "[1, 8]"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "Two index lists are paired element by element, selecting `a[0, 1]` and `a[2, 2]`. To get the 2x2 block of rows 0, 2 and columns 1, 2 use `a[np.ix_([0, 2], [1, 2])]`."
+  },
+  {
+    "id": "np-031",
+    "track": "numpy",
+    "topic": "broadcasting",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import numpy as np\na = np.array([[1], [2], [3]])\nb = np.array([10, 20])\nprint((a * b).tolist())",
+    "options": [
+      "[10, 40]",
+      "ValueError",
+      "[[10, 20], [20, 40], [30, 60]]",
+      "[[10, 20], [20, 40]]"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "Shapes (3, 1) and (2,) broadcast to (3, 2): the column is stretched across 2 columns and the row across 3 rows, giving an outer product."
+  },
+  {
+    "id": "np-032",
+    "track": "numpy",
+    "topic": "broadcasting",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import numpy as np\na = np.ones((2, 3))\nprint((a + np.ones(3)).shape)\nprint((a + np.ones(2)).shape)",
+    "options": [
+      "(2, 3)\nValueError",
+      "(2, 3)\n(2, 3)",
+      "ValueError",
+      "(2, 3)\n(2, 2)"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "Broadcasting aligns trailing dimensions: 3 matches 3, but 2 does not match 3 and neither is 1, so the second line raises. Use `np.ones(2)[:, None]` (shape (2, 1)) to add per row."
+  },
+  {
+    "id": "np-033",
+    "track": "numpy",
+    "topic": "broadcasting",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "NumPy checks whether two array shapes can be broadcast together. Which rule does it apply?",
+    "options": [
+      "Compare sizes from the trailing (last) dimension backwards; each pair must be equal or one of them must be 1",
+      "The arrays must have the same number of dimensions, and then any size can be stretched",
+      "The smaller array is repeated until it has as many elements as the larger one",
+      "Compare sizes from the first dimension forwards; each pair must be equal or one of them must be 1"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "Shapes are right-aligned, missing leading dimensions count as 1, and each pair must match or contain a 1. That is why (3, 4) works with (4,) but not with (3,)."
+  },
+  {
+    "id": "np-034",
+    "track": "numpy",
+    "topic": "broadcasting",
+    "difficulty": "hard",
+    "type": "mcq",
+    "prompt": "What is the shape of `np.ones((5, 1, 3)) + np.ones((4, 1))`?",
+    "options": [
+      "It raises ValueError",
+      "(4, 5, 3)",
+      "(5, 1, 3)",
+      "(5, 4, 3)"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "Right-align the shapes: (5, 1, 3) and (1, 4, 1). Each pair has a 1 or equal sizes, so the result takes the larger size in every position: (5, 4, 3)."
+  },
+  {
+    "id": "np-035",
+    "track": "numpy",
+    "topic": "broadcasting",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "Which pairs of shapes can be broadcast together? Select all that apply.",
+    "options": [
+      "(3, 1) and (1, 4)",
+      "(3, 4) and (4,)",
+      "(5, 2) and (2, 5)",
+      "(3, 4) and (3,)",
+      "(2, 3, 4) and (3, 1)"
+    ],
+    "answer": [
+      0,
+      1,
+      4
+    ],
+    "explanation": "Align shapes from the right; each pair must be equal or contain a 1. (3,) is compared with the last dimension 4 and fails, and (5, 2) vs (2, 5) has 2 vs 5 in the last position."
+  },
+  {
+    "id": "np-036",
+    "track": "numpy",
+    "topic": "matrix multiplication",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import numpy as np\na = np.array([[1, 2], [3, 4]])\nprint((a * a).tolist(), (a @ a).tolist())",
+    "options": [
+      "[[1, 4], [9, 16]] [[7, 10], [15, 22]]",
+      "[[1, 4], [9, 16]] [[1, 4], [9, 16]]",
+      "[[7, 10], [15, 22]] [[7, 10], [15, 22]]",
+      "[[7, 10], [15, 22]] [[1, 4], [9, 16]]"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "`*` multiplies element by element. `@` is matrix multiplication: the top-left entry is 1*1 + 2*3 = 7."
+  },
+  {
+    "id": "np-037",
+    "track": "numpy",
+    "topic": "matrix multiplication",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "For 2-D arrays `A` and `B`, what does `A @ B` compute?",
+    "options": [
+      "The matrix product, rows of `A` times columns of `B`",
+      "The sum of all element-wise products, as a single number",
+      "`A` and `B` stacked along a new axis",
+      "The element-wise product, same as `A * B`"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "`@` calls `np.matmul`. `*` is element-wise multiplication, a frequent source of bugs when porting formulas written in matrix notation."
+  },
+  {
+    "id": "np-038",
+    "track": "numpy",
+    "topic": "matrix multiplication",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "`X` has shape (100, 3) and `w` has shape (3,). What is the shape of `X @ w`?",
+    "options": [
+      "(3,)",
+      "(100,)",
+      "It raises ValueError",
+      "(100, 3)"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "A 1-D right operand is treated as a column vector, so each of the 100 rows is dotted with `w`, giving 100 values. This is how a linear model computes predictions."
+  },
+  {
+    "id": "np-039",
+    "track": "numpy",
+    "topic": "matrix multiplication",
+    "difficulty": "easy",
+    "type": "multi",
+    "prompt": "`A` has shape (2, 3) and `B` has shape (3, 2). Which expressions compute their matrix product? Select all that apply.",
+    "options": [
+      "`np.matmul(A, B)`",
+      "`np.dot(A, B)`",
+      "`np.multiply(A, B)`",
+      "`A * B`",
+      "`A @ B`"
+    ],
+    "answer": [
+      0,
+      1,
+      4
+    ],
+    "explanation": "`@`, `np.matmul` and, for 2-D arrays, `np.dot` all perform matrix multiplication. `*` and `np.multiply` are element-wise and fail here because (2, 3) and (3, 2) do not broadcast."
+  },
+  {
+    "id": "np-040",
+    "track": "numpy",
+    "topic": "aggregations",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import numpy as np\na = np.array([[1, 2, 3], [4, 5, 6]])\nprint(a.sum(axis=0).tolist(), a.mean(axis=1).tolist())",
+    "options": [
+      "[6, 15] [2.5, 3.5, 4.5]",
+      "[5, 7, 9] [2.0, 5.0]",
+      "[5, 7, 9] [2, 5]",
+      "[6, 15] [2.0, 5.0]"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "`axis=0` collapses the rows, giving one result per column; `axis=1` collapses the columns, giving one result per row. `mean` always returns floats."
+  },
+  {
+    "id": "np-041",
+    "track": "numpy",
+    "topic": "aggregations",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import numpy as np\na = np.array([[3, 9, 2], [8, 1, 7]])\nprint(a.argmax(), a.argmax(axis=0).tolist(), a.argmax(axis=1).tolist())",
+    "options": [
+      "9 [1, 0, 1] [1, 0]",
+      "1 [1, 0, 1] [1, 0]",
+      "1 [8, 9, 7] [9, 8]",
+      "(0, 1) [1, 0, 1] [1, 0]"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "Without `axis`, `argmax` returns a position in the flattened array (9 is at flat index 1). With an axis it returns the winning index along that axis, not the maximum values."
+  },
+  {
+    "id": "np-042",
+    "track": "numpy",
+    "topic": "aggregations",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import numpy as np\na = np.array([[1, 2], [3, 4]])\nprint(np.cumsum(a).tolist(), np.cumsum(a, axis=0).tolist())",
+    "options": [
+      "10 [4, 6]",
+      "[1, 3, 6, 10] [[1, 2], [4, 6]]",
+      "[[1, 3], [3, 7]] [[1, 2], [4, 6]]",
+      "[1, 3, 6, 10] [[1, 3], [3, 7]]"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "Without `axis`, `cumsum` flattens the array and returns a 1-D running total. With `axis=0` it accumulates down each column and keeps the shape."
+  },
+  {
+    "id": "np-043",
+    "track": "numpy",
+    "topic": "aggregations",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "`sales` has shape (12, 4): 12 months as rows and 4 stores as columns. Which call gives the total sales per store?",
+    "options": [
+      "`sales.sum(axis=0)`",
+      "`sales.sum(axis=1)`",
+      "`sales.sum(axis=-1)`",
+      "`sales.sum()`"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "`axis=0` sums down the rows, leaving one total per column (store). `axis=1` and `axis=-1` give totals per month, and no axis gives one grand total."
+  },
+  {
+    "id": "np-044",
+    "track": "numpy",
+    "topic": "aggregations",
+    "difficulty": "hard",
+    "type": "mcq",
+    "prompt": "`m` has shape (3, 4) and `m.argmax()` returns 7. Where is the maximum?",
+    "options": [
+      "Row 0, column 7",
+      "Row 2, column 1",
+      "Row 1, column 2",
+      "Row 1, column 3"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "Without `axis`, `argmax` indexes the flattened array in row-major order: 7 = 1 * 4 + 3. `np.unravel_index(7, m.shape)` returns `(1, 3)`; dividing by the number of rows instead of columns gives the tempting wrong answer."
+  },
+  {
+    "id": "np-045",
+    "track": "numpy",
+    "topic": "aggregations",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "`a` has shape (4, 3). Which of these return an array of shape (3,)? Select all that apply.",
+    "options": [
+      "`a.sum(axis=0)`",
+      "`a.mean(axis=1)`",
+      "`a.cumsum(axis=0)`",
+      "`a.max(axis=0)`",
+      "`a.argmax(axis=0)`"
+    ],
+    "answer": [
+      0,
+      3,
+      4
+    ],
+    "explanation": "Reducing along axis 0 removes the 4 rows and leaves one value per column. `mean(axis=1)` gives shape (4,), and `cumsum` keeps the full (4, 3) shape."
+  },
+  {
+    "id": "np-046",
+    "track": "numpy",
+    "topic": "np.where",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import numpy as np\na = np.array([4, -2, 7, -9])\nprint(np.where(a > 0, a, 0).tolist(), np.where(a < 0)[0].tolist())",
+    "options": [
+      "[4, 0, 7, 0] [0, 2]",
+      "[4, 0, 7, 0] [-2, -9]",
+      "[4, 0, 7, 0] [1, 3]",
+      "[4, 7] [1, 3]"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "With three arguments `np.where` picks from `a` or 0 element-wise and keeps the shape. With one argument it returns a tuple of index arrays where the condition is True."
+  },
+  {
+    "id": "np-047",
+    "track": "numpy",
+    "topic": "np.where",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "`a` is a 1-D array. What does `np.where(a > 0)` return when only the condition is passed?",
+    "options": [
+      "A boolean array with the same shape as `a`",
+      "A tuple holding one array of the indices where the condition is True",
+      "The elements of `a` that are greater than 0",
+      "A Python list of int indices"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "With a single argument `np.where` behaves like `np.nonzero`: it returns one index array per dimension, wrapped in a tuple, so you usually need `[0]` for a 1-D array."
+  },
+  {
+    "id": "np-048",
+    "track": "numpy",
+    "topic": "unique",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import numpy as np\nv, c = np.unique(['b', 'a', 'c', 'a', 'b', 'a'], return_counts=True)\nprint(v.tolist(), c.tolist())",
+    "options": [
+      "['a', 'b', 'c'] [1, 1, 1]",
+      "['a', 'b', 'c'] [3, 2, 1]",
+      "['b', 'a', 'c'] [2, 3, 1]",
+      "['a', 'a', 'a', 'b', 'b', 'c'] [3, 2, 1]"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "`np.unique` returns the distinct values sorted, not in order of first appearance, and `return_counts=True` adds how often each one occurs."
+  },
+  {
+    "id": "np-049",
+    "track": "numpy",
+    "topic": "unique",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "`vals, counts = np.unique(cities, return_counts=True)`. Which expression gives the most frequent city?",
+    "options": [
+      "`vals[counts.argmax()]`",
+      "`counts[vals.argmax()]`",
+      "`vals.max()`",
+      "`vals[counts.max()]`"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "`counts.argmax()` is the position of the largest count, and `vals` at that position is the city. `counts.max()` is the count itself, not a position."
+  },
+  {
+    "id": "np-050",
+    "track": "numpy",
+    "topic": "unique",
+    "difficulty": "easy",
+    "type": "multi",
+    "prompt": "Which statements about `np.unique(arr)` are true? Select all that apply.",
+    "options": [
+      "With `return_counts=True` it also returns how many times each value occurs",
+      "It keeps the values in the order they first appear",
+      "It returns the distinct values in sorted order",
+      "It removes duplicates from `arr` in place",
+      "For a 2-D input with no `axis` argument, it flattens the array first"
+    ],
+    "answer": [
+      0,
+      2,
+      4
+    ],
+    "explanation": "`np.unique` returns a new sorted 1-D array (flattened unless `axis` is given) and leaves `arr` untouched. For first-appearance order, use `return_index=True` and sort by those indices, or `pd.unique`."
+  },
+  {
+    "id": "np-051",
+    "track": "numpy",
+    "topic": "stacking",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "`a` and `b` both have shape (3, 4). How do `np.concatenate([a, b])` and `np.stack([a, b])` differ?",
+    "options": [
+      "`concatenate` gives (3, 8); `stack` gives (6, 4)",
+      "Both give (6, 4); `stack` is an alias for `concatenate`",
+      "`concatenate` joins along an existing axis, giving (6, 4); `stack` adds a new axis, giving (2, 3, 4)",
+      "`concatenate` gives (2, 3, 4); `stack` gives (6, 4)"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "`np.concatenate` defaults to `axis=0` and keeps the number of dimensions. `np.stack` always creates a new axis, so the inputs must have identical shapes."
+  },
+  {
+    "id": "np-052",
+    "track": "numpy",
+    "topic": "stacking",
+    "difficulty": "easy",
+    "type": "multi",
+    "prompt": "`a = np.array([1, 2, 3])` and `b = np.array([4, 5, 6])`. Which expressions give an array of shape (2, 3)? Select all that apply.",
+    "options": [
+      "`np.vstack([a, b])`",
+      "`np.column_stack([a, b])`",
+      "`np.stack([a, b])`",
+      "`np.concatenate([a, b])`",
+      "`np.hstack([a, b])`",
+      "`np.array([a, b])`"
+    ],
+    "answer": [
+      0,
+      2,
+      5
+    ],
+    "explanation": "`vstack`, `stack` and `np.array` put the two 1-D arrays as rows. `hstack` and `concatenate` join them end to end into shape (6,), and `column_stack` uses them as columns, giving (3, 2)."
+  },
+  {
+    "id": "np-053",
+    "track": "numpy",
+    "topic": "sorting",
+    "difficulty": "hard",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import numpy as np\nscores = np.array([50, 20, 40, 90])\nprint(scores.argsort().tolist(), scores.argsort().argsort().tolist())",
+    "options": [
+      "[1, 2, 0, 3] [2, 0, 1, 3]",
+      "[1, 2, 0, 3] [1, 2, 0, 3]",
+      "[3, 0, 2, 1] [2, 0, 1, 3]",
+      "[20, 40, 50, 90] [1, 2, 0, 3]"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "`argsort` returns the indices that would sort the array (20 is at index 1, 40 at 2, ...). Applying `argsort` again gives each element's rank: 50 is rank 2, 20 is rank 0."
+  },
+  {
+    "id": "np-054",
+    "track": "numpy",
+    "topic": "sorting",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Which expression gives the indices of the 3 largest values in the 1-D array `a` (in any order)?",
+    "options": [
+      "`np.argsort(a)[:3]`",
+      "`np.sort(a)[-3:]`",
+      "`np.argmax(a)[:3]`",
+      "`np.argsort(a)[-3:]`"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "`argsort` sorts ascending, so the last three indices belong to the largest values. `np.sort(a)[-3:]` returns the values, not their positions, and `argmax` returns a single index."
+  },
+  {
+    "id": "np-055",
+    "track": "numpy",
+    "topic": "nan handling",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import numpy as np\na = np.array([1, np.nan, 3])\nprint(a.mean(), np.nanmean(a))",
+    "options": [
+      "1.3333333333333333 2.0",
+      "2.0 2.0",
+      "nan 2.0",
+      "nan nan"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "Any arithmetic with NaN gives NaN, so the plain mean is nan. `np.nanmean` ignores NaN and averages 1 and 3; it does not treat NaN as 0."
+  },
+  {
+    "id": "np-056",
+    "track": "numpy",
+    "topic": "nan handling",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "`temps` is a float array with some missing readings stored as `np.nan`. Which call returns the highest real reading?",
+    "options": [
+      "`np.max(temps[temps != np.nan])`",
+      "`np.max(temps, skipna=True)`",
+      "`temps.max()`",
+      "`np.nanmax(temps)`"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "`np.nanmax` skips NaN. `temps.max()` returns nan, NumPy has no `skipna` argument, and `temps != np.nan` is True everywhere because NaN is not equal to anything, so nothing is filtered out."
+  },
+  {
+    "id": "np-057",
+    "track": "numpy",
+    "topic": "nan handling",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Which line replaces every NaN in the float array `a` with 0 and leaves other values unchanged?",
+    "options": [
+      "`a = np.where(a is np.nan, 0, a)`",
+      "`a = np.where(np.isnan(a), a, 0)`",
+      "`a = np.where(np.isnan(a), 0, a)`",
+      "`a = np.where(a == np.nan, 0, a)`"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "`np.isnan` is the only reliable NaN test; `a == np.nan` is always False and `a is np.nan` is a single False for the whole array. The third option has the branches swapped and zeroes every real value."
+  },
+  {
+    "id": "np-058",
+    "track": "numpy",
+    "topic": "nan handling",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "`a = np.array([1.0, np.nan, 3.0])`. Which expressions evaluate to 2.0? Select all that apply.",
+    "options": [
+      "`np.nanmedian(a)`",
+      "`np.nanmean(a)`",
+      "`a[a != np.nan].mean()`",
+      "`a.mean()`",
+      "`a[~np.isnan(a)].mean()`"
+    ],
+    "answer": [
+      0,
+      1,
+      4
+    ],
+    "explanation": "The nan-aware functions and an explicit `~np.isnan` mask all drop the NaN. `a != np.nan` is True for every element, so that mask keeps the NaN and the mean is nan."
+  },
+  {
+    "id": "np-059",
+    "track": "numpy",
+    "topic": "integer division",
+    "difficulty": "hard",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import numpy as np\na = np.array([7, -7])\nprint((a // 2).tolist(), (a % 3).tolist(), (a / 2).tolist())",
+    "options": [
+      "[3, -3] [1, 2] [3, -3]",
+      "[3, -4] [1, 2] [3.5, -3.5]",
+      "[3, -3] [1, -1] [3.5, -3.5]",
+      "[3, -4] [1, -1] [3.5, -3.5]"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "`//` floors toward negative infinity, so -7 // 2 is -4, and `%` takes the sign of the divisor, so -7 % 3 is 2, the same as in plain Python. `/` always returns floats."
+  },
+  {
+    "id": "np-060",
+    "track": "numpy",
+    "topic": "rounding",
+    "difficulty": "hard",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import numpy as np\nprint(np.round([0.5, 1.5, 2.5, 3.5]).tolist())",
+    "options": [
+      "[1.0, 2.0, 3.0, 4.0]",
+      "[0.0, 2.0, 2.0, 4.0]",
+      "[1, 2, 3, 4]",
+      "[0.0, 1.0, 2.0, 3.0]"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "`np.round` rounds exact halves to the nearest even number (banker's rounding), so 0.5 goes to 0 and 2.5 to 2. The result keeps the float dtype."
+  },
+  {
+    "id": "np-061",
+    "track": "numpy",
+    "topic": "comparing arrays",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "`a` and `b` are float arrays from two different calculations that should agree. Which check is most appropriate?",
+    "options": [
+      "`np.array_equal(a, b)`",
+      "`np.allclose(a, b)`",
+      "`a == b`",
+      "`a is b`"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "Floating-point results can differ in the last digits, so compare within a tolerance with `np.allclose`. `array_equal` needs exact equality, `a == b` returns an array rather than one answer, and `is` checks object identity."
+  },
+  {
+    "id": "np-062",
+    "track": "numpy",
+    "topic": "comparing arrays",
+    "difficulty": "hard",
+    "type": "multi",
+    "prompt": "Given the code, which expressions evaluate to True? Select all that apply.",
+    "code": "import numpy as np\na = np.array([1.0, 2.0])\nb = a + 1e-10",
+    "options": [
+      "`np.array_equal(a, b)`",
+      "`np.array_equal(a, np.array([1.0, 2.0, 3.0]))`",
+      "`np.array_equal(a, np.array([1, 2]))`",
+      "`(a == b).all()`",
+      "`np.isclose(a, b).all()`",
+      "`np.allclose(a, b)`"
+    ],
+    "answer": [
+      2,
+      4,
+      5
+    ],
+    "explanation": "A 1e-10 difference is within the default tolerance of `allclose`/`isclose` but fails exact equality. `array_equal` compares values, not dtypes, so the int array [1, 2] matches, while different shapes always give False."
+  },
+  {
+    "id": "np-063",
+    "track": "numpy",
+    "topic": "vectorization",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Why is `total = (prices * qty).sum()` usually much faster than a Python `for` loop over the same arrays?",
+    "options": [
+      "The element loop runs in compiled C code over typed, contiguous memory, avoiding per-element Python interpreter overhead",
+      "NumPy automatically spreads every operation across all CPU cores",
+      "NumPy caches the result after the first call and reuses it",
+      "NumPy skips elements that are zero"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "A Python loop boxes each element into a Python object and dispatches every `*` and `+` through the interpreter. NumPy does the whole loop in C; element-wise operations like this one run on a single core."
+  },
+  {
+    "id": "np-064",
+    "track": "numpy",
+    "topic": "vectorization",
+    "difficulty": "hard",
+    "type": "mcq",
+    "prompt": "`f = np.vectorize(my_func)` where `my_func` is a plain Python function. What is true about `f(arr)` for a large array?",
+    "options": [
+      "It is mainly a convenience wrapper that still calls `my_func` once per element in Python, so it is not much faster than a loop",
+      "It compiles `my_func` to C, so it runs as fast as a built-in ufunc",
+      "It runs `my_func` on all CPU cores in parallel",
+      "It only works if `my_func` already uses NumPy operations internally"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "The NumPy docs state that `np.vectorize` is provided for convenience, not performance; it is essentially a for loop. Real speedups come from rewriting the logic with array operations such as `np.where`."
+  },
+  {
+    "id": "np-065",
+    "track": "numpy",
+    "topic": "vectorization",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "Which statements about vectorized NumPy code are true? Select all that apply.",
+    "options": [
+      "Expressions like `a * 2 + 1` run their element loop in compiled code",
+      "Replacing an if/else inside a loop with `np.where` keeps the work vectorized",
+      "Growing an array with `np.append` inside a loop is efficient because NumPy resizes it in place",
+      "Element-wise arithmetic requires both arrays to have the same dtype",
+      "Broadcasting lets you combine arrays of different shapes without building tiled copies in a loop"
+    ],
+    "answer": [
+      0,
+      1,
+      4
+    ],
+    "explanation": "`np.append` allocates and copies a whole new array on every call, so appending in a loop is quadratic; collect values in a list and convert once. Mixed dtypes are fine because NumPy upcasts, for example int + float gives float."
+  },
+  {
+    "id": "np-066",
+    "track": "numpy",
+    "topic": "random",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "This code is meant to simulate 1000 rolls of a six-sided die. Which values can actually appear in `rolls`?",
+    "code": "import numpy as np\nrng = np.random.default_rng(7)\nrolls = rng.integers(1, 6, size=1000)",
+    "options": [
+      "0 to 6",
+      "0 to 5",
+      "1 to 6",
+      "1, 2, 3, 4 and 5, never 6"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "`Generator.integers(low, high)` excludes `high` by default, like `range`. Use `rng.integers(1, 7, size=1000)` or pass `endpoint=True`."
+  },
+  {
+    "id": "np-067",
+    "track": "numpy",
+    "topic": "random",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "You want the same random numbers every time a notebook runs. Which approach does NumPy recommend?",
+    "options": [
+      "Call `np.random.default_rng()` with no arguments before each draw",
+      "Call `np.random.rand()` once at the top to warm up the generator",
+      "Set the environment variable `PYTHONHASHSEED=42`",
+      "Create `rng = np.random.default_rng(42)` once and draw all numbers from `rng`"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "A seeded `Generator` gives a reproducible sequence. Without a seed, `default_rng()` pulls fresh entropy from the OS each time, and `PYTHONHASHSEED` only controls the randomization of Python's built-in `hash()`."
+  },
+  {
+    "id": "np-068",
+    "track": "numpy",
+    "topic": "random",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "Which statements about `np.random.default_rng` are true? Select all that apply.",
+    "options": [
+      "`rng.random(3)` returns floats in the half-open interval [0, 1)",
+      "`rng.choice(arr, size=3, replace=False)` never picks the same position twice",
+      "Drawing twice from the same `rng` returns the same numbers both times",
+      "Two generators created with `np.random.default_rng(42)` produce the same sequence",
+      "`np.random.seed(42)` also fixes the output of a generator made with `np.random.default_rng()`"
+    ],
+    "answer": [
+      0,
+      1,
+      3
+    ],
+    "explanation": "The seed fixes the whole sequence, but each draw advances the generator, so consecutive draws differ. `np.random.seed` only seeds the legacy global `RandomState`, not new `Generator` objects."
+  }
+]

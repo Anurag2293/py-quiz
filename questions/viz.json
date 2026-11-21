@@ -1,0 +1,1264 @@
+[
+  {
+    "id": "viz-001",
+    "track": "viz",
+    "topic": "chart-choice",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "A manager asks: \"How are delivery times spread out? Are most orders fast, with a few very slow ones?\" You have one numeric column, `delivery_minutes`. Which chart answers this most directly?",
+    "options": [
+      "A bar chart of the mean delivery time",
+      "A pie chart of delivery times",
+      "A scatter plot of `delivery_minutes` against itself",
+      "A histogram of `delivery_minutes`"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "The question is about the distribution of one numeric variable, which a histogram shows directly, including skew and a long right tail. A single mean bar hides the spread entirely."
+  },
+  {
+    "id": "viz-002",
+    "track": "viz",
+    "topic": "colormaps",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "Which colormap guidelines are correct? Select all that apply.",
+    "options": [
+      "Use a diverging map such as `'RdBu'` for deviations around a meaningful midpoint, like profit vs loss around 0",
+      "A diverging map is the right choice for rainfall measured from 0 upwards",
+      "`'jet'` (rainbow) is perceptually uniform and the best default for continuous data",
+      "Use a sequential map such as `'viridis'` for values ordered from low to high, like population density",
+      "Use a qualitative map such as `'tab10'` for unordered categories, like product lines"
+    ],
+    "answer": [
+      0,
+      3,
+      4
+    ],
+    "explanation": "Pick the colormap from the data: sequential for magnitude, diverging when there is a natural centre, qualitative for categories. Rainbow maps like jet have uneven perceived brightness that creates false boundaries, and rainfall from 0 has no midpoint to diverge from."
+  },
+  {
+    "id": "viz-003",
+    "track": "viz",
+    "topic": "time-series",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Your sales line chart zig-zags back and forth across the x-axis instead of moving left to right. The data comes from a database export and the date column is a proper datetime. What is the most likely fix?",
+    "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots()\nax.plot(df['date'], df['sales'])",
+    "options": [
+      "Use a bar chart instead",
+      "Call `plt.tight_layout()`",
+      "Sort the rows by date (`df = df.sort_values('date')`) before plotting",
+      "Set `ax.set_xscale('log')`"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "`ax.plot` connects points in the order they appear in the data, so unsorted dates make the line jump back and forth. Sorting by date restores a left-to-right line."
+  },
+  {
+    "id": "viz-004",
+    "track": "viz",
+    "topic": "figure-level-vs-axes-level",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "Which of these seaborn functions are figure-level (they create their own figure and return a grid object)? Select all that apply.",
+    "options": [
+      "`sns.regplot`",
+      "`sns.histplot`",
+      "`sns.boxplot`",
+      "`sns.relplot`",
+      "`sns.lmplot`",
+      "`sns.catplot`"
+    ],
+    "answer": [
+      3,
+      4,
+      5
+    ],
+    "explanation": "`relplot`, `displot`, `catplot` and `lmplot` are figure-level and return a FacetGrid. `histplot`, `boxplot` and `regplot` are axes-level: they draw on one Axes (optionally passed with `ax=`) and return it."
+  },
+  {
+    "id": "viz-005",
+    "track": "viz",
+    "topic": "violinplot",
+    "difficulty": "hard",
+    "type": "multi",
+    "prompt": "Which statements about `sns.violinplot` (seaborn 0.13 defaults) are true? Select all that apply.",
+    "options": [
+      "It can reveal a bimodal distribution that a box plot of the same data would hide",
+      "With very few observations, the smooth shape can suggest structure the data does not support",
+      "By default, a group with 10x more rows is drawn as a 10x wider violin",
+      "Because the shape is a smoothed KDE, a violin can extend past the smallest and largest observed values",
+      "The widest point of a violin is always at the group mean"
+    ],
+    "answer": [
+      0,
+      1,
+      3
+    ],
+    "explanation": "The default `density_norm='area'` gives every violin the same area regardless of group size, and `cut=2` lets the KDE extend beyond the data range. The widest point is the density's mode, not the mean, and KDEs on tiny samples can look misleadingly smooth."
+  },
+  {
+    "id": "viz-006",
+    "track": "viz",
+    "topic": "colormaps",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Which of these matplotlib colormaps is qualitative (meant for unordered categories)?",
+    "options": [
+      "`'viridis'`",
+      "`'coolwarm'`",
+      "`'tab10'`",
+      "`'Blues'`"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "`tab10` is a set of 10 distinct colours with no implied order, which is matplotlib's default colour cycle. `viridis` and `Blues` are sequential, and `coolwarm` is diverging."
+  },
+  {
+    "id": "viz-007",
+    "track": "viz",
+    "topic": "hue",
+    "difficulty": "easy",
+    "type": "multi",
+    "prompt": "In `sns.scatterplot(data=df, x='area_sqft', y='price', ...)`, which arguments map an extra column of `df` to how the points look? Select all that apply.",
+    "options": [
+      "`ax=ax`",
+      "`size='bedrooms'`",
+      "`hue='city'`",
+      "`style='furnished'`",
+      "`legend='auto'`"
+    ],
+    "answer": [
+      1,
+      2,
+      3
+    ],
+    "explanation": "`hue` maps a column to colour, `size` to marker size and `style` to marker shape, and seaborn builds the legend for them. `ax` only chooses which Axes to draw on, and `legend` controls how the legend is drawn, not what is encoded."
+  },
+  {
+    "id": "viz-008",
+    "track": "viz",
+    "topic": "kdeplot",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Your KDE of call wait times (always 0 or more) shows density below 0 seconds. Why, and what is a reasonable fix?",
+    "options": [
+      "The data contains negative values; drop them",
+      "KDE always starts at -1; ignore it",
+      "Use `log_scale=False` explicitly",
+      "The kernel smoothing spreads density past the data's minimum; pass `cut=0` or `clip=(0, None)` to limit it"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "Each observation contributes a smooth bump, and by default seaborn extends the curve beyond the observed range (`cut=3` bandwidths). `cut=0` stops at the data extremes and `clip` limits the evaluation range."
+  },
+  {
+    "id": "viz-009",
+    "track": "viz",
+    "topic": "subplots",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import matplotlib.pyplot as plt\nfig, axes = plt.subplots(1, 3)\nprint(axes.shape)",
+    "options": [
+      "(1, 3)",
+      "(3, 1)",
+      "(3,)",
+      "3"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "With one row, `plt.subplots` squeezes the size-1 dimension and returns a 1D array of 3 Axes. Pass `squeeze=False` to always get a 2D array."
+  },
+  {
+    "id": "viz-010",
+    "track": "viz",
+    "topic": "pandas-plot",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "`df` has index `['North', 'South', 'East']` and two numeric columns `p1` and `p2`. How many bars does this draw on the x-axis?",
+    "code": "df.plot(kind='bar', stacked=True)",
+    "options": [
+      "2 bars, each split into 3 segments",
+      "3 bars, each split into 2 segments",
+      "6 separate bars side by side",
+      "1 bar split into 6 segments"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "`DataFrame.plot` puts the index on the x-axis and draws one series per column. With `stacked=True` the two column values are stacked within each of the three region bars."
+  },
+  {
+    "id": "viz-011",
+    "track": "viz",
+    "topic": "savefig",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Running this as a script (`python report.py`) produces a blank `chart.png`. What is the fix?",
+    "code": "import matplotlib.pyplot as plt\nplt.plot([1, 2, 3], [4, 1, 6])\nplt.show()\nplt.savefig('chart.png')",
+    "options": [
+      "Call `plt.savefig('chart.png')` before `plt.show()`",
+      "Use `.jpg` instead of `.png`",
+      "Add `plt.tight_layout()` after `savefig`",
+      "Pass `dpi=300` to `savefig`"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "With an interactive backend, `plt.show()` blocks until you close the window, and closing it destroys the figure, so the following `plt.savefig` saves a new empty figure. Save first, then show, or call `fig.savefig` on a Figure you hold a reference to."
+  },
+  {
+    "id": "viz-012",
+    "track": "viz",
+    "topic": "overplotting",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "Which techniques reduce overplotting in a scatter plot? Select all that apply.",
+    "options": [
+      "Sorting the data by x before plotting",
+      "Increasing marker size so each point is easier to see",
+      "Lowering marker `alpha`",
+      "Adding small random jitter when values are integers (for example ratings 1-5)",
+      "Plotting a random sample of the rows",
+      "Using `ax.hexbin` or a 2D histogram instead of individual points"
+    ],
+    "answer": [
+      2,
+      3,
+      4,
+      5
+    ],
+    "explanation": "Transparency, binning, jitter for discrete values and sampling all separate or summarise stacked points. Bigger markers increase overlap, and sorting changes only drawing order, not how many points sit on top of each other."
+  },
+  {
+    "id": "viz-013",
+    "track": "viz",
+    "topic": "sharex-sharey",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "You draw monthly sales for three regions as three side-by-side subplots with independent y-axes. Region A's bars look as tall as Region C's, although C sells 10x more. What is the best fix if readers must compare regions?",
+    "options": [
+      "Add more y tick labels to each panel",
+      "Switch each panel to a pie chart",
+      "Call `fig.tight_layout()`",
+      "Use `sharey=True` so all panels use the same y-scale"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "Independent axes autoscale each panel to its own data, so equal-looking heights can hide a 10x difference. Sharing the y-axis puts all panels on one scale; `tight_layout` only fixes spacing."
+  },
+  {
+    "id": "viz-014",
+    "track": "viz",
+    "topic": "chart-choice",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "For 200 stores you have `ad_spend` and `sales`, both numeric. You want to see whether stores that spend more on ads tend to sell more. Which chart should you start with?",
+    "options": [
+      "A stacked bar chart of `ad_spend` and `sales` per store",
+      "A scatter plot of `ad_spend` vs `sales`",
+      "Two pie charts, one per column",
+      "A line chart of `sales` in store-ID order"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "A relationship between two numeric variables is shown with a scatter plot; the shape of the point cloud shows direction, strength and outliers. A line in store-ID order connects points whose order means nothing."
+  },
+  {
+    "id": "viz-015",
+    "track": "viz",
+    "topic": "violinplot",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "In a seaborn violin plot, what does the width of the violin at a given y-value represent?",
+    "options": [
+      "The standard deviation of the data",
+      "The number of outliers at that value",
+      "The mean of the group",
+      "The estimated density of observations near that value (a mirrored KDE)"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "Each violin is a kernel density estimate drawn symmetrically, so it is wide where values are common and narrow where they are rare. By default seaborn also draws a small box plot inside (`inner='box'`)."
+  },
+  {
+    "id": "viz-016",
+    "track": "viz",
+    "topic": "boxplot",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "Looking at a single box plot (no other annotations), which of these can you read off it? Select all that apply.",
+    "options": [
+      "The number of observations",
+      "The median",
+      "Values that lie beyond 1.5 * IQR from the box",
+      "Whether the distribution has two peaks",
+      "The interquartile range"
+    ],
+    "answer": [
+      1,
+      2,
+      4
+    ],
+    "explanation": "A box plot encodes the median, quartiles, whisker ends and individual outliers. It does not show sample size, and it hides multimodality: a bimodal and a unimodal sample can produce the same box."
+  },
+  {
+    "id": "viz-017",
+    "track": "viz",
+    "topic": "countplot-vs-barplot",
+    "difficulty": "hard",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import matplotlib.pyplot as plt\nimport seaborn as sns\nfig, ax = plt.subplots()\nsns.countplot(x=['b', 'a', 'b', 'c', 'b'], ax=ax)\nprint([int(p.get_height()) for p in ax.patches])",
+    "options": [
+      "[1, 3, 1]",
+      "[1, 1, 3]",
+      "[5]",
+      "[3, 1, 1]"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "For plain string data, seaborn orders categories by first appearance: 'b', 'a', 'c'. So the bars are b=3, a=1, c=1; the alphabetical order [1, 3, 1] is the trap. Pass `order=` to control it."
+  },
+  {
+    "id": "viz-018",
+    "track": "viz",
+    "topic": "histogram-vs-bar",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "You plot a histogram of customer ages with `bins=5` and it looks unimodal. With `bins=40` it shows two clear peaks. What is the best conclusion?",
+    "options": [
+      "The 5-bin chart is correct, because fewer bins are always more reliable",
+      "The 40-bin chart is wrong, because histograms should never have more than 20 bins",
+      "Bin count changes the apparent shape, so check several bin widths (or a KDE) before deciding whether there are two peaks",
+      "Histograms cannot show bimodality; use a pie chart instead"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "Wide bins can merge two peaks into one, and very narrow bins can create spurious bumps from noise. No single bin count is always right, so compare a few bin widths or overlay a KDE before drawing conclusions."
+  },
+  {
+    "id": "viz-019",
+    "track": "viz",
+    "topic": "heatmap",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "What does the `mask` argument do in this correlation heatmap?",
+    "code": "import matplotlib.pyplot as plt\nimport seaborn as sns\nimport numpy as np\ncorr = df.corr()\nmask = np.triu(np.ones_like(corr, dtype=bool))\nsns.heatmap(corr, mask=mask, annot=True)",
+    "options": [
+      "Hides the upper triangle including the diagonal, leaving each pairwise correlation shown once",
+      "Hides the lower triangle, keeping the upper triangle and diagonal",
+      "Hides all correlations below 0",
+      "Hides the colour bar"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "`np.triu` returns True on and above the diagonal, and seaborn hides cells where the mask is True. A correlation matrix is symmetric with 1s on the diagonal, so this removes the duplicated half."
+  },
+  {
+    "id": "viz-020",
+    "track": "viz",
+    "topic": "pyplot-vs-oo",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import matplotlib.pyplot as plt\nfig, (a1, a2) = plt.subplots(1, 2)\nplt.title('X')\nprint(repr(a1.get_title()), repr(a2.get_title()))",
+    "options": [
+      "'X' ''",
+      "'' 'X'",
+      "'X' 'X'",
+      "'' ''"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "`plt.title` sets the title on the current Axes, which after `plt.subplots(1, 2)` is the last one created, the right-hand `a2`. Use `a1.set_title('X')` to target a specific subplot."
+  },
+  {
+    "id": "viz-021",
+    "track": "viz",
+    "topic": "heatmap",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Which settings suit a heatmap of a correlation matrix (`corr = df.corr()`)?",
+    "options": [
+      "`sns.heatmap(corr, cmap='viridis')`",
+      "`sns.heatmap(corr, cmap='tab10')`",
+      "`sns.heatmap(corr, cmap='coolwarm', vmin=-1, vmax=1, center=0)`",
+      "`sns.heatmap(corr, cmap='Greys', vmin=0, vmax=100)`"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "Correlations run from -1 to 1 with a meaningful midpoint at 0, so a diverging colormap centred on 0 with fixed limits makes positive and negative correlations visually distinct. A sequential map has no visual midpoint, so zero does not stand out and the sign of a correlation is hard to read."
+  },
+  {
+    "id": "viz-022",
+    "track": "viz",
+    "topic": "countplot-vs-barplot",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import matplotlib.pyplot as plt\nimport seaborn as sns\nfig, ax = plt.subplots()\nsns.barplot(x=['a', 'a', 'b'], y=[2, 4, 6], errorbar=None, ax=ax)\nprint([float(p.get_height()) for p in ax.patches])",
+    "options": [
+      "[6.0, 6.0]",
+      "[2.0, 1.0]",
+      "[3.0, 6.0]",
+      "[4.0, 6.0]"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "`sns.barplot` aggregates y with the mean by default: group 'a' has values 2 and 4, so its bar is 3.0; 'b' is 6.0. The tempting [6.0, 6.0] assumes it sums."
+  },
+  {
+    "id": "viz-023",
+    "track": "viz",
+    "topic": "pyplot-vs-oo",
+    "difficulty": "hard",
+    "type": "multi",
+    "prompt": "`ax` is a matplotlib `Axes`. Which calls work as intended? Select all that apply.",
+    "options": [
+      "`ax.set_xlim(0, 10)`",
+      "`ax.ylabel('Units')`",
+      "`ax.legend()`",
+      "`ax.title('Sales')`",
+      "`ax.set_title('Sales')`"
+    ],
+    "answer": [
+      0,
+      2,
+      4
+    ],
+    "explanation": "`ax.title` is an attribute holding a Text object, so calling it raises `TypeError`, and Axes has no `ylabel` method at all (`AttributeError`). The Axes equivalents of `plt.title` and `plt.ylabel` are `set_title` and `set_ylabel`; `legend` keeps the same name."
+  },
+  {
+    "id": "viz-024",
+    "track": "viz",
+    "topic": "figure-level-vs-axes-level",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import matplotlib.pyplot as plt\nimport seaborn as sns\nimport pandas as pd\ndf = pd.DataFrame({'g': ['x', 'y', 'x'], 'v': [1, 2, 3]})\ngrid = sns.catplot(data=df, x='g', y='v', kind='box')\nax = sns.boxplot(data=df, x='g', y='v')\nprint(type(grid).__name__, type(ax).__name__)",
+    "options": [
+      "Axes Axes",
+      "FacetGrid FacetGrid",
+      "FacetGrid Axes",
+      "Figure Axes"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "`catplot` is figure-level and returns a FacetGrid; `boxplot` is axes-level and returns the Axes it drew on."
+  },
+  {
+    "id": "viz-025",
+    "track": "viz",
+    "topic": "countplot-vs-barplot",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "Which statements about the error bars in `sns.barplot(data=tips, x='day', y='total_bill')` (seaborn 0.13) are true? Select all that apply.",
+    "options": [
+      "By default they show a 95% confidence interval for the mean",
+      "By default the interval is estimated by bootstrapping",
+      "`errorbar='sd'` changes them to show one standard deviation around the mean",
+      "`errorbar=None` removes them",
+      "By default they show the minimum and maximum `total_bill` for each day"
+    ],
+    "answer": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "explanation": "The default `errorbar=('ci', 95)` is a bootstrapped confidence interval around the estimator (the mean). `'sd'` shows the spread of the data instead, and `None` turns the bars off; min-max is never the default."
+  },
+  {
+    "id": "viz-026",
+    "track": "viz",
+    "topic": "histplot",
+    "difficulty": "hard",
+    "type": "mcq",
+    "prompt": "Group A has 9,000 rows and group B has 1,000. In this plot, B's histogram looks tiny and its shape is hard to judge. Which change best lets you compare the two shapes?",
+    "code": "import matplotlib.pyplot as plt\nimport seaborn as sns\nsns.histplot(data=df, x='spend', hue='group')",
+    "options": [
+      "Add `kde=True`",
+      "Add `multiple='stack'`",
+      "Add `stat='density', common_norm=False` so each group is normalised separately",
+      "Add `bins=100`"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "The default `stat='count'` makes B's bars small simply because B has fewer rows, and with `stat='density'` alone the default `common_norm=True` still normalises both groups together. `common_norm=False` gives each group an area of 1, so their shapes are comparable whatever their sizes."
+  },
+  {
+    "id": "viz-027",
+    "track": "viz",
+    "topic": "boxplot",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "In a standard box plot, what do the edges of the box and the line inside it show?",
+    "options": [
+      "Box edges: mean minus and plus one standard deviation; line: the mean",
+      "Box edges: minimum and maximum; line: the mean",
+      "Box edges: 5th and 95th percentiles; line: the mode",
+      "Box edges: first and third quartiles (Q1, Q3); line: the median"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "The box spans the interquartile range from Q1 to Q3, holding the middle 50% of the data, and the line inside is the median. Box plots show quantiles, not the mean and standard deviation."
+  },
+  {
+    "id": "viz-028",
+    "track": "viz",
+    "topic": "pandas-plot",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import matplotlib.pyplot as plt\nimport pandas as pd\ndf = pd.DataFrame({'a': [1, 2], 'b': [3, 4], 'c': [5, 6]})\nax = df.plot()\naxes = df.plot(subplots=True)\nprint(type(ax).__name__, axes.shape)",
+    "options": [
+      "Axes (3,)",
+      "Axes (1, 3)",
+      "ndarray (3,)",
+      "Figure (3,)"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "`df.plot()` draws all columns on one Axes and returns it. With `subplots=True` it creates one Axes per column and returns a 1D NumPy array of them."
+  },
+  {
+    "id": "viz-029",
+    "track": "viz",
+    "topic": "legends",
+    "difficulty": "easy",
+    "type": "multi",
+    "prompt": "`x`, `actual` and `forecast` are lists of numbers. Which snippets produce a legend with the entries 'Actual' and 'Forecast'? Select all that apply.",
+    "options": [
+      "`ax.plot(x, actual)`, `ax.plot(x, forecast)`, then `ax.legend()`",
+      "`ax.plot(x, actual)`, `ax.plot(x, forecast)`, then `ax.set_title('Actual, Forecast')`",
+      "`ax.plot(x, actual, label='Actual')`, `ax.plot(x, forecast, label='Forecast')`, then `ax.legend()`",
+      "`ax.plot(x, actual)`, `ax.plot(x, forecast)`, then `ax.legend(['Actual', 'Forecast'])`"
+    ],
+    "answer": [
+      2,
+      3
+    ],
+    "explanation": "`ax.legend()` with no arguments only lists artists that were given a `label`, so unlabelled lines give an empty legend and a warning. Passing a list of labels to `legend` assigns them to the lines in plot order; a title is not a legend."
+  },
+  {
+    "id": "viz-030",
+    "track": "viz",
+    "topic": "figure-vs-axes",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "In matplotlib, what is the relationship between a `Figure` and an `Axes`?",
+    "options": [
+      "They are two names for the same object",
+      "A `Figure` is the whole canvas and can contain one or more `Axes`, each a plotting area with its own x and y axis",
+      "An `Axes` holds one or more `Figure` objects",
+      "A `Figure` is only used when saving; an `Axes` is only used for display"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "The Figure is the top-level container (size, background, suptitle), and each Axes is an individual plot inside it with its own data limits, labels and title. `fig.axes` lists all Axes in a Figure."
+  },
+  {
+    "id": "viz-031",
+    "track": "viz",
+    "topic": "twin-axes",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots()\nax2 = ax.twinx()\nax2.plot([1, 2, 3])\nprint(len(fig.axes))",
+    "options": [
+      "1",
+      "2",
+      "3",
+      "0"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "`twinx` adds a second Axes to the same Figure, overlaid on the first, so `fig.axes` now holds two Axes."
+  },
+  {
+    "id": "viz-032",
+    "track": "viz",
+    "topic": "pairplot",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "`df` has 4 numeric columns and no other columns. How many panels does `sns.pairplot(df)` draw?",
+    "options": [
+      "4",
+      "6",
+      "8",
+      "16"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "pairplot draws a 4 x 4 grid: scatter plots for each pair of different variables off the diagonal and a univariate distribution (a histogram by default) for each variable on the diagonal."
+  },
+  {
+    "id": "viz-033",
+    "track": "viz",
+    "topic": "subplots",
+    "difficulty": "hard",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import matplotlib.pyplot as plt\nfig, axes = plt.subplots(2, 2)\nfor ax in axes:\n    ax.plot([1, 2, 3])\nprint('done')",
+    "options": [
+      "done",
+      "TypeError",
+      "IndexError",
+      "AttributeError"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "Iterating over a 2D `axes` array yields rows, each a NumPy array of two Axes, and arrays have no `plot` method. Loop over `axes.flat` (or `axes.ravel()`) to get individual Axes."
+  },
+  {
+    "id": "viz-034",
+    "track": "viz",
+    "topic": "subplots",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import matplotlib.pyplot as plt\nfig, axes = plt.subplots(3, 1, squeeze=False)\nprint(axes.shape)",
+    "options": [
+      "(3, 1)",
+      "(3,)",
+      "(1, 3)",
+      "Axes"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "`squeeze=False` keeps the result as a 2D array of shape `(nrows, ncols)` even when one dimension is 1. That lets loop code always index `axes[i, j]`."
+  },
+  {
+    "id": "viz-035",
+    "track": "viz",
+    "topic": "pie-charts",
+    "difficulty": "easy",
+    "type": "multi",
+    "prompt": "Which are genuine problems with pie charts? Select all that apply.",
+    "options": [
+      "3D or tilted pies distort slice sizes, making front slices look bigger",
+      "With 12 or more slices, small slices become unreadable",
+      "Responses to a \"select all that apply\" survey question can sum to more than 100%, so they do not form a whole",
+      "Pie slices cannot be labelled with percentages",
+      "People compare angles and areas less accurately than lengths along a common baseline"
+    ],
+    "answer": [
+      0,
+      1,
+      2,
+      4
+    ],
+    "explanation": "Pies only work for a few categories that genuinely add up to a whole, and even then a bar chart is often easier to compare. Labelling slices with percentages is perfectly possible (`autopct` in matplotlib)."
+  },
+  {
+    "id": "viz-036",
+    "track": "viz",
+    "topic": "countplot-vs-barplot",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "`orders` has one row per order and a `city` column. Which call draws the number of orders per city?",
+    "options": [
+      "`sns.barplot(data=orders, x='city')`",
+      "`sns.countplot(data=orders, x='city')`",
+      "`sns.kdeplot(data=orders, x='city')`",
+      "`sns.lineplot(data=orders, x='city')`"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "`countplot` counts rows in each category, so no y column is needed. `barplot` is for aggregating a numeric y-variable per category (by default its mean)."
+  },
+  {
+    "id": "viz-037",
+    "track": "viz",
+    "topic": "heatmap",
+    "difficulty": "hard",
+    "type": "mcq",
+    "prompt": "This call raises `ValueError: Unknown format code 'd' for object of type 'float'`. Why?",
+    "code": "import matplotlib.pyplot as plt\nimport seaborn as sns\nsns.heatmap(df.corr(), annot=True, fmt='d')",
+    "options": [
+      "`fmt='d'` formats integers, but correlation values are floats; use something like `fmt='.2f'`",
+      "`annot=True` only works with integer DataFrames",
+      "`df.corr()` returns strings when called on a heatmap",
+      "seaborn requires `cbar=False` whenever `annot=True`"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "`fmt` is a Python format spec applied to each cell value. `'d'` is an integer format and cannot format a float like 0.73; `'.2f'` or the default `'.2g'` works."
+  },
+  {
+    "id": "viz-038",
+    "track": "viz",
+    "topic": "stacked-vs-grouped",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "Which statements about stacked and grouped bar charts are true? Select all that apply.",
+    "options": [
+      "In a stacked bar chart, a middle segment is as easy to compare across bars as the bottom one",
+      "In a stacked bar chart, the bottom segment is easy to compare across bars because it starts at zero",
+      "In a stacked bar chart, the total for each category is easy to compare",
+      "A 100% stacked bar chart shows each category's absolute total",
+      "Grouped bars give every sub-bar its own zero baseline, so individual values are easy to compare"
+    ],
+    "answer": [
+      1,
+      2,
+      4
+    ],
+    "explanation": "Lengths that share a baseline are easy to compare: stacked totals, the bottom segment, and every bar in a grouped chart. Middle segments float at different heights, and a 100% stacked chart rescales every bar to the same height, hiding absolute totals."
+  },
+  {
+    "id": "viz-039",
+    "track": "viz",
+    "topic": "log-scale",
+    "difficulty": "hard",
+    "type": "mcq",
+    "prompt": "A company's user count is plotted on a logarithmic y-axis and the line is close to straight and rising. What does that suggest?",
+    "options": [
+      "User count is growing by a roughly constant percentage each period",
+      "User count is growing by a roughly constant number each period",
+      "User count is not changing",
+      "The data contains negative values"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "On a log axis, equal vertical distances mean equal ratios, so a straight line means constant percentage (exponential) growth. Constant absolute growth would appear as a straight line on a linear axis and a flattening curve on a log axis."
+  },
+  {
+    "id": "viz-040",
+    "track": "viz",
+    "topic": "histogram-vs-bar",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots()\ncounts, edges, patches = ax.hist([1, 2, 2, 3, 3, 3, 4], bins=3)\nprint(counts.tolist(), len(edges))",
+    "options": [
+      "[1.0, 2.0, 4.0] 4",
+      "[1.0, 2.0, 4.0] 3",
+      "[1.0, 2.0, 3.0, 1.0] 4",
+      "[1.0, 5.0, 1.0] 4"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "`bins=3` over the range 1 to 4 gives 4 edges (1, 2, 3, 4). Bins are half-open except the last, which includes its right edge, so the value 4 falls into the last bin with the three 3s."
+  },
+  {
+    "id": "viz-041",
+    "track": "viz",
+    "topic": "chart-choice",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "You have monthly revenue for the last three years and want to show how it has trended. Which chart fits best?",
+    "options": [
+      "A line chart with month on the x-axis",
+      "A pie chart with one slice per month",
+      "A histogram of the monthly revenue values",
+      "A box plot of revenue"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "A trend over ordered time is a line chart's job: the connected line makes rises, dips and seasonality easy to follow. A histogram or box plot throws away the time order, and 36 pie slices are unreadable."
+  },
+  {
+    "id": "viz-042",
+    "track": "viz",
+    "topic": "log-scale",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "You set `ax.set_yscale('log')` on a chart of daily refunds, and some days have 0 refunds. What happens to those zero values?",
+    "options": [
+      "They are drawn at y = 1",
+      "matplotlib automatically switches the axis back to linear",
+      "They are drawn at y = -1",
+      "They cannot be placed on a log axis, so those points are masked or clipped instead of plotted at their true value"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "log(0) is undefined, so a plain log axis cannot represent zero or negative values; matplotlib masks or clips them. Use `'symlog'`, add a small offset with a clear note, or keep a linear axis."
+  },
+  {
+    "id": "viz-043",
+    "track": "viz",
+    "topic": "lineplot",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "The data has about 30 rows per day (one per store). What is the shaded band around the line?",
+    "code": "import matplotlib.pyplot as plt\nimport seaborn as sns\nsns.lineplot(data=sales, x='day', y='sales')",
+    "options": [
+      "The range from the minimum to the maximum sales for each day",
+      "A 95% confidence interval for the daily mean, estimated by bootstrapping",
+      "Plus or minus one standard deviation around the daily mean",
+      "The interquartile range of sales for each day"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "When there are several y-values per x, `sns.lineplot` plots the mean (`estimator='mean'`) with `errorbar=('ci', 95)`, a bootstrapped confidence interval for that mean. Use `errorbar='sd'` for a standard-deviation band, or `estimator=None` to draw every row."
+  },
+  {
+    "id": "viz-044",
+    "track": "viz",
+    "topic": "log-scale",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Annual incomes in your data range from 1 lakh to 50 crore rupees and are heavily right-skewed. A normal histogram shows one tall bar at the left. Which change shows the shape best?",
+    "options": [
+      "Use a pie chart of income",
+      "Set `bins=2`",
+      "Plot with `sns.histplot(data=df, x='income', log_scale=True)`",
+      "Sort the incomes before plotting"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "When values span several orders of magnitude, log-spaced bins on a log axis spread the data out so the shape is visible. Fewer bins or sorting do not fix the scale problem."
+  },
+  {
+    "id": "viz-045",
+    "track": "viz",
+    "topic": "twin-axes",
+    "difficulty": "hard",
+    "type": "mcq",
+    "prompt": "Only 'Revenue' appears in the legend. Why, and what fixes it?",
+    "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots()\nax.plot(months, revenue, label='Revenue')\nax2 = ax.twinx()\nax2.plot(months, margin_pct, color='C1', label='Margin %')\nax.legend()",
+    "options": [
+      "`twinx` lines never support labels; draw both on `ax` instead",
+      "The second label is hidden because it has the same colour",
+      "Legends only show the first plotted line",
+      "`ax.legend()` only collects labelled artists from `ax`; combine handles from both, e.g. `h1, l1 = ax.get_legend_handles_labels()`, `h2, l2 = ax2.get_legend_handles_labels()`, `ax.legend(h1 + h2, l1 + l2)`"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "`ax` and `ax2` are separate Axes, and each legend only gathers its own artists. Merge the handles and labels from both to get one legend, or use `fig.legend()`."
+  },
+  {
+    "id": "viz-046",
+    "track": "viz",
+    "topic": "misleading-charts",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "A bar chart compares customer satisfaction of 96% (Team A) and 98% (Team B), with the y-axis starting at 95%. What is the problem?",
+    "options": [
+      "Nothing; zooming in is always best",
+      "Percentages cannot be shown as bars",
+      "Bar length encodes value, so a truncated axis makes B's bar look three times as tall as A's for a 2-point difference",
+      "The bars should be sorted alphabetically"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "Readers compare bar lengths from the baseline, so bars should start at zero. With a 95% baseline the bars are 1 and 3 units tall. Line charts or dot plots can use a narrower range because they encode position, not length."
+  },
+  {
+    "id": "viz-047",
+    "track": "viz",
+    "topic": "hue",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "What does this draw?",
+    "code": "import matplotlib.pyplot as plt\nimport seaborn as sns\nsns.boxplot(data=tips, x='day', y='total_bill', hue='smoker')",
+    "options": [
+      "For each day, two boxes side by side (smoker Yes / No) in different colours, with a legend",
+      "One box per day, coloured by the majority smoker value",
+      "Two separate subplots, one for smokers and one for non-smokers",
+      "One box per smoker value, with days ignored"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "Adding `hue` to an axes-level categorical plot splits each x category by the hue variable and dodges the boxes side by side in different colours. Separate subplots need `catplot(..., col='smoker')`."
+  },
+  {
+    "id": "viz-048",
+    "track": "viz",
+    "topic": "subplots",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "After `fig, axes = plt.subplots(2, 2)`, which statements are true? Select all that apply.",
+    "options": [
+      "`axes` is a 2D NumPy array of shape `(2, 2)`",
+      "`axes[0, 1]` is the top-right subplot",
+      "`axes[1]` is a single `Axes` object",
+      "`for ax in axes.flat:` loops over all four subplots",
+      "`len(fig.axes)` is 4"
+    ],
+    "answer": [
+      0,
+      1,
+      3,
+      4
+    ],
+    "explanation": "With 2 rows and 2 columns, `axes` is indexed `[row, col]`, so `axes[0, 1]` is row 0, column 1. `axes[1]` is the whole second row, an array of two Axes; use `axes.flat` or `axes.ravel()` to iterate over every subplot."
+  },
+  {
+    "id": "viz-049",
+    "track": "viz",
+    "topic": "chart-choice",
+    "difficulty": "easy",
+    "type": "multi",
+    "prompt": "Which pairings of analysis question and chart are appropriate? Select all that apply.",
+    "options": [
+      "Average order value in 6 cities: a line chart connecting the cities in alphabetical order",
+      "Daily active users over two years: one pie chart per month",
+      "Pairwise correlations among 12 numeric features: a heatmap of the correlation matrix",
+      "Share of orders paid by UPI, card and cash: a single 100% stacked bar",
+      "Salary spread across 8 departments: side-by-side box plots, one per department"
+    ],
+    "answer": [
+      2,
+      3,
+      4
+    ],
+    "explanation": "Heatmaps suit correlation matrices, box plots compare distributions across groups, and a 100% stacked bar shows part-to-whole for a few categories. A line through unordered cities implies a trend that does not exist, and pies cannot show a time trend."
+  },
+  {
+    "id": "viz-050",
+    "track": "viz",
+    "topic": "accessibility",
+    "difficulty": "easy",
+    "type": "multi",
+    "prompt": "Which practices make a multi-line chart more accessible to colour-blind readers? Select all that apply.",
+    "options": [
+      "Using a colour-blind-friendly palette such as `sns.color_palette('colorblind')`",
+      "Using 9 similar shades of one hue to tell 9 categories apart",
+      "Varying line style or markers as well as colour",
+      "Labelling lines directly at their ends instead of relying only on a legend",
+      "Distinguishing the two key series with pure red and pure green"
+    ],
+    "answer": [
+      0,
+      2,
+      3
+    ],
+    "explanation": "Redundant encoding (style, markers, direct labels) means colour is not the only cue. Red vs green is the most common confusion, and many near-identical shades are hard for everyone to tell apart."
+  },
+  {
+    "id": "viz-051",
+    "track": "viz",
+    "topic": "legends",
+    "difficulty": "hard",
+    "type": "mcq",
+    "prompt": "How many entries does the legend show?",
+    "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots()\nax.plot([1, 2, 3], label='_baseline')\nax.plot([2, 3, 5], label='actual')\nax.legend()",
+    "options": [
+      "0",
+      "1",
+      "2",
+      "It raises an error because labels cannot start with an underscore"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "matplotlib excludes artists whose label starts with an underscore from automatic legends, so only 'actual' is listed. This convention is how internal or helper lines are kept out of legends."
+  },
+  {
+    "id": "viz-052",
+    "track": "viz",
+    "topic": "regplot-lmplot",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "What is the main practical difference between `sns.regplot` and `sns.lmplot`?",
+    "options": [
+      "`regplot` is axes-level and accepts `ax=`; `lmplot` is figure-level, returns a FacetGrid, and supports `hue`, `col` and `row` facets",
+      "`regplot` fits a regression line and `lmplot` does not",
+      "`lmplot` only works with categorical x-variables",
+      "`regplot` uses a logistic model and `lmplot` uses a linear one"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "Both draw a scatter plot with a fitted linear regression and confidence band. `regplot` draws onto one Axes you can supply, while `lmplot` builds its own figure and can split the data into facets."
+  },
+  {
+    "id": "viz-053",
+    "track": "viz",
+    "topic": "misleading-charts",
+    "difficulty": "hard",
+    "type": "multi",
+    "prompt": "Which of these chart choices are likely to mislead readers? Select all that apply.",
+    "options": [
+      "Two unrelated series on twin y-axes, each range chosen so the lines appear to move together",
+      "A bar chart whose y-axis starts well above zero",
+      "A clearly labelled log axis for data spanning several orders of magnitude",
+      "A 3D tilted pie chart",
+      "A line chart of daily temperature whose y-axis runs from 20 to 35 degrees"
+    ],
+    "answer": [
+      0,
+      1,
+      3
+    ],
+    "explanation": "Truncated bars exaggerate differences, freely scaled dual axes can manufacture apparent correlation, and 3D perspective distorts slice sizes. A line chart need not start at zero because it encodes position, and a labelled log scale is a legitimate choice."
+  },
+  {
+    "id": "viz-054",
+    "track": "viz",
+    "topic": "boxplot",
+    "difficulty": "hard",
+    "type": "mcq",
+    "prompt": "With matplotlib's and seaborn's default `whis=1.5`, where does the upper whisker of a box plot end?",
+    "options": [
+      "At the largest data point that is at or below Q3 + 1.5 * IQR",
+      "Exactly at Q3 + 1.5 * IQR, even if no data point lies there",
+      "At the maximum of the data, including outliers",
+      "At the 95th percentile"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "The whisker is drawn to the most extreme actual observation still inside the fence, so it usually stops short of Q3 + 1.5 * IQR. Points beyond the fence are drawn individually as fliers rather than extending the whisker."
+  },
+  {
+    "id": "viz-055",
+    "track": "viz",
+    "topic": "countplot-vs-barplot",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "You want bars showing the total `amount` per city, with no error bars. Which call does that?",
+    "options": [
+      "`sns.barplot(data=orders, x='city', y='amount')`",
+      "`sns.barplot(data=orders, x='city', y='amount', estimator='sum', errorbar=None)`",
+      "`sns.countplot(data=orders, x='city', hue='amount')`",
+      "`sns.barplot(data=orders, x='city', y='amount', errorbar='sum')`"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "`barplot` aggregates with `estimator='mean'` by default and adds a 95% confidence-interval error bar. Passing `estimator='sum'` gives totals, and `errorbar=None` removes the bars."
+  },
+  {
+    "id": "viz-056",
+    "track": "viz",
+    "topic": "boxplot",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "A box plot drawn with the default `whis=1.5` has Q1 = 20 and Q3 = 40. Which of these data points would be drawn as an individual outlier point?",
+    "options": [
+      "15",
+      "45",
+      "68",
+      "72"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "IQR = 40 - 20 = 20, so the fences are 20 - 1.5*20 = -10 and 40 + 1.5*20 = 70. Only 72 lies outside; 68 is inside the upper fence and stays within the whisker."
+  },
+  {
+    "id": "viz-057",
+    "track": "viz",
+    "topic": "histplot",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "In `sns.histplot(data=df, x='price', stat='density')`, what is guaranteed to equal 1?",
+    "options": [
+      "The sum of the bar heights",
+      "The total area of the bars (height times bin width, summed)",
+      "The tallest bar's height",
+      "The number of bins"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "`stat='density'` normalises so the total area is 1, which lets you overlay a KDE or compare histograms with different bin widths. If you want bar heights that sum to 1, use `stat='probability'` instead."
+  },
+  {
+    "id": "viz-058",
+    "track": "viz",
+    "topic": "heatmap",
+    "difficulty": "hard",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import matplotlib.pyplot as plt\nimport seaborn as sns\nimport pandas as pd\ndf = pd.DataFrame({'a': [1, 2, 3], 'b': [3, 1, 2]})\nfig, ax = plt.subplots()\nsns.heatmap(df.corr(), annot=True, ax=ax)\nprint(len(fig.axes), len(ax.texts))",
+    "options": [
+      "1 4",
+      "2 4",
+      "1 2",
+      "2 2"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "The 2 x 2 correlation matrix gives 4 annotated cells, so 4 text objects. By default `sns.heatmap` also draws a colour bar, which lives in its own Axes, so the Figure has 2 Axes."
+  },
+  {
+    "id": "viz-059",
+    "track": "viz",
+    "topic": "chart-choice",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "You want to compare the product mix (share of sales from each of 4 product lines) across 5 regions. Which chart makes the comparison easiest?",
+    "options": [
+      "Five pie charts, one per region",
+      "A line chart with regions on the x-axis",
+      "A 100% stacked bar chart with one bar per region",
+      "A histogram of sales per product line"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "A 100% stacked bar puts every region on the same 0-100% scale side by side, so composition differences are easy to compare. Comparing slice angles across five separate pies is much harder for the eye."
+  },
+  {
+    "id": "viz-060",
+    "track": "viz",
+    "topic": "pandas-plot",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "`df['city']` holds city names as strings. Which line draws a bar chart of how many rows each city has?",
+    "options": [
+      "`df['city'].plot(kind='hist')`",
+      "`df['city'].plot(kind='line')`",
+      "`df.plot(kind='bar', x='city')`",
+      "`df['city'].value_counts().plot(kind='bar')`"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "`value_counts()` gives a Series of counts indexed by city, and `.plot(kind='bar')` draws one bar per index label. A histogram needs numeric data, so plotting raw strings fails."
+  },
+  {
+    "id": "viz-061",
+    "track": "viz",
+    "topic": "histogram-vs-bar",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "What is the key difference between a histogram and a bar chart?",
+    "options": [
+      "A histogram bins a numeric variable into adjacent intervals; a bar chart shows a value per separate category",
+      "A histogram can only be vertical; a bar chart can be horizontal",
+      "A bar chart always shows counts; a histogram always shows means",
+      "There is no difference; the names are interchangeable"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "A histogram's x-axis is a continuous numeric range cut into bins, so the bars touch and their order is fixed. A bar chart's x-axis holds discrete categories, which can be reordered, and the bar can show any value (count, mean, sum)."
+  },
+  {
+    "id": "viz-062",
+    "track": "viz",
+    "topic": "savefig",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "Which statements about `fig.savefig` are true? Select all that apply.",
+    "options": [
+      "`bbox_inches='tight'` trims extra whitespace and expands the saved area to include labels or legends outside the Axes",
+      "Without `bbox_inches`, a figure with `figsize=(8, 4)` saved with `dpi=150` is 1200 x 600 pixels",
+      "`dpi` has no effect on PNG files",
+      "Saving to `'chart.pdf'` writes a vector PDF, chosen from the file extension",
+      "`savefig` must be called after `plt.show()`"
+    ],
+    "answer": [
+      0,
+      1,
+      3
+    ],
+    "explanation": "Pixel size is figure inches times dpi, so 8*150 by 4*150. The format comes from the extension, and `bbox_inches='tight'` adjusts the saved bounding box. dpi matters most for raster formats like PNG, and saving should happen before `show()`."
+  },
+  {
+    "id": "viz-063",
+    "track": "viz",
+    "topic": "tight-layout",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "In a 2 x 2 grid of subplots, the x-axis labels of the top row overlap the titles of the bottom row. What is the quickest fix?",
+    "options": [
+      "Call `plt.show()` twice",
+      "Call `fig.tight_layout()` (or create the figure with `layout='constrained'`)",
+      "Use `sharex=True`",
+      "Increase `dpi`"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "`tight_layout` recomputes subplot spacing so tick labels, axis labels and titles don't overlap; the constrained layout engine does the same automatically. Raising dpi only adds pixels and keeps the overlap."
+  },
+  {
+    "id": "viz-064",
+    "track": "viz",
+    "topic": "time-series",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Daily sales are very noisy and the weekly cycle hides the overall trend. `s` is a Series with a DatetimeIndex. Which line best shows the underlying trend?",
+    "options": [
+      "`s.plot(kind='hist')`",
+      "`s.sort_values().plot()`",
+      "`s.cumsum().plot(kind='pie')`",
+      "`s.rolling(7).mean().plot()`"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "A 7-day rolling mean averages out the weekly pattern and day-to-day noise while keeping the time axis. Sorting by value destroys the time order, and a histogram shows the distribution, not the trend."
+  },
+  {
+    "id": "viz-065",
+    "track": "viz",
+    "topic": "legends",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "The legend covers part of your data. Which call places it just outside the plot area on the right?",
+    "options": [
+      "`ax.legend(loc='best')`",
+      "`ax.legend(outside=True)`",
+      "`ax.legend(loc='upper left', bbox_to_anchor=(1, 1))`",
+      "`ax.legend(loc='center')`"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "`bbox_to_anchor=(1, 1)` anchors the legend at the top-right corner of the Axes in axes coordinates, and `loc='upper left'` says which corner of the legend sits there, pushing it outside. Save with `bbox_inches='tight'` so it is not cropped."
+  },
+  {
+    "id": "viz-066",
+    "track": "viz",
+    "topic": "figure-level-vs-axes-level",
+    "difficulty": "hard",
+    "type": "mcq",
+    "prompt": "This produces a separate figure, and `ax` stays empty. How should you control the size of a `catplot`?",
+    "code": "import matplotlib.pyplot as plt\nimport seaborn as sns\nfig, ax = plt.subplots(figsize=(12, 4))\nsns.catplot(data=df, x='city', y='sales', kind='box', ax=ax)",
+    "options": [
+      "Pass `figsize=(12, 4)` to `plt.subplots`, as here; it will work after `plt.show()`",
+      "Drop `ax=ax` and pass `height=4, aspect=3` to `catplot`",
+      "Call `ax.set_size(12, 4)`",
+      "Use `plt.figure(figsize=(12, 4))` before `catplot`"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "`catplot` is figure-level: it creates its own figure and ignores `ax` with a warning. Size each facet with `height` (inches) and `aspect` (width = height * aspect)."
+  }
+]

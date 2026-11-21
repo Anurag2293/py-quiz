@@ -1,0 +1,1294 @@
+[
+  {
+    "id": "st-001",
+    "track": "stats",
+    "topic": "central-tendency",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import statistics\ndelivery_days = [2, 3, 3, 4, 38]\nprint(statistics.mean(delivery_days), statistics.median(delivery_days))",
+    "options": [
+      "3 3",
+      "10.0 3.0",
+      "10 3",
+      "10 4"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "The mean is 50 / 5 = 10, pulled up by the 38-day outlier, while the median is the middle sorted value, 3. With integer data and an exact result, `statistics.mean` and `statistics.median` (odd length) return ints, not floats."
+  },
+  {
+    "id": "st-002",
+    "track": "stats",
+    "topic": "variance-ddof",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import numpy as np\nimport pandas as pd\nx = [2, 4, 4, 4, 5, 5, 7, 9]\nprint(np.std(x), round(pd.Series(x).std(), 2))",
+    "options": [
+      "2.0 2.0",
+      "2.0 2.14",
+      "2.14 2.0",
+      "2.14 2.14"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "`np.std` defaults to ddof=0 (population): sqrt(32 / 8) = 2.0. `pd.Series.std` defaults to ddof=1 (sample): sqrt(32 / 7) ≈ 2.14. The same data gives different answers unless you set ddof explicitly."
+  },
+  {
+    "id": "st-003",
+    "track": "stats",
+    "topic": "mode",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import statistics\nsizes = ['M', 'L', 'M', 'S', 'L', 'XL']\nprint(statistics.mode(sizes), statistics.multimode(sizes))",
+    "options": [
+      "L ['L', 'M']",
+      "StatisticsError",
+      "M ['M']",
+      "M ['M', 'L']"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "'M' and 'L' both appear twice. Since Python 3.8, `statistics.mode` returns the first mode encountered instead of raising, and `multimode` returns every mode in order of first appearance. The mode also works on categorical data like sizes."
+  },
+  {
+    "id": "st-004",
+    "track": "stats",
+    "topic": "percentiles",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import numpy as np\nx = np.array([1, 2, 3, 4, 5, 6, 7, 8])\nq1, q3 = np.percentile(x, [25, 75])\nprint(q1, q3, q3 - q1)",
+    "options": [
+      "2.5 6.5 4.0",
+      "2.0 6.0 4.0",
+      "2.75 6.25 3.5",
+      "3.0 6.0 3.0"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "NumPy's default linear method places the p-th percentile at position (n - 1) * p: 7 * 0.25 = 1.75 gives 2.75 and 7 * 0.75 = 5.25 gives 6.25, so IQR = 3.5. '2.5 6.5' is the median-of-halves method taught by hand, which NumPy does not use by default."
+  },
+  {
+    "id": "st-005",
+    "track": "stats",
+    "topic": "weighted-mean",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import numpy as np\nscores = [80, 90]\ncredits = [1, 3]\nprint(np.mean(scores), np.average(scores, weights=credits))",
+    "options": [
+      "85.0 87.5",
+      "85.0 85.0",
+      "87.5 85.0",
+      "85.0 170.0"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "`np.mean` ignores credits: (80 + 90) / 2 = 85. `np.average` with weights computes (80*1 + 90*3) / (1 + 3) = 350 / 4 = 87.5, so the course with more credits pulls the result toward 90."
+  },
+  {
+    "id": "st-006",
+    "track": "stats",
+    "topic": "z-scores",
+    "difficulty": "hard",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import numpy as np\nimport pandas as pd\nfrom scipy import stats\nx = np.array([2, 4, 6, 8, 10])\nz1 = stats.zscore(x)[-1]\nz2 = (x[-1] - x.mean()) / pd.Series(x).std()\nprint(round(z1, 2), round(z2, 2))",
+    "options": [
+      "1.41 1.41",
+      "1.26 1.26",
+      "1.26 1.41",
+      "1.41 1.26"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "`scipy.stats.zscore` uses the population standard deviation (ddof=0): 4 / sqrt(8) ≈ 1.41. `pd.Series.std` uses ddof=1: 4 / sqrt(10) ≈ 1.26. Z-scores from different libraries only match if you align ddof."
+  },
+  {
+    "id": "st-007",
+    "track": "stats",
+    "topic": "range",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import numpy as np\ntemps = np.array([24, 27, 29, 31, 35])\nwith_outlier = np.append(temps, 80)\nprint(np.ptp(temps), np.ptp(with_outlier))",
+    "options": [
+      "11 11",
+      "11 56",
+      "11 45",
+      "56 11"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "`np.ptp` (peak to peak) is max minus min. Without the outlier the range is 35 - 24 = 11; adding the single reading of 80 makes it 80 - 24 = 56. The range depends only on the two extremes, so one outlier can change it drastically."
+  },
+  {
+    "id": "st-008",
+    "track": "stats",
+    "topic": "binomial",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "The code computes the probability of exactly 2 heads in 4 fair coin tosses. What does it print?",
+    "code": "from scipy import stats\nprint(round(stats.binom.pmf(2, 4, 0.5), 3))",
+    "options": [
+      "0.375",
+      "0.5",
+      "0.25",
+      "0.0625"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "There are C(4, 2) = 6 ways to get 2 heads, each with probability 0.5^4 = 1/16, so 6/16 = 0.375. 0.5 is the tempting guess from '2 out of 4 is half', and 0.0625 forgets the 6 arrangements."
+  },
+  {
+    "id": "st-009",
+    "track": "stats",
+    "topic": "poisson",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "from scipy import stats\ncalls = stats.poisson(mu=3)\nprint(calls.mean(), calls.var())",
+    "options": [
+      "3.0 9.0",
+      "3.0 1.7320508075688772",
+      "3 3",
+      "3.0 3.0"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "A Poisson distribution's mean and variance are both equal to its rate mu, here 3. SciPy returns floats. 9.0 would be the square of the mean, and 1.73 is the standard deviation, not the variance."
+  },
+  {
+    "id": "st-010",
+    "track": "stats",
+    "topic": "uniform",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "from scipy import stats\nd = stats.uniform(loc=2, scale=6)\nprint(d.mean(), d.var())",
+    "options": [
+      "4.0 1.3333333333333333",
+      "5.0 3.0",
+      "5.0 12.0",
+      "4.0 3.0"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "SciPy's uniform is defined on [loc, loc + scale], so this is U(2, 8): mean (2 + 8) / 2 = 5, variance (8 - 2)^2 / 12 = 3. The trap is reading scale as the upper bound, which gives U(2, 6) with mean 4."
+  },
+  {
+    "id": "st-011",
+    "track": "stats",
+    "topic": "normal-distribution",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "The code finds the critical z-value for a two-sided test at the 5% significance level. What does it print?",
+    "code": "from scipy import stats\nprint(round(stats.norm.ppf(0.975), 2))",
+    "options": [
+      "1.64",
+      "0.84",
+      "2.58",
+      "1.96"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "A two-sided 5% test leaves 2.5% in each tail, so the critical value is the 97.5th percentile of the standard normal, 1.96. 1.64 is the one-sided 5% value (95th percentile), and 2.58 is the two-sided 1% value."
+  },
+  {
+    "id": "st-012",
+    "track": "stats",
+    "topic": "standard-error",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "from scipy import stats\nx = [4, 6, 8, 10, 12]\nprint(round(stats.sem(x), 3))",
+    "options": [
+      "1.265",
+      "3.162",
+      "1.414",
+      "0.632"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "`stats.sem` uses the sample standard deviation (ddof=1): sqrt(40 / 4) = sqrt(10), divided by sqrt(5), gives sqrt(2) ≈ 1.414. 1.265 uses ddof=0, and 3.162 is the standard deviation itself, not the standard error."
+  },
+  {
+    "id": "st-013",
+    "track": "stats",
+    "topic": "correlation",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\nx = pd.Series([1, 2, 3, 4, 5])\ny = pd.Series([1, 2, 3, 4, 100])\nprint(round(x.corr(y, method='spearman'), 2), round(x.corr(y), 2))",
+    "options": [
+      "1.0 1.0",
+      "0.72 1.0",
+      "1.0 0.72",
+      "0.72 0.72"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "Spearman correlates ranks, and the ranks of y are still 1-5, so it is exactly 1.0. Pearson uses the raw values, and the outlier 100 breaks the straight line, dropping it to about 0.72. Spearman is robust to this kind of outlier; Pearson is not."
+  },
+  {
+    "id": "st-014",
+    "track": "stats",
+    "topic": "covariance",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import numpy as np\nx = [1, 2, 3]\ny = [2, 4, 6]\nprint(np.cov(x, y)[0, 1], np.corrcoef(x, y)[0, 1])",
+    "options": [
+      "2.0 1.0",
+      "1.3333333333333333 1.0",
+      "2.0 2.0",
+      "4.0 1.0"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "`np.cov` divides by n - 1 by default: the deviation products sum to 4, and 4 / 2 = 2.0. The correlation is 1.0 because y = 2x exactly. 1.333 is the population covariance (dividing by n)."
+  },
+  {
+    "id": "st-015",
+    "track": "stats",
+    "topic": "regression",
+    "difficulty": "hard",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "from scipy import stats\nx = [1, 2, 3, 4, 5]\ny = [2, 4, 5, 4, 5]\nres = stats.linregress(x, y)\nprint(round(res.slope, 2), round(res.intercept, 2), round(res.rvalue ** 2, 2))",
+    "options": [
+      "0.6 2.2 0.77",
+      "0.6 4.0 0.6",
+      "0.6 2.2 0.6",
+      "1.0 1.6 0.6"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "Slope = Sxy / Sxx = 6 / 10 = 0.6 and intercept = mean(y) - slope * mean(x) = 4 - 0.6 * 3 = 2.2. `rvalue` is r ≈ 0.77; squaring it gives R² = 0.6. Printing r instead of r² is the common slip."
+  },
+  {
+    "id": "st-016",
+    "track": "stats",
+    "topic": "chi-square",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "from scipy import stats\ntable = [[30, 10], [10, 30]]\nres = stats.chi2_contingency(table)\nprint(res.dof)\nprint(res.expected_freq.tolist())",
+    "options": [
+      "4\n[[20.0, 20.0], [20.0, 20.0]]",
+      "1\n[[30.0, 10.0], [10.0, 30.0]]",
+      "2\n[[20.0, 20.0], [20.0, 20.0]]",
+      "1\n[[20.0, 20.0], [20.0, 20.0]]"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "Degrees of freedom are (rows - 1) * (cols - 1) = 1 for a 2x2 table. Expected counts are row total * column total / grand total = 40 * 40 / 80 = 20 in every cell. The observed table is not the expected one."
+  },
+  {
+    "id": "st-017",
+    "track": "stats",
+    "topic": "bayes",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "A test for a disease that affects 2% of people is run on a random person and comes back positive. What does this code print?",
+    "code": "prevalence = 0.02\nsensitivity = 0.95  # P(positive | disease)\nspecificity = 0.90  # P(negative | no disease)\np_pos = sensitivity * prevalence + (1 - specificity) * (1 - prevalence)\nprint(round(sensitivity * prevalence / p_pos, 2))",
+    "options": [
+      "0.16",
+      "0.95",
+      "0.9",
+      "0.02"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "By Bayes' theorem, P(disease | positive) = 0.95 * 0.02 / (0.95 * 0.02 + 0.10 * 0.98) = 0.019 / 0.117 ≈ 0.16. Answering 0.95 confuses P(positive | disease) with P(disease | positive) and ignores the low base rate."
+  },
+  {
+    "id": "st-018",
+    "track": "stats",
+    "topic": "central-tendency",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Monthly salaries at a startup include a few founders who earn 20 times what a typical employee earns. Which single number best describes a typical employee's salary?",
+    "options": [
+      "Mean",
+      "Median",
+      "Range",
+      "Standard deviation"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "The median is the middle value, so a few very high salaries barely move it. The mean is pulled up toward the founders' salaries and overstates what a typical employee earns."
+  },
+  {
+    "id": "st-019",
+    "track": "stats",
+    "topic": "mode",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Which measure of central tendency is the only meaningful one for a nominal variable such as `payment_method` (UPI, card, cash, wallet)?",
+    "options": [
+      "Mean",
+      "Median",
+      "Weighted mean",
+      "Mode"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "Nominal categories have no numeric value or order, so you cannot average them or find a middle one. The mode, the most frequent category, is the only one that applies."
+  },
+  {
+    "id": "st-020",
+    "track": "stats",
+    "topic": "iqr",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "For a set of order values, Q1 = 200 and Q3 = 400. Using the 1.5 × IQR rule, orders above which value are flagged as outliers?",
+    "options": [
+      "600",
+      "550",
+      "700",
+      "800"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "IQR = 400 - 200 = 200, so the upper fence is Q3 + 1.5 * 200 = 400 + 300 = 700. 600 uses 1 × IQR, and 800 uses 2 × IQR."
+  },
+  {
+    "id": "st-021",
+    "track": "stats",
+    "topic": "percentiles",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Your online assessment report says you scored at the 90th percentile. What does that mean?",
+    "options": [
+      "You scored at or above roughly 90% of the test takers",
+      "You answered 90% of the questions correctly",
+      "Exactly 90 candidates scored below you",
+      "Your score is 90% of the top score"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "A percentile describes your position relative to other test takers, not the share of marks you earned. You could be at the 90th percentile with only 60% of answers correct if the test was hard."
+  },
+  {
+    "id": "st-022",
+    "track": "stats",
+    "topic": "skewness",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Most food deliveries arrive in 25-35 minutes, but a few take 90 minutes or more, giving a long tail on the right of the histogram. What is the skewness of this distribution?",
+    "options": [
+      "Negative (left-skewed)",
+      "Zero, because most values sit in the middle",
+      "Positive (right-skewed)",
+      "Undefined, because delivery times cannot be negative"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "Skewness is named after the side of the long tail, so a long right tail is positive (right) skew. The bulk of the data sitting on the left is what makes people wrongly call it left-skewed."
+  },
+  {
+    "id": "st-023",
+    "track": "stats",
+    "topic": "z-scores",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Asha scored 80 on a test with mean 70 and standard deviation 5. Ravi scored 90 on a different test with mean 80 and standard deviation 10. Relative to the other test takers on their own test, who did better?",
+    "options": [
+      "Ravi, because his raw score is higher",
+      "They did equally well, because both scored 10 above the mean",
+      "It cannot be compared without the number of test takers",
+      "Asha, because her z-score is 2 and Ravi's is 1"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "z = (score - mean) / sd: Asha (80 - 70) / 5 = 2, Ravi (90 - 80) / 10 = 1. Both are 10 points above the mean, but 10 points is two standard deviations on Asha's test and only one on Ravi's."
+  },
+  {
+    "id": "st-024",
+    "track": "stats",
+    "topic": "kurtosis",
+    "difficulty": "hard",
+    "type": "mcq",
+    "prompt": "`x` is a large sample from a normal distribution. The printed value is closest to which number?",
+    "code": "import numpy as np\nfrom scipy import stats\nrng = np.random.default_rng(0)\nx = rng.normal(size=100_000)\nprint(stats.kurtosis(x))",
+    "options": [
+      "3",
+      "0",
+      "1",
+      "-3"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "`scipy.stats.kurtosis` defaults to fisher=True and returns excess kurtosis (kurtosis minus 3), so a normal sample gives about 0. With fisher=False you get about 3. Positive excess kurtosis means heavier tails, with more extreme values, than a normal distribution."
+  },
+  {
+    "id": "st-025",
+    "track": "stats",
+    "topic": "normal-distribution",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Under the 68-95-99.7 rule, roughly what share of values in a normal distribution lie within 2 standard deviations of the mean?",
+    "options": [
+      "95%",
+      "68%",
+      "99.7%",
+      "50%"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "About 68% lie within 1 standard deviation, 95% within 2 and 99.7% within 3."
+  },
+  {
+    "id": "st-026",
+    "track": "stats",
+    "topic": "normal-distribution",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Delivery times are approximately normal with mean 30 minutes and standard deviation 5 minutes. Roughly what percentage of deliveries take longer than 40 minutes?",
+    "options": [
+      "5%",
+      "16%",
+      "0.15%",
+      "2.5%"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "40 minutes is 2 standard deviations above the mean. About 95% of values lie within ±2 SD, and the remaining 5% splits equally between the two tails, so about 2.5% (more precisely 2.3%) lie above. 5% counts both tails."
+  },
+  {
+    "id": "st-027",
+    "track": "stats",
+    "topic": "binomial",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Which of these is best modeled by a binomial distribution?",
+    "options": [
+      "The number of support tickets that arrive in an hour",
+      "The time until the next customer walks into a store",
+      "The number of customers, out of 20 shown an ad, who click it, each independently with probability 0.1",
+      "The heights of adult women in Pune"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "A binomial needs a fixed number of independent trials, each with the same success probability: 20 customers, click or no click, p = 0.1. Tickets per hour have no fixed number of trials (Poisson), waiting time is continuous (exponential), and heights are roughly normal."
+  },
+  {
+    "id": "st-028",
+    "track": "stats",
+    "topic": "poisson",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Support tickets arrive at an average rate of 4 per hour, following a Poisson process. For a 30-minute window, what are the mean and variance of the number of tickets?",
+    "options": [
+      "Mean 2, variance 4",
+      "Mean 2, variance 2",
+      "Mean 4, variance 2",
+      "Mean 2, variance √2"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "The rate scales with the interval length, so a 30-minute window has rate 4 * 0.5 = 2. For a Poisson distribution the variance equals the mean, so both are 2."
+  },
+  {
+    "id": "st-029",
+    "track": "stats",
+    "topic": "uniform",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "X is continuously uniform between 0 and 10. What is P(2 < X < 5)?",
+    "options": [
+      "0.3",
+      "0.5",
+      "0.25",
+      "0.35"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "For a continuous uniform distribution, probability is the length of the interval divided by the total length: (5 - 2) / (10 - 0) = 0.3."
+  },
+  {
+    "id": "st-030",
+    "track": "stats",
+    "topic": "sampling-distributions",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "You take 1,000 random samples of 50 customers each, compute each sample's mean spend, and plot a histogram of those 1,000 means. What does the histogram approximate?",
+    "options": [
+      "The population distribution of customer spend",
+      "The distribution of spend within one sample of 50 customers",
+      "The sampling distribution of the sample mean",
+      "The distribution of the sample standard deviation"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "A histogram of a statistic computed over many repeated samples approximates that statistic's sampling distribution. It is narrower than the population distribution, with spread equal to the standard error σ/√50."
+  },
+  {
+    "id": "st-031",
+    "track": "stats",
+    "topic": "standard-error",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "With everything else unchanged, how must the sample size change to halve the standard error of the mean?",
+    "options": [
+      "Multiply it by 2",
+      "Multiply it by 4",
+      "Divide it by 2",
+      "Multiply it by √2"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "The standard error is σ/√n, so halving it requires √n to double, which means n must be multiplied by 4. Doubling n only reduces the standard error by a factor of √2."
+  },
+  {
+    "id": "st-032",
+    "track": "stats",
+    "topic": "sampling-methods",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "An analyst surveys customers in Bengaluru, Pune and Hyderabad and wants each city represented in proportion to its customer base, with random selection inside each city. Which sampling method is this?",
+    "options": [
+      "Cluster sampling",
+      "Systematic sampling",
+      "Convenience sampling",
+      "Stratified sampling"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "Stratified sampling splits the population into groups (strata) and samples randomly within each. Cluster sampling instead picks a few whole groups at random and surveys everyone in them."
+  },
+  {
+    "id": "st-033",
+    "track": "stats",
+    "topic": "confidence-intervals",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "A 95% confidence interval for mean order value is ₹420 to ₹480. Which interpretation is correct?",
+    "options": [
+      "There is a 95% probability that the true mean lies between ₹420 and ₹480",
+      "95% of orders have values between ₹420 and ₹480",
+      "If the sampling were repeated many times, about 95% of the intervals built this way would contain the true mean",
+      "The sample mean has a 95% chance of falling between ₹420 and ₹480"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "The 95% describes the long-run success rate of the method, not this one interval; in the frequentist view the true mean is fixed and this interval either contains it or not. The interval is about the mean, not individual orders."
+  },
+  {
+    "id": "st-034",
+    "track": "stats",
+    "topic": "hypothesis-testing",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "You test whether a new checkout page changes the conversion rate compared with the old one. What is the null hypothesis?",
+    "options": [
+      "The new page has a higher conversion rate",
+      "The sample conversion rates of the two pages will be exactly equal",
+      "The new page has a lower conversion rate",
+      "The true conversion rates of the two pages are the same"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "The null hypothesis states no effect: the population conversion rates are equal. It is a claim about the true rates, not the samples, which will almost always differ a little by chance."
+  },
+  {
+    "id": "st-035",
+    "track": "stats",
+    "topic": "p-values",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "A hypothesis test gives p = 0.03. Which statement is correct?",
+    "options": [
+      "There is a 3% probability that the null hypothesis is true",
+      "If the null hypothesis were true, a result at least this extreme would occur about 3% of the time",
+      "There is a 97% probability that the alternative hypothesis is true",
+      "There is a 3% probability that this result is a false positive"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "A p-value is computed assuming H0 is true: it is the probability of data at least as extreme as observed. It is not the probability that H0 (or H1) is true, which a p-value alone cannot give."
+  },
+  {
+    "id": "st-036",
+    "track": "stats",
+    "topic": "one-vs-two-tailed",
+    "difficulty": "hard",
+    "type": "mcq",
+    "prompt": "A two-sided one-sample t-test gives t = 1.8 and p = 0.08. Before collecting the data, you had planned a one-sided test with the alternative 'the mean is greater'. What p-value does the one-sided test give?",
+    "options": [
+      "0.16",
+      "0.08",
+      "0.04",
+      "0.92"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "The t distribution is symmetric and t is positive (in the hypothesized direction), so the one-sided p-value is half the two-sided one: 0.04. Had t been negative, the one-sided p would be 1 - 0.04 = 0.96. Choosing one-sided only after seeing the data is not valid."
+  },
+  {
+    "id": "st-037",
+    "track": "stats",
+    "topic": "t-tests",
+    "difficulty": "hard",
+    "type": "mcq",
+    "prompt": "You compare average order value between two independent groups of customers whose variances and sizes differ a lot. Which SciPy call is the most appropriate?",
+    "options": [
+      "`stats.ttest_rel(a, b)`",
+      "`stats.ttest_ind(a, b)`",
+      "`stats.ttest_ind(a, b, equal_var=False)`",
+      "`stats.ttest_1samp(a - b, 0)`"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "`ttest_ind` defaults to equal_var=True (Student's pooled t-test); setting equal_var=False runs Welch's t-test, which does not assume equal variances. `ttest_rel` and the 1-sample test on differences are for paired data, which these groups are not."
+  },
+  {
+    "id": "st-038",
+    "track": "stats",
+    "topic": "t-tests",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "A delivery company claims an average delivery time of 30 minutes. You collect 40 delivery times and want to test the claim. Which test fits?",
+    "options": [
+      "One-sample t-test",
+      "Paired t-test",
+      "Independent two-sample t-test",
+      "Chi-square test of independence"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "A one-sample t-test compares one sample's mean to a fixed hypothesized value (30 minutes). There is no second group or pairing here."
+  },
+  {
+    "id": "st-039",
+    "track": "stats",
+    "topic": "chi-square",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Using counts of customers, you want to know whether preferred payment method (UPI, card, cash) is associated with city (Bengaluru, Pune, Hyderabad). Which test fits?",
+    "options": [
+      "One-way ANOVA",
+      "Pearson correlation",
+      "Paired t-test",
+      "Chi-square test of independence"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "Both variables are categorical and the data are counts in a contingency table, which is what the chi-square test of independence handles. ANOVA needs a numeric outcome, and Pearson correlation needs two numeric variables."
+  },
+  {
+    "id": "st-040",
+    "track": "stats",
+    "topic": "anova",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "A one-way ANOVA comparing average basket size across 4 regions gives p = 0.01. What can you conclude at α = 0.05?",
+    "options": [
+      "All four region means differ from each other",
+      "At least one region's mean differs; a post-hoc test such as Tukey's HSD is needed to find which",
+      "The region with the highest sample mean is significantly higher than every other region",
+      "The variances of the four regions differ"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "ANOVA tests H0: all group means are equal, so rejecting it only says they are not all equal. It does not say which pairs differ; post-hoc pairwise tests with a multiple-comparison correction answer that."
+  },
+  {
+    "id": "st-041",
+    "track": "stats",
+    "topic": "correlation-causation",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Across months, ice-cream sales and drowning incidents are strongly positively correlated. What is the most likely explanation?",
+    "options": [
+      "Hot weather, a confounding variable, increases both",
+      "Eating ice cream causes drowning",
+      "Drowning incidents increase ice-cream sales",
+      "The correlation must come from a calculation error"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "Hot weather drives both ice-cream sales and swimming, which raises drowning risk. Correlation does not imply causation; a confounder can create a strong correlation between two unrelated variables."
+  },
+  {
+    "id": "st-042",
+    "track": "stats",
+    "topic": "covariance",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Why do analysts usually compare the strength of relationships using correlation rather than covariance?",
+    "options": [
+      "Covariance cannot be negative",
+      "Covariance only measures nonlinear relationships",
+      "Covariance's size depends on the variables' units, while correlation is unit-free and lies between -1 and 1",
+      "Correlation is not affected by outliers"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "Covariance in rupees × minutes changes if you switch to thousands of rupees, so its magnitude is not comparable across pairs. Correlation is covariance divided by both standard deviations, which removes the units."
+  },
+  {
+    "id": "st-043",
+    "track": "stats",
+    "topic": "regression",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "A regression of monthly salary (₹) on years of experience gives `salary = 25000 + 4000 * years`. How should you interpret the slope?",
+    "options": [
+      "A person with 0 years of experience earns ₹4,000",
+      "Each additional year of experience is associated with ₹4,000 higher monthly salary on average",
+      "Salary increases by 4000% for each year of experience",
+      "Experience causes every individual's salary to rise by exactly ₹4,000 per year"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "The slope is the average change in the predicted outcome per one-unit increase in x. The intercept (₹25,000) is the prediction at 0 years, and a regression on observational data shows association, not causation."
+  },
+  {
+    "id": "st-044",
+    "track": "stats",
+    "topic": "r-squared",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "A simple linear regression of sales on ad spend has R² = 0.64. Which statement is correct?",
+    "options": [
+      "64% of the predictions are exactly correct",
+      "The correlation between ad spend and sales is 0.64",
+      "Ad spend causes 64% of sales",
+      "64% of the variance in sales is explained by the linear relationship with ad spend"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "R² is the share of the variance in y explained by the model. In simple linear regression R² = r², so the correlation is ±0.8, not 0.64."
+  },
+  {
+    "id": "st-045",
+    "track": "stats",
+    "topic": "probability",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Each item from a production line is defective with probability 0.1, independently of the others. What is the probability that at least one of 3 items is defective?",
+    "options": [
+      "0.271",
+      "0.3",
+      "0.001",
+      "0.729"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "Use the complement: P(at least one) = 1 - P(none) = 1 - 0.9^3 = 1 - 0.729 = 0.271. Adding 0.1 three times (0.3) double-counts the cases with more than one defect."
+  },
+  {
+    "id": "st-046",
+    "track": "stats",
+    "topic": "conditional-probability",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Out of 200 website visitors, 80 used mobile. Of the mobile visitors, 20 made a purchase. What is P(purchase | mobile)?",
+    "options": [
+      "0.1",
+      "0.4",
+      "0.25",
+      "0.2"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "Conditioning on mobile restricts attention to the 80 mobile visitors: 20 / 80 = 0.25. 0.1 is P(purchase and mobile) = 20 / 200, and 0.4 is P(mobile)."
+  },
+  {
+    "id": "st-047",
+    "track": "stats",
+    "topic": "independence",
+    "difficulty": "hard",
+    "type": "mcq",
+    "prompt": "Events A and B each have non-zero probability and are mutually exclusive. Are they independent?",
+    "options": [
+      "Yes, mutually exclusive events are always independent",
+      "Yes, as long as P(A) = P(B)",
+      "No: P(A and B) = 0 but P(A) × P(B) > 0, so knowing A occurred tells you B did not",
+      "It depends on the sample size"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "Independence requires P(A and B) = P(A) × P(B). For mutually exclusive events the left side is 0 and the right side is positive, so they are dependent: one happening rules out the other."
+  },
+  {
+    "id": "st-048",
+    "track": "stats",
+    "topic": "ab-testing",
+    "difficulty": "hard",
+    "type": "mcq",
+    "prompt": "During an A/B test, a product manager checks the p-value every day and stops the test on the first day p < 0.05. What is the main problem?",
+    "options": [
+      "Nothing, as long as the final p-value is below 0.05",
+      "Repeated peeking with early stopping inflates the false positive (Type I) error rate well above 5%",
+      "It lowers the false positive rate below 5%",
+      "It only reduces power and does not affect the false positive rate"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "Each look is another chance for random noise to cross the threshold, so stopping at the first p < 0.05 makes false positives far more likely than 5%. Fix the sample size in advance or use a sequential method designed for repeated looks."
+  },
+  {
+    "id": "st-049",
+    "track": "stats",
+    "topic": "simpsons-paradox",
+    "difficulty": "hard",
+    "type": "mcq",
+    "prompt": "Hospital A has a higher overall survival rate than Hospital B, yet B has a higher survival rate both for mild cases and for severe cases. What best explains this?",
+    "options": [
+      "Hospital B treats a much larger share of severe cases, which have lower survival, and that drags down its overall rate",
+      "Hospital A treats a much larger share of severe cases",
+      "The data must contain an error, since this is impossible",
+      "Overall rates are always more reliable than subgroup rates"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "This is Simpson's paradox: the overall rate is a weighted average of the subgroup rates, and the weights (case mix) differ between hospitals. Case severity is a confounder, so the within-severity comparison favoring B is the fairer one."
+  },
+  {
+    "id": "st-050",
+    "track": "stats",
+    "topic": "law-of-large-numbers",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "A fair coin lands heads 7 times in a row. Which statement agrees with the law of large numbers?",
+    "options": [
+      "Over many more tosses the proportion of heads will tend toward 0.5, while the next toss is still 50/50",
+      "Tails is now more likely on the next toss, to balance things out",
+      "The coin must be biased toward heads",
+      "The proportion of heads must be exactly 0.5 after 1,000 tosses"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "The law of large numbers says the sample proportion converges to the true probability as the number of trials grows. It works by dilution, not compensation: the coin has no memory, so expecting tails next is the gambler's fallacy."
+  },
+  {
+    "id": "st-051",
+    "track": "stats",
+    "topic": "multiple-testing",
+    "difficulty": "hard",
+    "type": "mcq",
+    "prompt": "In an A/A test (both groups get the same experience), an analyst checks 20 independent metrics, each at α = 0.05. Roughly what is the probability that at least one metric shows p < 0.05?",
+    "options": [
+      "5%",
+      "About 36%",
+      "100%",
+      "About 64%"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "Each metric has a 95% chance of not being significant, so P(none) = 0.95^20 ≈ 0.36 and P(at least one) ≈ 0.64. Corrections such as Bonferroni (α / 20) keep the family-wise error rate near 5%."
+  },
+  {
+    "id": "st-052",
+    "track": "stats",
+    "topic": "robust-statistics",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "Which of these summary statistics are resistant to a single extreme outlier? Select all that apply.",
+    "options": [
+      "Mean",
+      "Median",
+      "Standard deviation",
+      "Interquartile range (IQR)",
+      "Range"
+    ],
+    "answer": [
+      1,
+      3
+    ],
+    "explanation": "The median and IQR depend on the middle of the sorted data, so one extreme value barely moves them. The mean, standard deviation and range all use the extreme value directly."
+  },
+  {
+    "id": "st-053",
+    "track": "stats",
+    "topic": "variance-ddof",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "Which of these return the sample standard deviation (dividing by n - 1) by default? Select all that apply.",
+    "options": [
+      "`np.std()`",
+      "`pd.Series.std()`",
+      "`statistics.pstdev()`",
+      "`statistics.stdev()`",
+      "The `std` row of `df.describe()`"
+    ],
+    "answer": [
+      1,
+      3,
+      4
+    ],
+    "explanation": "pandas (`std` and `describe`) and `statistics.stdev` use ddof=1. `np.std` defaults to ddof=0 (population), and `statistics.pstdev` is the population version by design."
+  },
+  {
+    "id": "st-054",
+    "track": "stats",
+    "topic": "normal-distribution",
+    "difficulty": "easy",
+    "type": "multi",
+    "prompt": "Which statements about the normal distribution are true? Select all that apply.",
+    "options": [
+      "It is symmetric about its mean",
+      "Values can never fall more than 3 standard deviations from the mean",
+      "Its mean, median and mode are equal",
+      "About 99.7% of values lie within 3 standard deviations of the mean",
+      "Changing the standard deviation shifts the center of the curve"
+    ],
+    "answer": [
+      0,
+      2,
+      3
+    ],
+    "explanation": "The normal curve is symmetric, so mean = median = mode, and 99.7% of values lie within ±3 SD. The remaining 0.3% lie beyond 3 SD, so such values are rare but possible; the standard deviation controls spread, not location."
+  },
+  {
+    "id": "st-055",
+    "track": "stats",
+    "topic": "poisson",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "Which of these are typically well modeled by a Poisson distribution? Select all that apply.",
+    "options": [
+      "Number of heads in 10 coin tosses",
+      "Number of support calls received per hour",
+      "Number of typos per page of a report",
+      "Time in minutes between two customer arrivals",
+      "Number of website outages per week"
+    ],
+    "answer": [
+      1,
+      2,
+      4
+    ],
+    "explanation": "A Poisson distribution counts independent events in a fixed interval of time or space with no fixed upper limit. Heads in 10 tosses has a fixed number of trials (binomial), and time between arrivals is continuous (exponential)."
+  },
+  {
+    "id": "st-056",
+    "track": "stats",
+    "topic": "clt",
+    "difficulty": "hard",
+    "type": "multi",
+    "prompt": "Which statements about the central limit theorem and the sampling distribution of the mean are true? Select all that apply.",
+    "options": [
+      "As n grows, the values within a single sample become normally distributed",
+      "For a large enough n, the sample mean is approximately normal even if the population (with finite variance) is skewed",
+      "The standard deviation of the sample mean is σ/√n",
+      "The CLT applies only when the population itself is normal",
+      "Heavily skewed populations need larger samples before the normal approximation is good"
+    ],
+    "answer": [
+      1,
+      2,
+      4
+    ],
+    "explanation": "The CLT is about the distribution of the sample mean, not the raw data: a single sample still looks like the population. It does not need a normal population, though strong skew means you need a larger n."
+  },
+  {
+    "id": "st-057",
+    "track": "stats",
+    "topic": "sampling-bias",
+    "difficulty": "easy",
+    "type": "multi",
+    "prompt": "Which of these data collection approaches are likely to give a biased sample? Select all that apply.",
+    "options": [
+      "Drawing a simple random sample from the complete customer list",
+      "Estimating startup success rates using only companies that are still operating",
+      "Using ratings only from customers who chose to leave a review",
+      "Surveying only your own friends about a new app",
+      "Drawing a random sample within each city in proportion to its customer count"
+    ],
+    "answer": [
+      1,
+      2,
+      3
+    ],
+    "explanation": "These are survivorship bias, voluntary response bias and convenience sampling. Simple random and stratified random samples give every customer a known chance of selection, so they avoid this kind of bias."
+  },
+  {
+    "id": "st-058",
+    "track": "stats",
+    "topic": "confidence-intervals",
+    "difficulty": "hard",
+    "type": "multi",
+    "prompt": "A 95% t-based confidence interval for mean session length is 42 to 48 minutes. Which statements are correct? Select all that apply.",
+    "options": [
+      "A two-sided t-test of H0: mean = 50 at α = 0.05 would reject H0",
+      "95% of sessions last between 42 and 48 minutes",
+      "A 99% confidence interval from the same data would be wider",
+      "A two-sided t-test of H0: mean = 45 at α = 0.05 would reject H0",
+      "With a larger sample from the same population, the interval would tend to be narrower"
+    ],
+    "answer": [
+      0,
+      2,
+      4
+    ],
+    "explanation": "A two-sided test at α = 0.05 rejects exactly the values outside the 95% interval, so 50 is rejected and 45 is not. Higher confidence widens the interval, larger n narrows it, and the interval describes the mean, not individual sessions."
+  },
+  {
+    "id": "st-059",
+    "track": "stats",
+    "topic": "p-values",
+    "difficulty": "hard",
+    "type": "multi",
+    "prompt": "Which statements about p-values are correct? Select all that apply.",
+    "options": [
+      "A smaller p-value always means a larger effect size",
+      "With a very large sample, a tiny and practically unimportant difference can give p < 0.05",
+      "If p < 0.05, the result will replicate in 95% of repeat studies",
+      "p = 0.20 means the data give weak evidence against H0; it does not show that H0 is true",
+      "If H0 is true and the test's assumptions hold, p-values below 0.05 occur about 5% of the time"
+    ],
+    "answer": [
+      1,
+      3,
+      4
+    ],
+    "explanation": "Statistical significance is not practical significance: p shrinks as n grows even for tiny effects, so p does not measure effect size. Failing to reject H0 is not proof of H0, and a p-value says nothing directly about replication."
+  },
+  {
+    "id": "st-060",
+    "track": "stats",
+    "topic": "power",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "Which changes increase the statistical power of a test, all else equal? Select all that apply.",
+    "options": [
+      "Increasing the sample size",
+      "Lowering α from 0.05 to 0.01",
+      "Raising α from 0.01 to 0.05",
+      "Reducing measurement noise so the outcome has lower variance",
+      "Switching from a correctly directed one-sided test to a two-sided test"
+    ],
+    "answer": [
+      0,
+      2,
+      3
+    ],
+    "explanation": "Power is the probability of rejecting H0 when a real effect exists. More data, less noise and a larger α all make a real effect easier to detect. A stricter α and a two-sided test (which splits α across both tails) reduce power."
+  },
+  {
+    "id": "st-061",
+    "track": "stats",
+    "topic": "type-i-ii-errors",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "Which statements about Type I and Type II errors are correct? Select all that apply.",
+    "options": [
+      "Power is the probability of making a Type I error",
+      "A Type I error is rejecting a null hypothesis that is actually true",
+      "A Type II error is failing to reject a null hypothesis that is actually false",
+      "Concluding that a new feature has no effect when it really improves retention is a Type I error",
+      "With a fixed sample size, lowering α tends to increase the Type II error rate"
+    ],
+    "answer": [
+      1,
+      2,
+      4
+    ],
+    "explanation": "Type I is a false positive (probability α) and Type II is a false negative (probability β); power is 1 - β. Missing a real improvement is a Type II error, and with n fixed, making α stricter raises β."
+  },
+  {
+    "id": "st-062",
+    "track": "stats",
+    "topic": "t-tests",
+    "difficulty": "easy",
+    "type": "multi",
+    "prompt": "Which of these comparisons call for a paired t-test? Select all that apply.",
+    "options": [
+      "Average spend of customers in Pune versus customers in Hyderabad",
+      "Productivity of the same 30 employees before and after a training program",
+      "Blood pressure readings from two devices, each used on the same 25 patients",
+      "Page load times of the same 50 URLs on the old server and the new server",
+      "App ratings from Android users versus a separate group of iOS users"
+    ],
+    "answer": [
+      1,
+      2,
+      3
+    ],
+    "explanation": "A paired test fits when each measurement in one group is matched to one in the other (same employee, patient or URL). Different customers in different cities or platforms are independent groups and need an independent two-sample test."
+  },
+  {
+    "id": "st-063",
+    "track": "stats",
+    "topic": "anova",
+    "difficulty": "hard",
+    "type": "multi",
+    "prompt": "Which are assumptions of a classic one-way ANOVA? Select all that apply.",
+    "options": [
+      "Observations are independent within and across groups",
+      "The residuals within each group are approximately normally distributed",
+      "Every group has exactly the same number of observations",
+      "The groups have roughly equal variances",
+      "The outcome variable is categorical"
+    ],
+    "answer": [
+      0,
+      1,
+      3
+    ],
+    "explanation": "One-way ANOVA assumes independence, roughly normal residuals and equal variances (Welch's ANOVA relaxes the last one). Unequal group sizes are allowed, and the outcome must be numeric; the grouping variable is the categorical one."
+  },
+  {
+    "id": "st-064",
+    "track": "stats",
+    "topic": "correlation",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "Which statements about Pearson's correlation coefficient r are true? Select all that apply.",
+    "options": [
+      "r = 0 means the two variables are independent",
+      "It is unchanged if you convert heights from centimeters to inches",
+      "corr(x, y) equals corr(y, x)",
+      "r = 0.8 means 80% of the variation in y is explained by x",
+      "A single extreme outlier can change it substantially"
+    ],
+    "answer": [
+      1,
+      2,
+      4
+    ],
+    "explanation": "r is unit-free (unchanged by positive linear rescaling), symmetric and sensitive to outliers. r = 0 only rules out a linear relationship (y = x² on symmetric x gives r = 0), and r = 0.8 explains r² = 64% of the variance."
+  },
+  {
+    "id": "st-065",
+    "track": "stats",
+    "topic": "correlation",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "In which situations is Spearman's rank correlation a better choice than Pearson's? Select all that apply.",
+    "options": [
+      "The relationship is monotonic but clearly curved, such as y growing exponentially with x",
+      "The variables are ordinal, such as 1-5 satisfaction ratings",
+      "Both variables are unordered categories, such as city and payment method",
+      "The data contain a few extreme outliers",
+      "You need the slope of y on x in its original units"
+    ],
+    "answer": [
+      0,
+      1,
+      3
+    ],
+    "explanation": "Spearman works on ranks, so it captures any monotonic trend, suits ordinal data and is far less affected by outliers. Unordered categories have no ranks (use a chi-square test instead), and neither correlation gives a slope."
+  },
+  {
+    "id": "st-066",
+    "track": "stats",
+    "topic": "probability",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "Events A and B are independent, with P(A) = 0.3 and P(B) = 0.5. Which statements are true? Select all that apply.",
+    "options": [
+      "P(A and B) = 0.15",
+      "P(A | B) = 0.5",
+      "P(A or B) = 0.65",
+      "P(not A) = 0.7",
+      "A and B are mutually exclusive"
+    ],
+    "answer": [
+      0,
+      2,
+      3
+    ],
+    "explanation": "Independence gives P(A and B) = 0.3 * 0.5 = 0.15 and P(A | B) = P(A) = 0.3. P(A or B) = 0.3 + 0.5 - 0.15 = 0.65, and P(not A) = 1 - 0.3. They cannot be mutually exclusive, since P(A and B) is not 0."
+  },
+  {
+    "id": "st-067",
+    "track": "stats",
+    "topic": "ab-testing",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "Which are good practices when running an A/B test? Select all that apply.",
+    "options": [
+      "Stop the test as soon as the p-value drops below 0.05",
+      "Fix the primary metric and the sample size (from a power calculation) before starting",
+      "Randomly assign users and keep each user in the same group for the whole test",
+      "Compare many metrics and report whichever is significant, without any correction",
+      "Check that the observed split of users between groups matches the planned split"
+    ],
+    "answer": [
+      1,
+      2,
+      4
+    ],
+    "explanation": "Pre-registering the metric and sample size, stable random assignment and a sample ratio mismatch check all protect validity. Stopping at the first significant p-value and cherry-picking metrics both inflate false positives."
+  },
+  {
+    "id": "st-068",
+    "track": "stats",
+    "topic": "regression",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "Which statements about simple linear regression (one x, with an intercept) are true? Select all that apply.",
+    "options": [
+      "A high R² shows that x causes y",
+      "R² equals the square of Pearson's r between x and y",
+      "Ordinary least squares chooses the line that minimizes the sum of squared residuals",
+      "The fitted line passes through the point (mean of x, mean of y)",
+      "The slope always equals the correlation coefficient"
+    ],
+    "answer": [
+      1,
+      2,
+      3
+    ],
+    "explanation": "With one predictor, R² = r², OLS minimizes squared residuals, and the fitted line goes through (x̄, ȳ). The slope equals r × (sd_y / sd_x), which matches r only when both variables have the same standard deviation; R² measures fit, not causation."
+  }
+]

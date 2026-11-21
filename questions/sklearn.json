@@ -1,0 +1,993 @@
+[
+  {
+    "id": "sk-001",
+    "track": "sklearn",
+    "topic": "train-test-split",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import numpy as np\nfrom sklearn.model_selection import train_test_split\nX = np.arange(20).reshape(10, 2)\ny = np.arange(10)\nX_train, X_test, y_train, y_test = train_test_split(\n    X, y, test_size=0.2, random_state=0)\nprint(X_train.shape, X_test.shape)",
+    "options": [
+      "(8,) (2,)",
+      "(2, 2) (8, 2)",
+      "(8, 2) (2, 2)",
+      "(16,) (4,)"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "With 10 rows and `test_size=0.2`, 2 rows go to the test set and 8 to training; the column count (2) is unchanged. Splitting is by rows, never by individual values."
+  },
+  {
+    "id": "sk-002",
+    "track": "sklearn",
+    "topic": "train-test-split",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import numpy as np\nfrom sklearn.model_selection import train_test_split\nX = np.arange(16).reshape(-1, 1)\ny = np.array([0] * 12 + [1] * 4)\nX_tr, X_te, y_tr, y_te = train_test_split(\n    X, y, test_size=0.25, stratify=y, random_state=1)\nprint(np.bincount(y_tr).tolist(), np.bincount(y_te).tolist())",
+    "options": [
+      "[9, 3] [3, 1]",
+      "[8, 4] [4, 0]",
+      "[12, 4] [3, 1]",
+      "[10, 2] [2, 2]"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "`stratify=y` keeps the 3:1 class ratio in both parts: 12 training rows get 9 zeros and 3 ones, 4 test rows get 3 zeros and 1 one. Without stratify, a small test set can easily end up with no positives at all."
+  },
+  {
+    "id": "sk-003",
+    "track": "sklearn",
+    "topic": "scaling",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import numpy as np\nfrom sklearn.preprocessing import StandardScaler\nX = np.array([[2.0], [4.0], [6.0]])\nZ = StandardScaler().fit_transform(X)\nprint(np.round(Z.ravel(), 2).tolist())",
+    "options": [
+      "[-1.0, 0.0, 1.0]",
+      "[0.0, 0.5, 1.0]",
+      "[-1.22, 0.0, 1.22]",
+      "[-2.0, 0.0, 2.0]"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "`StandardScaler` subtracts the mean (4) and divides by the population standard deviation (ddof=0), which is sqrt(8/3) = 1.633, giving about -1.22, 0, 1.22. The [-1, 0, 1] trap uses the sample standard deviation (2.0), and [0, 0.5, 1] is what `MinMaxScaler` would give."
+  },
+  {
+    "id": "sk-004",
+    "track": "sklearn",
+    "topic": "scaling",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "from sklearn.preprocessing import MinMaxScaler\nscaler = MinMaxScaler()\nscaler.fit([[0], [50], [100]])\nprint(scaler.transform([[25], [150]]).ravel().tolist())",
+    "options": [
+      "[0.25, 1.0]",
+      "[0.0, 1.0]",
+      "[0.1667, 1.0]",
+      "[0.25, 1.5]"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "The scaler keeps the min (0) and max (100) learned during `fit`, so 25 becomes 0.25 and 150 becomes 1.5. `MinMaxScaler` does not clip by default, so new data outside the training range falls outside [0, 1]."
+  },
+  {
+    "id": "sk-005",
+    "track": "sklearn",
+    "topic": "encoding",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "from sklearn.preprocessing import LabelEncoder\nle = LabelEncoder()\ncodes = le.fit_transform(['low', 'high', 'medium', 'low'])\nprint(codes.tolist())",
+    "options": [
+      "[0, 2, 1, 0]",
+      "[0, 1, 2, 0]",
+      "[1, 0, 2, 1]",
+      "[1, 2, 3, 1]"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "`LabelEncoder` sorts the unique labels alphabetically: high=0, low=1, medium=2. It knows nothing about the business order low < medium < high, and it does not number labels by first appearance."
+  },
+  {
+    "id": "sk-006",
+    "track": "sklearn",
+    "topic": "encoding",
+    "difficulty": "hard",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "from sklearn.preprocessing import OneHotEncoder\nenc = OneHotEncoder(handle_unknown='ignore', sparse_output=False)\nenc.fit([['Delhi'], ['Pune'], ['Mumbai']])\nprint(enc.transform([['Pune'], ['Chennai']]).tolist())",
+    "options": [
+      "[[0.0, 0.0, 1.0], [0.0, 0.0, 0.0]]",
+      "[[0.0, 1.0, 0.0], [0.0, 0.0, 0.0]]",
+      "[[0.0, 0.0, 1.0], [0.0, 0.0, 0.0, 1.0]]",
+      "[[0.0, 0.0, 1.0]]\nValueError"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "Categories are sorted (Delhi, Mumbai, Pune), so Pune is the third column. With `handle_unknown='ignore'` the unseen 'Chennai' is encoded as all zeros instead of raising; with the default `'error'` it would raise a ValueError."
+  },
+  {
+    "id": "sk-007",
+    "track": "sklearn",
+    "topic": "classification-metrics",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "from sklearn.metrics import precision_score, recall_score\ny_true = [1, 1, 1, 1, 0, 0, 0, 0]\ny_pred = [1, 1, 0, 0, 1, 0, 0, 0]\np = precision_score(y_true, y_pred)\nr = recall_score(y_true, y_pred)\nprint(round(p, 2), round(r, 2))",
+    "options": [
+      "0.5 0.67",
+      "0.67 0.5",
+      "0.62 0.62",
+      "0.75 0.5"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "TP=2, FP=1, FN=2. Precision = TP/(TP+FP) = 2/3 = 0.67 and recall = TP/(TP+FN) = 2/4 = 0.5. Swapping the two formulas gives the tempting 0.5 0.67."
+  },
+  {
+    "id": "sk-008",
+    "track": "sklearn",
+    "topic": "confusion-matrix",
+    "difficulty": "hard",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "from sklearn.metrics import confusion_matrix\ny_true = [0, 0, 0, 0, 1, 1]\ny_pred = [0, 1, 1, 0, 1, 0]\nprint(confusion_matrix(y_true, y_pred).tolist())",
+    "options": [
+      "[[2, 1], [2, 1]]",
+      "[[1, 1], [2, 2]]",
+      "[[2, 2], [1, 1]]",
+      "[[1, 2], [1, 2]]"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "In sklearn, rows are true labels and columns are predicted labels, both in sorted order (0 then 1). Row 0: true 0 predicted 0 twice (TN) and predicted 1 twice (FP); row 1: true 1 predicted 0 once (FN) and 1 once (TP). The transposed matrix is the common trap."
+  },
+  {
+    "id": "sk-009",
+    "track": "sklearn",
+    "topic": "regression-metrics",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "from sklearn.metrics import mean_absolute_error, mean_squared_error\ny_true = [2, 4, 6, 8]\ny_pred = [3, 4, 4, 8]\nprint(mean_absolute_error(y_true, y_pred), mean_squared_error(y_true, y_pred))",
+    "options": [
+      "0.75 1.25",
+      "1.25 0.75",
+      "-0.25 1.25",
+      "0.75 1.118"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "The errors are 1, 0, -2, 0. MAE averages their absolute values: 3/4 = 0.75. MSE averages their squares: (1 + 0 + 4 + 0)/4 = 1.25. -0.25 is the mean signed error, where positive and negative errors cancel."
+  },
+  {
+    "id": "sk-010",
+    "track": "sklearn",
+    "topic": "regression-metrics",
+    "difficulty": "hard",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "from sklearn.metrics import r2_score\ny_true = [1, 2, 3]\ny_pred = [3, 2, 1]\nprint(r2_score(y_true, y_pred))",
+    "options": [
+      "0.0",
+      "-1.0",
+      "1.0",
+      "-3.0"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "R-squared = 1 - SS_res/SS_tot = 1 - 8/2 = -3.0. It goes below 0 whenever the predictions are worse than always predicting the mean; -1.0 is the correlation between the two lists, not R-squared."
+  },
+  {
+    "id": "sk-011",
+    "track": "sklearn",
+    "topic": "imputation",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import numpy as np\nfrom sklearn.impute import SimpleImputer\nX = np.array([[2.0], [np.nan], [4.0], [9.0]])\nprint(SimpleImputer().fit_transform(X).ravel().tolist())",
+    "options": [
+      "[2.0, 4.0, 4.0, 9.0]",
+      "[2.0, 5.0, 4.0, 9.0]",
+      "[2.0, 3.75, 4.0, 9.0]",
+      "[2.0, 0.0, 4.0, 9.0]"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "`SimpleImputer` uses `strategy='mean'` by default, and the mean ignores the missing value: (2 + 4 + 9)/3 = 5.0. 4.0 would be the median, and 3.75 treats NaN as 0."
+  },
+  {
+    "id": "sk-012",
+    "track": "sklearn",
+    "topic": "imbalanced-data",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "from sklearn.metrics import accuracy_score, recall_score\ny_true = [0] * 95 + [1] * 5\ny_pred = [0] * 100\nprint(accuracy_score(y_true, y_pred), recall_score(y_true, y_pred))",
+    "options": [
+      "0.95 0.95",
+      "0.95 1.0",
+      "0.05 0.0",
+      "0.95 0.0"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "A model that always predicts 0 is right on the 95 negatives, so accuracy is 0.95, but it finds none of the 5 positives, so recall is 0.0. This is the accuracy paradox: high accuracy on imbalanced data can hide a useless model."
+  },
+  {
+    "id": "sk-013",
+    "track": "sklearn",
+    "topic": "estimator-api",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "In scikit-learn, which method learns a model's parameters (for example, the coefficients of a linear regression) from the training data?",
+    "options": [
+      "`predict`",
+      "`transform`",
+      "`fit`",
+      "`score`"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "`fit(X, y)` estimates the parameters and stores them on the object (e.g. `coef_`). `predict` and `transform` only use what `fit` already learned."
+  },
+  {
+    "id": "sk-014",
+    "track": "sklearn",
+    "topic": "estimator-api",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "This code raises a `ValueError` about the shape of X. What is the fix?",
+    "code": "from sklearn.linear_model import LinearRegression\nmodel = LinearRegression()\nmodel.fit(df['area'], df['price'])",
+    "options": [
+      "Pass `df[['area']]` so X is 2-D with shape (n_samples, n_features)",
+      "Convert X with `df['area'].tolist()` first",
+      "Swap the arguments: `model.fit(df['price'], df['area'])`",
+      "Use `model.fit_transform` instead of `model.fit`"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "sklearn expects X to be 2-D even with one feature; `df[['area']]` returns a one-column DataFrame. A plain list is still 1-D and fails the same way, and `LinearRegression` has no `fit_transform`."
+  },
+  {
+    "id": "sk-015",
+    "track": "sklearn",
+    "topic": "model-types",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "What kind of problem is `LogisticRegression` used for?",
+    "options": [
+      "Predicting a continuous value such as price",
+      "Classification, such as yes/no outcomes",
+      "Grouping unlabeled rows into clusters",
+      "Reducing the number of features"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "Despite the name, logistic regression is a classifier: it models the probability of each class and `predict` returns class labels. Continuous targets need a regressor such as `LinearRegression`."
+  },
+  {
+    "id": "sk-016",
+    "track": "sklearn",
+    "topic": "data-leakage",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "What is wrong with this preprocessing?",
+    "code": "scaler = StandardScaler()\nX_train_s = scaler.fit_transform(X_train)\nX_test_s = scaler.fit_transform(X_test)",
+    "options": [
+      "Nothing; calling `fit_transform` on both sets is the standard pattern",
+      "`StandardScaler` must never be applied to test data",
+      "The scaler should be fit on the combined train and test data before splitting",
+      "The test set is scaled with its own mean and std instead of the training statistics; it should use `scaler.transform(X_test)`"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "The test set must be transformed with the mean and std learned from training data, exactly as new production data would be. Fitting on the combined data before splitting is worse: it leaks test information into training."
+  },
+  {
+    "id": "sk-017",
+    "track": "sklearn",
+    "topic": "reproducibility",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "What does `random_state=42` do in `train_test_split(X, y, test_size=0.2, random_state=42)`?",
+    "options": [
+      "Puts 42% of the rows in the test set",
+      "Fixes the shuffle so the same split is produced on every run",
+      "Selects 42 rows for the test set",
+      "Tries 42 splits and keeps the one with the best accuracy"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "`random_state` seeds the random shuffle, so the split is reproducible across runs and machines. The number itself has no meaning; any fixed integer gives a repeatable split."
+  },
+  {
+    "id": "sk-018",
+    "track": "sklearn",
+    "topic": "scaling",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "A salary column is mostly between 30,000 and 80,000, plus one value of 5,000,000. What happens to the typical salaries after `MinMaxScaler`?",
+    "options": [
+      "They are squeezed into a narrow band near 0",
+      "They spread evenly between 0 and 1",
+      "The outlier is removed before scaling",
+      "They get mean 0 and standard deviation 1"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "MinMaxScaler maps the min to 0 and the max (the outlier) to 1, so the normal salaries all land between 0 and about 0.01. Mean 0 and std 1 describes `StandardScaler`; neither scaler removes outliers."
+  },
+  {
+    "id": "sk-019",
+    "track": "sklearn",
+    "topic": "knn",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "You train `KNeighborsClassifier` on two unscaled features: age (20 to 60) and annual income in rupees (2,00,000 to 30,00,000). What is the likely effect?",
+    "options": [
+      "Age dominates the distance because its values are smaller",
+      "Nothing; KNN scales the features internally",
+      "Income dominates the distance, so age has almost no influence",
+      "Nothing; KNN does not use distances"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "KNN uses Euclidean distance by default, so a feature measured in lakhs swamps a feature measured in tens. Scale both (e.g. `StandardScaler` in a pipeline) so each feature contributes comparably."
+  },
+  {
+    "id": "sk-020",
+    "track": "sklearn",
+    "topic": "clustering",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Which statement about k-means clustering is true?",
+    "options": [
+      "You choose the number of clusters k before fitting",
+      "It needs a target column `y` to train",
+      "It automatically finds the best number of clusters",
+      "It is guaranteed to find the best possible clustering"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "k-means is unsupervised and needs k (`n_clusters`) up front; techniques like the elbow method help pick it. It can land in a local optimum, which is why sklearn runs several initialisations (`n_init`)."
+  },
+  {
+    "id": "sk-021",
+    "track": "sklearn",
+    "topic": "clustering",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "After `km = KMeans(n_clusters=3, random_state=0).fit(X)`, what does `km.inertia_` measure?",
+    "options": [
+      "The number of iterations until convergence",
+      "How well the clusters match the true labels",
+      "The average distance between the cluster centres",
+      "The sum of squared distances from each sample to its closest cluster centre"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "Inertia is the within-cluster sum of squares; lower means tighter clusters, and plotting it against k gives the elbow plot. The iteration count is `n_iter_`, and k-means never sees true labels."
+  },
+  {
+    "id": "sk-022",
+    "track": "sklearn",
+    "topic": "encoding",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "A `city` column with values Delhi, Mumbai and Pune is a feature for linear regression. Which encoding fits best?",
+    "options": [
+      "`OneHotEncoder`, one 0/1 column per city",
+      "`OrdinalEncoder`, giving Delhi=0, Mumbai=1, Pune=2",
+      "`LabelEncoder` on the `city` column",
+      "`StandardScaler` applied directly to the city names"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "City is nominal (no natural order), so one-hot encoding avoids inventing one. Integer codes make a linear model treat Pune as 'twice' Mumbai, and scalers cannot work on strings."
+  },
+  {
+    "id": "sk-023",
+    "track": "sklearn",
+    "topic": "encoding",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "What is `LabelEncoder` designed for?",
+    "options": [
+      "Encoding several categorical feature columns at once",
+      "Encoding an ordered feature with a custom order such as low < medium < high",
+      "Converting the target labels `y` into integers 0 to n_classes - 1",
+      "Creating one 0/1 column per category"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "`LabelEncoder` takes a single 1-D array and is meant for the target. For feature columns use `OrdinalEncoder` (which accepts a custom `categories` order) or `OneHotEncoder`."
+  },
+  {
+    "id": "sk-024",
+    "track": "sklearn",
+    "topic": "pipeline",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Why put `StandardScaler` and the model inside a `Pipeline` before calling `cross_val_score`?",
+    "options": [
+      "The scaler is refit on the training folds only in each split, so validation folds don't leak into preprocessing",
+      "Pipelines train the model in parallel, which makes cross-validation faster",
+      "Pipelines automatically tune the model's hyperparameters",
+      "Pipelines skip the scaling step when predicting"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "Scaling the full dataset before cross-validation lets every validation fold influence the mean and std. Inside a pipeline, each fold fits the scaler on its training part only and just transforms the validation part."
+  },
+  {
+    "id": "sk-025",
+    "track": "sklearn",
+    "topic": "pipeline",
+    "difficulty": "hard",
+    "type": "mcq",
+    "prompt": "You want to tune the regularization strength `C` of the logistic regression with `GridSearchCV(pipe, param_grid)`. Which key goes in `param_grid`?",
+    "code": "pipe = Pipeline([\n    ('scaler', StandardScaler()),\n    ('clf', LogisticRegression()),\n])",
+    "options": [
+      "`'C'`",
+      "`'clf.C'`",
+      "`'LogisticRegression__C'`",
+      "`'clf__C'`"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "Pipeline parameters are addressed as `<step name>__<parameter>` with a double underscore, using the name you gave the step ('clf'), not the class name. A bare `'C'` raises an invalid-parameter error."
+  },
+  {
+    "id": "sk-026",
+    "track": "sklearn",
+    "topic": "regression-metrics",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Model A has mostly small errors but a few very large ones. Which metric penalizes those large misses most heavily?",
+    "options": [
+      "MAE",
+      "RMSE",
+      "Median absolute error",
+      "Accuracy"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "RMSE squares the errors before averaging, so one big miss weighs much more than several small ones. MAE weighs every unit of error equally, and the median ignores extreme errors almost entirely."
+  },
+  {
+    "id": "sk-027",
+    "track": "sklearn",
+    "topic": "regression-metrics",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "A regression model scores R-squared = 0.0 on the test set. What does that mean?",
+    "options": [
+      "Its predictions are exactly correct",
+      "It predicts 0 for every row",
+      "It does no better than always predicting the mean of the target",
+      "None of its predictions are exactly correct"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "R-squared compares the model's squared error with that of a constant prediction of the mean; 0 means no improvement over that baseline. 1 is perfect, and negative values mean worse than the mean."
+  },
+  {
+    "id": "sk-028",
+    "track": "sklearn",
+    "topic": "classification-metrics",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "In a cancer screening model, missing a patient who has cancer is far worse than a false alarm. Which metric should you prioritize?",
+    "options": [
+      "Recall",
+      "Precision",
+      "Accuracy",
+      "R-squared"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "Recall = TP/(TP+FN) measures the share of actual positives the model catches, so maximizing it minimizes missed cases. Precision focuses on false alarms, and R-squared is a regression metric."
+  },
+  {
+    "id": "sk-029",
+    "track": "sklearn",
+    "topic": "classification-metrics",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "A classifier has precision 0.5 and recall 1.0. What is its F1 score?",
+    "options": [
+      "0.75",
+      "0.5",
+      "0.67",
+      "1.0"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "F1 is the harmonic mean: 2 * 0.5 * 1.0 / (0.5 + 1.0) = 0.67. The arithmetic mean (0.75) is the trap; the harmonic mean pulls F1 toward the weaker of the two."
+  },
+  {
+    "id": "sk-030",
+    "track": "sklearn",
+    "topic": "classification-metrics",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Of all the rows a model predicted as positive, the fraction that are actually positive is called:",
+    "options": [
+      "Recall",
+      "Specificity",
+      "Accuracy",
+      "Precision"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "Precision = TP/(TP+FP), computed over predicted positives. Recall uses actual positives as the denominator: TP/(TP+FN)."
+  },
+  {
+    "id": "sk-031",
+    "track": "sklearn",
+    "topic": "overfitting",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "A decision tree scores 99% accuracy on the training set and 70% on the test set. What is the most likely diagnosis?",
+    "options": [
+      "Underfitting",
+      "Overfitting",
+      "Data leakage from test to train",
+      "The test set is too large"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "A large gap between training and test performance means the model memorized the training data instead of learning patterns that generalize. Underfitting shows low scores on both sets."
+  },
+  {
+    "id": "sk-032",
+    "track": "sklearn",
+    "topic": "bias-variance",
+    "difficulty": "hard",
+    "type": "mcq",
+    "prompt": "You increase a decision tree's `max_depth` from 2 to 20. What typically happens to bias and variance?",
+    "options": [
+      "Bias increases, variance decreases",
+      "Both decrease",
+      "Bias decreases, variance increases",
+      "Both increase"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "A deeper tree is more flexible: it fits the training data more closely (lower bias) but becomes more sensitive to the particular sample it saw (higher variance). That is why very deep trees tend to overfit."
+  },
+  {
+    "id": "sk-033",
+    "track": "sklearn",
+    "topic": "cross-validation",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "What does `cross_val_score(model, X, y, cv=5)` return?",
+    "options": [
+      "One score: the average over 5 folds",
+      "An array of 5 scores, one per validation fold",
+      "The model fitted on the best of the 5 folds",
+      "An array of 5 predictions per row"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "It fits the model 5 times, each time scoring on a different held-out fold, and returns the 5 scores; you take `.mean()` and `.std()` yourself. It does not return a fitted model."
+  },
+  {
+    "id": "sk-034",
+    "track": "sklearn",
+    "topic": "cross-validation",
+    "difficulty": "hard",
+    "type": "mcq",
+    "prompt": "`cross_val_score(Ridge(), X, y, cv=5, scoring='neg_mean_squared_error')` returns values like -12.4 and -9.8. Why are they negative?",
+    "options": [
+      "The model is worse than predicting the mean",
+      "MSE is negative when the model overfits",
+      "The targets contain negative values",
+      "sklearn scorers follow 'greater is better', so error metrics are returned negated"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "Model selection tools always maximize the score, so losses such as MSE are multiplied by -1. Flip the sign to get the actual MSE; a negative R-squared would be a different thing."
+  },
+  {
+    "id": "sk-035",
+    "track": "sklearn",
+    "topic": "estimator-api",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "A fitted classifier on 3 classes calls `predict_proba` on 10 rows. What is the shape of the result?",
+    "options": [
+      "(10,)",
+      "(3, 10)",
+      "(10, 3)",
+      "(10, 1)"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "`predict_proba` returns one row per sample and one column per class, ordered as in `classes_`; each row sums to 1. `predict` is the method that returns a 1-D array of labels."
+  },
+  {
+    "id": "sk-036",
+    "track": "sklearn",
+    "topic": "cross-validation",
+    "difficulty": "hard",
+    "type": "mcq",
+    "prompt": "How does `cross_val_score(LogisticRegression(), X, y, cv=5)` split the data when y holds class labels?",
+    "options": [
+      "Plain `KFold` with shuffling",
+      "`StratifiedKFold` without shuffling",
+      "Five random 80/20 splits",
+      "`StratifiedKFold` with a random shuffle"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "For classifiers an integer `cv` means `StratifiedKFold`, which keeps class proportions per fold, and it does not shuffle by default. If the rows are sorted (say by date or class), pass `KFold`/`StratifiedKFold(shuffle=True, random_state=...)` explicitly."
+  },
+  {
+    "id": "sk-037",
+    "track": "sklearn",
+    "topic": "imputation",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Which `SimpleImputer` strategy can fill missing values in a text column like `city`?",
+    "options": [
+      "`'mean'`",
+      "`'median'`",
+      "`'most_frequent'`",
+      "`'mode'`"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "`'most_frequent'` (and `'constant'`) work with strings; `'mean'` and `'median'` need numbers. There is no `'mode'` strategy in sklearn, even though most frequent means the mode."
+  },
+  {
+    "id": "sk-038",
+    "track": "sklearn",
+    "topic": "train-test-split",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "If you call `train_test_split(X, y)` without `test_size` or `train_size`, what fraction of rows goes to the test set?",
+    "options": [
+      "0.2",
+      "0.5",
+      "0.3",
+      "0.25"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "The default test size is 0.25. Many tutorials pass 0.2, which is why 0.2 is a common wrong guess."
+  },
+  {
+    "id": "sk-039",
+    "track": "sklearn",
+    "topic": "supervised-learning",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "You predict whether a telecom customer will churn using tenure, plan type and monthly charges. Which is the target?",
+    "options": [
+      "Tenure",
+      "Monthly charges",
+      "Whether the customer churns",
+      "All four columns"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "The target (`y`) is what you want to predict; the columns used to predict it (tenure, plan, charges) are the features (`X`). Churn is a yes/no target, so this is a classification problem."
+  },
+  {
+    "id": "sk-040",
+    "track": "sklearn",
+    "topic": "supervised-learning",
+    "difficulty": "easy",
+    "type": "multi",
+    "prompt": "Which of these scikit-learn estimators are supervised learning models? Select all that apply.",
+    "options": [
+      "`LinearRegression`",
+      "`KMeans`",
+      "`DecisionTreeClassifier`",
+      "`PCA`",
+      "`KNeighborsClassifier`"
+    ],
+    "answer": [
+      0,
+      2,
+      4
+    ],
+    "explanation": "Supervised models learn from labeled data, so their `fit` uses a target y. `KMeans` (clustering) and `PCA` (dimensionality reduction) are unsupervised and ignore y."
+  },
+  {
+    "id": "sk-041",
+    "track": "sklearn",
+    "topic": "estimator-api",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "Which of these objects have a `transform` method after fitting? Select all that apply.",
+    "options": [
+      "`StandardScaler`",
+      "`LinearRegression`",
+      "`OneHotEncoder`",
+      "`SimpleImputer`",
+      "`DecisionTreeClassifier`"
+    ],
+    "answer": [
+      0,
+      2,
+      3
+    ],
+    "explanation": "Transformers (scalers, encoders, imputers) change the data with `transform`. Predictors like `LinearRegression` and `DecisionTreeClassifier` expose `predict` instead."
+  },
+  {
+    "id": "sk-042",
+    "track": "sklearn",
+    "topic": "data-leakage",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "Which of these leak information from the test set into model training? Select all that apply.",
+    "options": [
+      "Fitting a `StandardScaler` on the full dataset, then splitting",
+      "Filling missing values with the mean of the full dataset, then splitting",
+      "Fitting a scaler on `X_train` and calling `transform` on `X_test`",
+      "Choosing features by their correlation with y computed on all rows, then splitting",
+      "Using `stratify=y` in `train_test_split`"
+    ],
+    "answer": [
+      0,
+      1,
+      3
+    ],
+    "explanation": "Any statistic computed on rows that end up in the test set (means, stds, correlations with y) lets test data shape training. Fitting on train and only transforming test is the correct pattern, and stratifying just controls class proportions."
+  },
+  {
+    "id": "sk-043",
+    "track": "sklearn",
+    "topic": "scaling",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "Which of these models are sensitive to feature scaling? Select all that apply.",
+    "options": [
+      "`KNeighborsClassifier`",
+      "`DecisionTreeClassifier`",
+      "`KMeans`",
+      "`RandomForestClassifier`",
+      "`SVC`"
+    ],
+    "answer": [
+      0,
+      2,
+      4
+    ],
+    "explanation": "KNN, k-means and SVMs rely on distances or dot products, so large-range features dominate. Trees split on one feature at a time using thresholds, so rescaling a feature does not change the splits."
+  },
+  {
+    "id": "sk-044",
+    "track": "sklearn",
+    "topic": "overfitting",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "A decision tree overfits badly. Which changes typically help? Select all that apply.",
+    "options": [
+      "Lower `max_depth`",
+      "Increase `min_samples_leaf`",
+      "Collect more training data",
+      "Increase `max_depth`",
+      "Measure accuracy on the training set instead"
+    ],
+    "answer": [
+      0,
+      1,
+      2
+    ],
+    "explanation": "Limiting depth and requiring more samples per leaf make the tree simpler, and more data makes memorizing noise harder. A deeper tree overfits more, and training accuracy only hides the problem."
+  },
+  {
+    "id": "sk-045",
+    "track": "sklearn",
+    "topic": "scaling",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "Which statements about `StandardScaler` are true? Select all that apply.",
+    "options": [
+      "Each column gets mean 0 and standard deviation 1 on the data it was fit on",
+      "Its output is always between 0 and 1",
+      "`fit` stores the per-column means in `mean_` and the standard deviations in `scale_`",
+      "It removes outliers",
+      "It does not change the shape of each column's distribution, only its location and spread"
+    ],
+    "answer": [
+      0,
+      2,
+      4
+    ],
+    "explanation": "Standardization is a linear shift and rescale per column, so skew and outliers remain, and values can go well outside [0, 1]. The learned statistics are kept in `mean_` and `scale_` for transforming new data."
+  },
+  {
+    "id": "sk-046",
+    "track": "sklearn",
+    "topic": "confusion-matrix",
+    "difficulty": "hard",
+    "type": "multi",
+    "prompt": "For a binary problem with labels 0 and 1, which statements about `cm = confusion_matrix(y_true, y_pred)` are true? Select all that apply.",
+    "options": [
+      "Rows correspond to true labels and columns to predicted labels",
+      "`cm[0, 0]` is the number of true positives",
+      "`cm[1, 0]` counts false negatives (true 1, predicted 0)",
+      "`tn, fp, fn, tp = cm.ravel()` unpacks the four counts",
+      "The diagonal holds the correctly classified counts"
+    ],
+    "answer": [
+      0,
+      2,
+      3,
+      4
+    ],
+    "explanation": "Labels are sorted, so class 0 comes first and `cm[0, 0]` is true negatives, not true positives. Reading row by row gives TN, FP, FN, TP, which is why `cm.ravel()` unpacks in that order."
+  },
+  {
+    "id": "sk-047",
+    "track": "sklearn",
+    "topic": "regression-metrics",
+    "difficulty": "hard",
+    "type": "multi",
+    "prompt": "Which statements about regression metrics are true? Select all that apply.",
+    "options": [
+      "MAE and RMSE are in the same units as the target",
+      "MSE is in squared units of the target",
+      "RMSE is always greater than or equal to MAE for the same predictions",
+      "A higher MAE means a better model",
+      "R-squared always lies between 0 and 1"
+    ],
+    "answer": [
+      0,
+      1,
+      2
+    ],
+    "explanation": "RMSE is a root mean square, which is never below the mean absolute value, so RMSE >= MAE, with equality when all errors have the same size. R-squared can be negative on data where the model is worse than the mean, and lower MAE is better."
+  },
+  {
+    "id": "sk-048",
+    "track": "sklearn",
+    "topic": "encoding",
+    "difficulty": "hard",
+    "type": "multi",
+    "prompt": "Which statements about scikit-learn's categorical encoders are true? Select all that apply.",
+    "options": [
+      "`OneHotEncoder` creates one output column per category it saw during `fit`",
+      "`OrdinalEncoder` numbers categories in the order they first appear in the data",
+      "`OrdinalEncoder(categories=[['low', 'medium', 'high']])` encodes low=0, medium=1, high=2",
+      "By default, `OneHotEncoder` raises an error on a category not seen during `fit`",
+      "`OneHotEncoder` returns a single column of integer codes"
+    ],
+    "answer": [
+      0,
+      2,
+      3
+    ],
+    "explanation": "By default both encoders sort categories rather than using first-appearance order; pass `categories=` to set a meaningful order. `handle_unknown` defaults to `'error'`, and a single integer column is what `OrdinalEncoder` produces, not `OneHotEncoder`."
+  },
+  {
+    "id": "sk-049",
+    "track": "sklearn",
+    "topic": "pipeline",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "Which statements about a `Pipeline([('scaler', StandardScaler()), ('model', LogisticRegression())])` are true? Select all that apply.",
+    "options": [
+      "`pipe.fit(X_train, y_train)` fits the scaler, transforms X_train, then fits the model",
+      "`pipe.predict(X_test)` refits the scaler on X_test before predicting",
+      "The whole pipeline can be passed to `cross_val_score` like a single model",
+      "The last step must be a transformer",
+      "`pipe.predict(X_test)` transforms X_test with the training statistics, then calls the model's predict"
+    ],
+    "answer": [
+      0,
+      2,
+      4
+    ],
+    "explanation": "At prediction time a pipeline only calls `transform` on the preprocessing steps, never `fit`, so test data is scaled with training statistics. Every step except the last must be a transformer; the last is usually a model."
+  },
+  {
+    "id": "sk-050",
+    "track": "sklearn",
+    "topic": "classification-metrics",
+    "difficulty": "easy",
+    "type": "multi",
+    "prompt": "Which of these are metrics for a classification model? Select all that apply.",
+    "options": [
+      "Accuracy",
+      "F1 score",
+      "Mean absolute error",
+      "Recall",
+      "R-squared"
+    ],
+    "answer": [
+      0,
+      1,
+      3
+    ],
+    "explanation": "Accuracy, F1 and recall compare predicted class labels with true labels. MAE and R-squared measure numeric prediction error and are meant for regression."
+  },
+  {
+    "id": "sk-051",
+    "track": "sklearn",
+    "topic": "imbalanced-data",
+    "difficulty": "hard",
+    "type": "multi",
+    "prompt": "Only 1% of transactions in your data are fraud. Which are sensible steps when building a classifier? Select all that apply.",
+    "options": [
+      "Use `stratify=y` in `train_test_split`",
+      "Report precision, recall and F1 for the fraud class",
+      "Try `class_weight='balanced'` in `LogisticRegression`",
+      "Judge the model mainly by accuracy",
+      "Drop the fraud rows because they are too few to learn from"
+    ],
+    "answer": [
+      0,
+      1,
+      2
+    ],
+    "explanation": "A model that never predicts fraud already scores 99% accuracy, so accuracy alone is misleading. Stratifying keeps fraud cases in both sets, and class weights make errors on the rare class cost more."
+  },
+  {
+    "id": "sk-052",
+    "track": "sklearn",
+    "topic": "pipeline",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "Which statements about `ColumnTransformer` are true? Select all that apply.",
+    "options": [
+      "It applies different transformers to different subsets of columns",
+      "By default, columns not listed in any transformer are dropped",
+      "The outputs of all transformers are concatenated side by side",
+      "It modifies the input DataFrame in place",
+      "It can only be used with numeric columns"
+    ],
+    "answer": [
+      0,
+      1,
+      2
+    ],
+    "explanation": "A typical use is scaling numeric columns and one-hot encoding categorical ones in one step. The default is `remainder='drop'`; pass `remainder='passthrough'` to keep the other columns. It returns a new array and never changes the input."
+  }
+]

@@ -1,0 +1,1640 @@
+[
+  {
+    "id": "py-001",
+    "track": "python",
+    "topic": "mutability",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "a = [1, 2, 3]\nb = a\nb.append(4)\nprint(a)",
+    "options": [
+      "[1, 2, 3, 4]",
+      "[1, 2, 3]",
+      "[4]",
+      "None"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "`b = a` copies the reference, not the list, so both names point to the same list object. Appending through `b` is visible through `a`."
+  },
+  {
+    "id": "py-002",
+    "track": "python",
+    "topic": "mutability",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Which of these built-in types is mutable?",
+    "options": [
+      "`tuple`",
+      "`str`",
+      "`list`",
+      "`frozenset`"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "Lists can be changed in place (append, item assignment). Tuples, strings and frozensets are immutable; operations on them return new objects."
+  },
+  {
+    "id": "py-003",
+    "track": "python",
+    "topic": "numbers",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "print(7 / 2, 7 // 2, 7 % 2)",
+    "options": [
+      "3 3 1",
+      "3.5 3.5 1",
+      "3.5 4 1",
+      "3.5 3 1"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "`/` is true division and always returns a float; `//` is floor division and `%` gives the remainder. 7 // 2 floors 3.5 down to 3."
+  },
+  {
+    "id": "py-004",
+    "track": "python",
+    "topic": "truthiness",
+    "difficulty": "easy",
+    "type": "multi",
+    "prompt": "Which of these values are falsy? Select all that apply.",
+    "options": [
+      "`\"\"`",
+      "`[0]`",
+      "`\"0\"`",
+      "`None`",
+      "`[]`",
+      "`0`"
+    ],
+    "answer": [
+      0,
+      3,
+      4,
+      5
+    ],
+    "explanation": "Zero, empty strings, empty containers and None are falsy. `\"0\"` is a non-empty string and `[0]` is a non-empty list, so both are truthy."
+  },
+  {
+    "id": "py-005",
+    "track": "python",
+    "topic": "numbers",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "print(-7 // 2, -7 % 2)",
+    "options": [
+      "-4 1",
+      "-3 -1",
+      "-3 1",
+      "-4 -1"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "`//` floors toward negative infinity, so -3.5 becomes -4, not -3. The remainder then satisfies `a == (a // b) * b + a % b`: -7 == -8 + 1, so `-7 % 2` is 1."
+  },
+  {
+    "id": "py-006",
+    "track": "python",
+    "topic": "strings",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "What happens when this code runs?",
+    "code": "s = \"data\"\ns[0] = \"D\"",
+    "options": [
+      "It raises `TypeError` because strings are immutable",
+      "`s` becomes `'Data'`",
+      "It raises `IndexError`",
+      "Nothing happens and `s` stays `'data'`"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "Strings don't support item assignment. Build a new string instead, for example `s = 'D' + s[1:]` or `s.capitalize()`."
+  },
+  {
+    "id": "py-007",
+    "track": "python",
+    "topic": "strings",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "s = \"analytics\"\nprint(s[2:5], s[-3:])",
+    "options": [
+      "aly ics",
+      "nal ics",
+      "aly tics",
+      "naly ics"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "Slices include the start index and exclude the stop index, so `s[2:5]` is indices 2, 3 and 4: 'aly'. A negative start counts from the end, so `s[-3:]` is the last three characters."
+  },
+  {
+    "id": "py-008",
+    "track": "python",
+    "topic": "numbers",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "`0.1 + 0.2 == 0.3` evaluates to `False`. What is the reason, and what is the usual fix?",
+    "options": [
+      "Python rounds floats to one decimal place during addition; call `round()` on each operand first",
+      "0.1 and 0.2 have no exact binary floating-point representation; compare with `math.isclose(a, b)`",
+      "`==` compares object identity for floats; use `is` instead",
+      "Float addition is not commutative; write `0.2 + 0.1` instead"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "Floats are stored in binary, so `0.1 + 0.2` is actually 0.30000000000000004. Compare floats with a tolerance such as `math.isclose` (or `numpy.isclose` for arrays), never with `is`."
+  },
+  {
+    "id": "py-009",
+    "track": "python",
+    "topic": "f-strings",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "x = 3.14159\nn = 42\nprint(f\"{x:.2f}|{n:05d}\")",
+    "options": [
+      "3.14|42000",
+      "3.1|00042",
+      "3.14|00042",
+      "3.14|   42"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "`.2f` formats with two digits after the decimal point. `05d` pads the integer to width 5 with leading zeros; without the 0 it would pad with spaces."
+  },
+  {
+    "id": "py-010",
+    "track": "python",
+    "topic": "f-strings",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "name = \"Asha\"\nprint(f\"{name=} {len(name)=}\")",
+    "options": [
+      "Asha 4",
+      "name=Asha len(name)=4",
+      "SyntaxError",
+      "name='Asha' len(name)=4"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "The `=` specifier (Python 3.8+) prints the expression text, an equals sign and the repr of the value, which is why the string keeps its quotes. It works for any expression, including `len(name)`."
+  },
+  {
+    "id": "py-011",
+    "track": "python",
+    "topic": "f-strings",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "With `x = 1234567.891`, which f-string produces `1,234,567.89`?",
+    "options": [
+      "`f\"{x:,}\"`",
+      "`f\"{x:.2f,}\"`",
+      "`f\"{x:,.2f}\"`",
+      "`f\"{x:2,f}\"`"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "In the format spec, the `,` grouping option comes before the `.2f` precision and type. `{x:,}` adds commas but keeps every decimal, and `.2f,` is an invalid spec that raises ValueError."
+  },
+  {
+    "id": "py-012",
+    "track": "python",
+    "topic": "dicts",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "d = {\"a\": 1}\nprint(d.get(\"b\", 0), d.setdefault(\"c\", 5))\nprint(d)",
+    "options": [
+      "0 5\n{'a': 1}",
+      "None 5\n{'a': 1, 'c': 5}",
+      "0 5\n{'a': 1, 'b': 0, 'c': 5}",
+      "0 5\n{'a': 1, 'c': 5}"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "`get` returns the default without changing the dict, while `setdefault` inserts the key with the default when it is missing and returns that value. So only 'c' is added."
+  },
+  {
+    "id": "py-013",
+    "track": "python",
+    "topic": "numbers",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "For a nonzero integer `b`, the result of `a % b` in Python is either zero or has the same sign as which value?",
+    "options": [
+      "`a`, the dividend",
+      "`b`, the divisor",
+      "Neither; it is always non-negative",
+      "`a * b`"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "Python defines `%` so that `a == (a // b) * b + a % b` with `//` flooring, which gives the remainder the sign of the divisor: `-7 % 3` is 2 and `7 % -3` is -2. C and Java use the sign of the dividend instead."
+  },
+  {
+    "id": "py-014",
+    "track": "python",
+    "topic": "lists",
+    "difficulty": "easy",
+    "type": "multi",
+    "prompt": "Which of these modify the list `lst` in place and return `None`? Select all that apply.",
+    "options": [
+      "`lst.extend([5, 6])`",
+      "`lst.reverse()`",
+      "`lst + [5]`",
+      "`sorted(lst)`",
+      "`lst.sort()`",
+      "`lst.append(5)`"
+    ],
+    "answer": [
+      0,
+      1,
+      4,
+      5
+    ],
+    "explanation": "Mutating list methods return None by convention, which is why `lst = lst.sort()` loses your data. `sorted(lst)` and `lst + [5]` build and return new lists and leave `lst` unchanged."
+  },
+  {
+    "id": "py-015",
+    "track": "python",
+    "topic": "lists",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Which list method removes and returns the last element?",
+    "options": [
+      "`remove()`",
+      "`discard()`",
+      "`popitem()`",
+      "`pop()`"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "`list.pop()` with no argument removes and returns the last item (`pop(i)` for index i). `remove(x)` deletes the first matching value and returns None; `discard` is a set method and `popitem` a dict method."
+  },
+  {
+    "id": "py-016",
+    "track": "python",
+    "topic": "comprehensions",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "print([x * x for x in range(6) if x % 2])",
+    "options": [
+      "[0, 4, 16]",
+      "[1, 3, 5]",
+      "[1, 9, 25]",
+      "[0, 1, 4, 9, 16, 25]"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "`x % 2` is 1 (truthy) for odd numbers and 0 (falsy) for even ones, so the filter keeps 1, 3 and 5, and the comprehension squares them."
+  },
+  {
+    "id": "py-017",
+    "track": "python",
+    "topic": "comprehensions",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "print([(i, j) for i in range(3) for j in range(i)])",
+    "options": [
+      "[(0, 0), (1, 0), (1, 1), (2, 0), (2, 1), (2, 2)]",
+      "[(1, 0), (2, 0), (2, 1)]",
+      "[(0, 1), (0, 2), (1, 2)]",
+      "[(0, 0), (1, 1), (2, 2)]"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "Multiple `for` clauses nest left to right, like nested loops. For i = 0, `range(0)` is empty, so nothing is produced; i = 1 gives (1, 0), and i = 2 gives (2, 0) and (2, 1)."
+  },
+  {
+    "id": "py-018",
+    "track": "python",
+    "topic": "dicts",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "Which of these can be used as a dictionary key? Select all that apply.",
+    "options": [
+      "`{\"a\": 1}`",
+      "`(1, [2])`",
+      "`frozenset({1, 2})`",
+      "`[1, 2]`",
+      "`(1, 2)`",
+      "`\"user_id\"`"
+    ],
+    "answer": [
+      2,
+      4,
+      5
+    ],
+    "explanation": "Keys must be hashable, which in practice means immutable all the way down. A tuple is hashable only if everything inside it is, so `(1, [2])` fails just like a list or a dict."
+  },
+  {
+    "id": "py-019",
+    "track": "python",
+    "topic": "dicts",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "What happens when this loop runs?",
+    "code": "stock = {\"apple\": 3, \"pear\": 0}\nfor item in stock:\n    if stock[item] == 0:\n        stock[\"restock_\" + item] = 10",
+    "options": [
+      "It adds `'restock_pear': 10` and finishes normally",
+      "It loops forever because new keys keep appearing",
+      "It raises `RuntimeError`: dictionary changed size during iteration",
+      "It raises `KeyError` on the new key"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "You can't add or remove keys while iterating over a dict. Iterate over a snapshot such as `list(stock)`, or collect the changes and apply them after the loop."
+  },
+  {
+    "id": "py-020",
+    "track": "python",
+    "topic": "dicts",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Which statement about key order in a regular `dict` (Python 3.7+) is true?",
+    "options": [
+      "Keys are always kept sorted",
+      "Keys keep insertion order, and the language guarantees it",
+      "Order is arbitrary; only `collections.OrderedDict` preserves it",
+      "Insertion order is kept only for string keys"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "Since Python 3.7, insertion order is part of the language specification for `dict`. `OrderedDict` is still useful for extras such as `move_to_end` and order-sensitive equality."
+  },
+  {
+    "id": "py-021",
+    "track": "python",
+    "topic": "generators",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Compared with `sum([x * x for x in range(10_000_000)])`, what is the main advantage of this version?",
+    "code": "total = sum(x * x for x in range(10_000_000))",
+    "options": [
+      "It squares the numbers in parallel across CPU cores",
+      "It caches the results, so a second `sum` over it is free",
+      "It produces values one at a time instead of building a 10-million-element list in memory",
+      "It returns an exact integer, while the list version returns a float"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "A generator expression is lazy: `sum` pulls one value at a time, so memory use stays constant. It can be consumed only once and does not run in parallel."
+  },
+  {
+    "id": "py-022",
+    "track": "python",
+    "topic": "comprehensions",
+    "difficulty": "easy",
+    "type": "multi",
+    "prompt": "Which expressions evaluate to `[0, 1, 2]`? Select all that apply.",
+    "options": [
+      "`[x - 1 for x in [1, 2, 3]]`",
+      "`list(range(3))`",
+      "`sorted({2, 0, 1})`",
+      "`list(range(1, 3))`",
+      "`[i for i in range(3)]`",
+      "`list(range(0, 3, 2))`"
+    ],
+    "answer": [
+      0,
+      1,
+      2,
+      4
+    ],
+    "explanation": "`range(3)` stops before 3, so it yields 0, 1, 2; `range(1, 3)` gives [1, 2] and `range(0, 3, 2)` gives [0, 2]. `sorted` accepts any iterable, including a set, and always returns a list."
+  },
+  {
+    "id": "py-023",
+    "track": "python",
+    "topic": "functions",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "def add(item, bucket=[]):\n    bucket.append(item)\n    return bucket\n\nadd(1)\nprint(add(2))",
+    "options": [
+      "[1, 2]",
+      "[2]",
+      "[1]",
+      "[[1], 2]"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "Default values are evaluated once, when the function is defined, so every call that omits `bucket` shares the same list. The first call leaves 1 in it, and the second appends 2 to that same list."
+  },
+  {
+    "id": "py-024",
+    "track": "python",
+    "topic": "functions",
+    "difficulty": "hard",
+    "type": "mcq",
+    "prompt": "Calls that omit `bucket` keep adding to the same list. Which version is the idiomatic fix?",
+    "code": "def add(item, bucket=[]):\n    bucket.append(item)\n    return bucket",
+    "options": [
+      "`def add(item, bucket=list()):`",
+      "`def add(item, bucket=None):`, then `if bucket is None: bucket = []` inside the body",
+      "`def add(item, bucket=[][:]):`",
+      "Keep the signature and add `global bucket` inside the body"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "Defaults are evaluated once at definition time, so `list()` or `[][:]` still create a single shared list. Using `None` as a sentinel creates a fresh list on every call."
+  },
+  {
+    "id": "py-025",
+    "track": "python",
+    "topic": "functions",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "def f(a, *args, b=2, **kwargs):\n    print(a, args, b, kwargs)\n\nf(1, 2, 3, c=4)",
+    "options": [
+      "1 [2, 3] 2 {'c': 4}",
+      "1 (2,) 3 {'c': 4}",
+      "TypeError",
+      "1 (2, 3) 2 {'c': 4}"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "Extra positional arguments go into `args` as a tuple, and unknown keyword arguments go into `kwargs` as a dict. Because `b` comes after `*args` it is keyword-only, so 3 can't fill it and `b` keeps its default."
+  },
+  {
+    "id": "py-026",
+    "track": "python",
+    "topic": "functions",
+    "difficulty": "hard",
+    "type": "multi",
+    "prompt": "Which of these function definitions are syntactically valid? Select all that apply.",
+    "options": [
+      "`def f(*, key): ...`",
+      "`def f(**kwargs, *args): ...`",
+      "`def f(a, b=1, *args, c, **kwargs): ...`",
+      "`def f(a, /, b): ...`",
+      "`def f(a=1, b): ...`"
+    ],
+    "answer": [
+      0,
+      2,
+      3
+    ],
+    "explanation": "Parameters after `*args` or a bare `*` are keyword-only and may omit defaults, and `/` (Python 3.8+) marks the parameters before it as positional-only. A positional parameter without a default can't follow one with a default, and `**kwargs` must come last."
+  },
+  {
+    "id": "py-027",
+    "track": "python",
+    "topic": "scope",
+    "difficulty": "hard",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "count = 0\n\ndef increment():\n    count += 1\n    return count\n\nprint(increment())",
+    "options": [
+      "1",
+      "0",
+      "NameError",
+      "UnboundLocalError"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "Assigning to `count` anywhere in the function makes it local for the whole body, so `count += 1` reads a local that has no value yet. Declare `global count` (or pass the value in and return it) to update the module-level variable."
+  },
+  {
+    "id": "py-028",
+    "track": "python",
+    "topic": "scope",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "What does the `nonlocal` keyword do inside a nested function?",
+    "options": [
+      "It lets the nested function rebind a variable of the nearest enclosing function",
+      "It makes the variable module-level, like `global`",
+      "It creates a local copy of the outer variable",
+      "It makes the outer variable read-only inside the nested function"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "Without `nonlocal`, assigning to a name in the inner function creates a new local. `nonlocal` targets the enclosing function's variable (never the module scope), which is how closures keep state such as a counter."
+  },
+  {
+    "id": "py-029",
+    "track": "python",
+    "topic": "scope",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "In what order does Python search scopes for a name that is read inside a nested function?",
+    "options": [
+      "Global, Local, Enclosing, Built-in",
+      "Built-in, Global, Enclosing, Local",
+      "Local, Global, Enclosing, Built-in",
+      "Local, Enclosing, Global, Built-in"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "This is the LEGB rule: the function's own scope, then enclosing function scopes, then the module, then built-ins such as `len`. It is also why naming a variable `list` shadows the built-in."
+  },
+  {
+    "id": "py-030",
+    "track": "python",
+    "topic": "closures",
+    "difficulty": "hard",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "funcs = [lambda: i for i in range(3)]\nprint([f() for f in funcs])",
+    "options": [
+      "[0, 1, 2]",
+      "[0, 0, 0]",
+      "[2, 2, 2]",
+      "NameError"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "Each lambda looks up `i` when it is called, not when it is created (late binding). By then the comprehension has finished with `i` at 2; `lambda i=i: i` captures the current value instead."
+  },
+  {
+    "id": "py-031",
+    "track": "python",
+    "topic": "closures",
+    "difficulty": "hard",
+    "type": "multi",
+    "prompt": "Each option builds a list `fs` of three functions (assume `functools` is imported). Which ones make `[f() for f in fs]` equal `[0, 1, 2]`? Select all that apply.",
+    "options": [
+      "`fs = [lambda i=i: i for i in range(3)]`",
+      "`fs = [(lambda j: lambda: j)(i) for i in range(3)]`",
+      "`fs = [lambda: i for i in list(range(3))]`",
+      "`fs = [functools.partial(lambda i: i, i) for i in range(3)]`",
+      "`fs = [lambda: i for i in range(3)]`"
+    ],
+    "answer": [
+      0,
+      1,
+      3
+    ],
+    "explanation": "A plain `lambda: i` looks up `i` when it is called, after the loop has ended, so all three return 2 whatever the loop iterates over. A default argument, `functools.partial` or a factory function each bind the current value of `i` when the function is created."
+  },
+  {
+    "id": "py-032",
+    "track": "python",
+    "topic": "sorting",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "rows = [(\"b\", 2), (\"a\", 2), (\"c\", 1)]\nprint(sorted(rows, key=lambda r: (-r[1], r[0])))",
+    "options": [
+      "[('a', 2), ('b', 2), ('c', 1)]",
+      "[('c', 1), ('a', 2), ('b', 2)]",
+      "[('b', 2), ('a', 2), ('c', 1)]",
+      "[('c', 1), ('b', 2), ('a', 2)]"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "Tuples compare element by element, so the key sorts by negated count first (higher counts first) and breaks ties by name ascending. ('b', 2) and ('a', 2) tie on count, so 'a' comes first."
+  },
+  {
+    "id": "py-033",
+    "track": "python",
+    "topic": "sorting",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "`records` is a list of dicts like `{'name': 'Asha', 'salary': 52000}`. Which call returns them sorted by salary, highest first?",
+    "options": [
+      "`sorted(records, key=\"salary\", reverse=True)`",
+      "`sorted(records, key=lambda r: r[\"salary\"], reverse=True)`",
+      "`sorted(records, reverse=lambda r: r[\"salary\"])`",
+      "`records.sort(lambda r: r[\"salary\"], reverse=True)`"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "`key` must be a function that maps each item to the value to sort by, and `reverse=True` flips the order; a string key raises TypeError. `list.sort` accepts `key` only as a keyword argument and returns None."
+  },
+  {
+    "id": "py-034",
+    "track": "python",
+    "topic": "sorting",
+    "difficulty": "hard",
+    "type": "mcq",
+    "prompt": "Python's sort is stable. You want `emps` ordered by `dept` ascending and, within each department, by `salary` descending, using two `list.sort` calls. Which sequence is correct?",
+    "options": [
+      "`emps.sort(key=lambda e: e['salary'], reverse=True)`, then `emps.sort(key=lambda e: e['dept'])`",
+      "`emps.sort(key=lambda e: e['dept'])`, then `emps.sort(key=lambda e: e['salary'], reverse=True)`",
+      "Either order works, because the sort is stable",
+      "Neither works; two sorts can't combine two keys"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "Sort by the secondary key first, then by the primary key: the stable second sort keeps the salary order inside each department. Sorting by department first would be completely undone by the salary sort."
+  },
+  {
+    "id": "py-035",
+    "track": "python",
+    "topic": "sorting",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "What is the difference between `sorted(items)` and `items.sort()` for a list `items`?",
+    "options": [
+      "`sorted` returns a new list and accepts any iterable; `.sort()` sorts the list in place and returns `None`",
+      "They are identical; `.sort()` is an alias of `sorted`",
+      "`sorted` sorts in place; `.sort()` returns a new list",
+      "`.sort()` accepts any iterable; `sorted` works only on lists"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "A classic bug is `items = items.sort()`, which sets `items` to None. Use `sorted` when you need to keep the original order or sort a non-list iterable."
+  },
+  {
+    "id": "py-036",
+    "track": "python",
+    "topic": "map-filter",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "values = [\"12\", \"a\", \"7\", \"3b\"]\nprint(list(map(int, filter(str.isdigit, values))))",
+    "options": [
+      "['12', '7']",
+      "[12, 7, 3]",
+      "ValueError",
+      "[12, 7]"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "`filter(str.isdigit, ...)` keeps only the strings made entirely of digits, so 'a' and '3b' are dropped before `int` is applied. `map` then converts the survivors, so no ValueError is raised."
+  },
+  {
+    "id": "py-037",
+    "track": "python",
+    "topic": "map-filter",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "What does `list(filter(None, [0, 1, \"\", \"a\", None, [], [0]]))` return?",
+    "options": [
+      "`[1, 'a', [0]]`",
+      "`[0, 1, '', 'a', None, [], [0]]`",
+      "`[1, 'a']`",
+      "`[0, '', None, []]`"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "With `None` as the function, `filter` keeps the truthy items. `[0]` is a non-empty list, so it is truthy even though its only element is falsy."
+  },
+  {
+    "id": "py-038",
+    "track": "python",
+    "topic": "zip-enumerate",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "names = [\"Asha\", \"Ravi\", \"Meera\"]\nscores = [91, 78]\nprint(list(zip(names, scores)))",
+    "options": [
+      "[('Asha', 91), ('Ravi', 78), ('Meera', None)]",
+      "ValueError",
+      "[['Asha', 91], ['Ravi', 78]]",
+      "[('Asha', 91), ('Ravi', 78)]"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "`zip` stops at the shortest input, silently dropping 'Meera'. Use `itertools.zip_longest` to pad, or `zip(..., strict=True)` (Python 3.10+) to raise on unequal lengths."
+  },
+  {
+    "id": "py-039",
+    "track": "python",
+    "topic": "zip-enumerate",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Which is the most Pythonic way to loop over the list `rows` with both the position and the value?",
+    "options": [
+      "`for i, row in rows.items():`",
+      "`for i, row in zip(rows):`",
+      "`for i in range(len(rows)): row = rows.index(i)`",
+      "`for i, row in enumerate(rows):`"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "`enumerate` yields `(index, value)` pairs, and `start=1` changes the first index. Lists have no `.items()` method, `zip(rows)` yields 1-tuples, and `rows.index(i)` searches for the value i."
+  },
+  {
+    "id": "py-040",
+    "track": "python",
+    "topic": "zip-enumerate",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "Given `names = ['a', 'b']` and `scores = [1, 2]`, which expressions build `{'a': 1, 'b': 2}`? Select all that apply.",
+    "options": [
+      "`dict(enumerate(names))`",
+      "`dict(names, scores)`",
+      "`dict(zip(names, scores))`",
+      "`{names[i]: scores[i] for i in range(len(names))}`",
+      "`{n: s for n, s in zip(names, scores)}`"
+    ],
+    "answer": [
+      2,
+      3,
+      4
+    ],
+    "explanation": "`zip` pairs the two lists, and `dict` turns those pairs into keys and values. `dict(names, scores)` raises TypeError, and `dict(enumerate(names))` gives `{0: 'a', 1: 'b'}`."
+  },
+  {
+    "id": "py-041",
+    "track": "python",
+    "topic": "iterators",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "it = iter([10, 20, 30])\nnext(it)\nprint(list(it), next(it, -1))",
+    "options": [
+      "[10, 20, 30] 10",
+      "[20, 30] -1",
+      "[20, 30] 30",
+      "[20, 30]\nStopIteration"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "The first `next` consumes 10 and `list(it)` takes the rest, leaving the iterator exhausted. `next` with a default returns the default instead of raising StopIteration."
+  },
+  {
+    "id": "py-042",
+    "track": "python",
+    "topic": "iterators",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "What happens when you call `next([1, 2, 3])`?",
+    "options": [
+      "It returns 1",
+      "It returns 3",
+      "It raises `TypeError`, because a list is iterable but not an iterator",
+      "It raises `StopIteration`"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "A list can produce an iterator with `iter(lst)`, but it has no `__next__` method of its own. `next(iter([1, 2, 3]))` returns 1."
+  },
+  {
+    "id": "py-043",
+    "track": "python",
+    "topic": "generators",
+    "difficulty": "hard",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "def gen():\n    print(\"start\")\n    yield 1\n    print(\"end\")\n    yield 2\n\ng = gen()\nprint(\"created\")\nprint(next(g))",
+    "options": [
+      "start\ncreated\n1",
+      "created\n1",
+      "created\nstart\n1",
+      "created\nstart\n1\nend"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "Calling a generator function runs none of its body; it only creates the generator object. The body starts on the first `next`, runs until the first `yield` and pauses there, so 'end' is never printed."
+  },
+  {
+    "id": "py-044",
+    "track": "python",
+    "topic": "generators",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "Which statements about generators are true? Select all that apply.",
+    "options": [
+      "They produce values lazily, one at a time",
+      "You can read an item by position with `gen[0]`",
+      "They can be iterated over only once",
+      "`len(gen)` returns the number of remaining items",
+      "Calling a function that contains `yield` returns a generator object without running the function body"
+    ],
+    "answer": [
+      0,
+      2,
+      4
+    ],
+    "explanation": "Generators compute each value on demand and are exhausted after one pass. They don't support `len()` or indexing; convert with `list(gen)` if you need those, at the cost of memory."
+  },
+  {
+    "id": "py-045",
+    "track": "python",
+    "topic": "exceptions",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "def safe_div(x):\n    try:\n        result = 10 / x\n    except ZeroDivisionError:\n        return \"zero\"\n    else:\n        return result\n    finally:\n        print(\"done\")\n\nprint(safe_div(0))",
+    "options": [
+      "done\nzero",
+      "zero\ndone",
+      "zero",
+      "done\nZeroDivisionError"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "The `except` block catches the error and prepares to return 'zero', but `finally` always runs before the function actually returns. So 'done' is printed first, then the caller prints the returned value."
+  },
+  {
+    "id": "py-046",
+    "track": "python",
+    "topic": "exceptions",
+    "difficulty": "hard",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "def f():\n    try:\n        return \"try\"\n    finally:\n        return \"finally\"\n\nprint(f())",
+    "options": [
+      "try",
+      "try\nfinally",
+      "finally",
+      "SyntaxError"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "A `return` in `finally` replaces the pending return value from `try` (and would also swallow an exception). That is why returning from `finally` is considered bad practice."
+  },
+  {
+    "id": "py-047",
+    "track": "python",
+    "topic": "exceptions",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "In a `try`/`except`/`else`/`finally` statement, when does the `else` block run?",
+    "options": [
+      "Only when an exception was raised and caught",
+      "Only when the `try` block finishes without raising an exception",
+      "Always, just before `finally`",
+      "Only when no `except` clause matches the exception"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "`else` holds code that should run only on success, which keeps it out of the `try` so its own errors aren't caught by accident. `finally` is the block that always runs."
+  },
+  {
+    "id": "py-048",
+    "track": "python",
+    "topic": "exceptions",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Why is a bare `except:` clause usually discouraged?",
+    "options": [
+      "It also catches `KeyboardInterrupt` and `SystemExit`, and it hides bugs by swallowing every error",
+      "It is a syntax error in Python 3",
+      "It catches only exceptions that inherit from `Exception`",
+      "It prevents the `finally` block from running"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "A bare `except:` catches `BaseException`, including Ctrl+C and `sys.exit()`. Catch the specific exceptions you expect, or at most `except Exception:`."
+  },
+  {
+    "id": "py-049",
+    "track": "python",
+    "topic": "exceptions",
+    "difficulty": "hard",
+    "type": "mcq",
+    "prompt": "Which clause catches both `ValueError` and `TypeError` and binds the exception to `e`?",
+    "options": [
+      "`except ValueError, TypeError as e:`",
+      "`except (ValueError, TypeError) as e:`",
+      "`except ValueError or TypeError as e:`",
+      "`except [ValueError, TypeError] as e:`"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "Multiple exception types go in a tuple. `ValueError or TypeError` evaluates to just `ValueError`, so a TypeError slips through, and the comma form is Python 2 syntax that is a SyntaxError in Python 3."
+  },
+  {
+    "id": "py-050",
+    "track": "python",
+    "topic": "exceptions",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "What does the bare `raise` on the last line do?",
+    "code": "try:\n    value = int(raw)\nexcept ValueError:\n    log_bad_row(raw)\n    raise",
+    "options": [
+      "It raises a new `RuntimeError` with no message",
+      "It re-raises the `ValueError` currently being handled, with its original traceback",
+      "Nothing, because the exception was already caught",
+      "It raises a new, empty `Exception`"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "Inside an `except` block, a bare `raise` re-raises the active exception unchanged, so you can log the problem and still let the caller handle it. Outside an `except` block it fails with RuntimeError."
+  },
+  {
+    "id": "py-051",
+    "track": "python",
+    "topic": "exceptions",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "Which of these expressions raise an exception? Select all that apply.",
+    "options": [
+      "`[1, 2][5]`",
+      "`\"total: \" + 5`",
+      "`[1, 2][5:]`",
+      "`int(\" 42 \")`",
+      "`{\"a\": 1}.get(\"b\")`",
+      "`int(\"1.5\")`"
+    ],
+    "answer": [
+      0,
+      1,
+      5
+    ],
+    "explanation": "`int` rejects '1.5' (ValueError), indexing past the end raises IndexError, and str + int raises TypeError. `dict.get` returns None for a missing key, `int` tolerates surrounding whitespace, and slicing past the end returns an empty list."
+  },
+  {
+    "id": "py-052",
+    "track": "python",
+    "topic": "exceptions",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "Which statements about `try`/`except`/`finally` are true? Select all that apply.",
+    "options": [
+      "With `except Exception:` placed before `except ValueError:`, a ValueError goes to the `ValueError` handler",
+      "An exception raised inside an `except` block is not caught by the other `except` clauses of the same `try`",
+      "`finally` runs even if an `except` block re-raises the exception",
+      "`finally` is skipped when the `try` block executes `return`",
+      "`except` clauses are checked top to bottom, and only the first matching one runs"
+    ],
+    "answer": [
+      1,
+      2,
+      4
+    ],
+    "explanation": "`finally` always runs, including on `return` and re-raise. Because only the first matching clause runs, a broad `except Exception` placed first shadows a more specific `except ValueError` after it."
+  },
+  {
+    "id": "py-053",
+    "track": "python",
+    "topic": "exceptions",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "class InsufficientData(ValueError):\n    pass\n\ntry:\n    raise InsufficientData(\"need 30 rows\")\nexcept ValueError as e:\n    print(type(e).__name__, e)",
+    "options": [
+      "ValueError need 30 rows",
+      "InsufficientData need 30 rows",
+      "InsufficientData",
+      "InsufficientData('need 30 rows')"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "`except ValueError` also catches subclasses, so the custom exception is handled there while keeping its own type. Printing an exception shows its message, which is the string passed to the constructor."
+  },
+  {
+    "id": "py-054",
+    "track": "python",
+    "topic": "oop",
+    "difficulty": "hard",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "class Team:\n    members = []\n\n    def __init__(self, name):\n        self.name = name\n\n    def add(self, person):\n        self.members.append(person)\n\na, b = Team(\"a\"), Team(\"b\")\na.add(\"Asha\")\nprint(b.members)",
+    "options": [
+      "[]",
+      "['Asha']",
+      "AttributeError",
+      "None"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "`members` is a class attribute, so a single list is shared by every instance, and `self.members.append` mutates that shared list. Create per-instance data in `__init__` with `self.members = []`."
+  },
+  {
+    "id": "py-055",
+    "track": "python",
+    "topic": "oop",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Which decorator makes a method receive the class itself (conventionally `cls`) as its first argument?",
+    "options": [
+      "`@staticmethod`",
+      "`@property`",
+      "`@classmethod`",
+      "`@abstractmethod`"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "`@classmethod` passes the class, which is handy for alternative constructors such as `Date.from_string(...)`. `@staticmethod` passes neither the instance nor the class."
+  },
+  {
+    "id": "py-056",
+    "track": "python",
+    "topic": "oop",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "What happens when this code runs, and why?",
+    "code": "class Employee:\n    def __init__(self, name):\n        self.name = name\n\nclass Manager(Employee):\n    def __init__(self, name, reports):\n        self.reports = reports\n\nm = Manager(\"Asha\", 4)\nprint(m.name)",
+    "options": [
+      "`AttributeError`, because `Manager.__init__` never calls `super().__init__(name)`",
+      "It prints `Asha`, because the parent `__init__` runs automatically first",
+      "It prints `None`, because unset attributes default to None",
+      "`TypeError`, because `Manager` passes too many arguments"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "Overriding `__init__` replaces the parent's initializer completely; Python does not call it for you. Add `super().__init__(name)` so the attributes that `Employee` sets exist."
+  },
+  {
+    "id": "py-057",
+    "track": "python",
+    "topic": "oop",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "class Point:\n    def __repr__(self):\n        return \"Point()\"\n\n    def __str__(self):\n        return \"point\"\n\np = Point()\nprint(p, [p])",
+    "options": [
+      "point [point]",
+      "point [Point()]",
+      "Point() [Point()]",
+      "Point() [point]"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "`print` uses `__str__` for the object itself, but a list's string form shows its elements with `__repr__`. That is why containers show the developer-facing representation."
+  },
+  {
+    "id": "py-058",
+    "track": "python",
+    "topic": "oop",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "class Box:\n    def __init__(self, items):\n        self.items = items\n\n    def __len__(self):\n        return len(self.items)\n\nprint(bool(Box([])), bool(Box([0])), len(Box(\"abc\")))",
+    "options": [
+      "True True 3",
+      "False True 3",
+      "False False 3",
+      "True True 1"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "Without `__bool__`, Python uses `__len__` for truthiness, so an object whose length is 0 is falsy. `Box([0])` has length 1, so it is truthy even though its item is falsy."
+  },
+  {
+    "id": "py-059",
+    "track": "python",
+    "topic": "oop",
+    "difficulty": "hard",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "class Pt:\n    def __init__(self, x):\n        self.x = x\n\n    def __eq__(self, other):\n        return self.x == other.x\n\nprint(Pt(1) == Pt(1), Pt(1) is Pt(1))\nprint(len({Pt(1), Pt(1)}))",
+    "options": [
+      "True False\n1",
+      "True False\nTypeError",
+      "True False\n2",
+      "True True\n1"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "`==` calls the custom `__eq__`, while `is` compares identity, and two separately created objects are never identical. Defining `__eq__` without `__hash__` sets `__hash__` to None, so the instances can't be put in a set (TypeError: unhashable type)."
+  },
+  {
+    "id": "py-060",
+    "track": "python",
+    "topic": "oop",
+    "difficulty": "hard",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "class A:\n    def who(self):\n        return \"A\"\n\nclass B(A):\n    def who(self):\n        return \"B\" + super().who()\n\nclass C(A):\n    def who(self):\n        return \"C\" + super().who()\n\nclass D(B, C):\n    def who(self):\n        return \"D\" + super().who()\n\nprint(D().who())",
+    "options": [
+      "DBCA",
+      "DBA",
+      "DCBA",
+      "DBACA"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "`super()` follows the method resolution order of the instance's class, `D.__mro__` = D, B, C, A, object, not just the parent of the class where it is written. So B's `super()` call goes to C, and A runs only once."
+  },
+  {
+    "id": "py-061",
+    "track": "python",
+    "topic": "oop",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "Which pairings of an operation and the dunder method it calls are correct? Select all that apply.",
+    "options": [
+      "`x[k]` calls `x.__index__(k)`",
+      "`x + y` calls `x.__plus__(y)`",
+      "`print(x)` uses `x.__str__()`",
+      "`len(x)` calls `x.__len__()`",
+      "`x == y` calls `x.__eq__(y)`"
+    ],
+    "answer": [
+      2,
+      3,
+      4
+    ],
+    "explanation": "Indexing uses `__getitem__` and `+` uses `__add__`; there is no `__plus__`. `__index__` converts an object to an integer, for example when the object itself is used as a list index."
+  },
+  {
+    "id": "py-062",
+    "track": "python",
+    "topic": "identity",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Why is `if x is None:` preferred over `if x == None:`?",
+    "options": [
+      "`x == None` raises TypeError when `x` is None",
+      "`is` compares values, while `==` compares types",
+      "`None` is a singleton, and `is` checks identity, which a class's `__eq__` can't override",
+      "`x == None` is a syntax error"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "There is only one None object, so identity is the exact test. `==` calls `__eq__`, which some objects (NumPy arrays, pandas Series) override to return element-wise results."
+  },
+  {
+    "id": "py-063",
+    "track": "python",
+    "topic": "identity",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "Which expressions evaluate to `True`? Select all that apply.",
+    "options": [
+      "`1 == 1.0`",
+      "`(1, 2) == (1, 2)`",
+      "`[] == []`",
+      "`[] is []`",
+      "`\"1\" == 1`",
+      "`None is None`"
+    ],
+    "answer": [
+      0,
+      1,
+      2,
+      5
+    ],
+    "explanation": "`==` compares values, so equal lists, equal tuples, and numbers of different types such as 1 and 1.0 are equal. `is` checks identity: each `[]` creates a new list, while None is one shared object; a string never equals an int."
+  },
+  {
+    "id": "py-064",
+    "track": "python",
+    "topic": "copying",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import copy\n\na = [[1, 2], [3]]\nb = a.copy()\nc = copy.deepcopy(a)\na[0].append(9)\nprint(b[0], c[0])",
+    "options": [
+      "[1, 2, 9] [1, 2]",
+      "[1, 2] [1, 2]",
+      "[1, 2, 9] [1, 2, 9]",
+      "[1, 2] [1, 2, 9]"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "`a.copy()` is a shallow copy: a new outer list whose items are the same inner list objects, so mutating `a[0]` shows in `b[0]`. `deepcopy` copies the inner lists too."
+  },
+  {
+    "id": "py-065",
+    "track": "python",
+    "topic": "copying",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "After this code runs, which objects do `a` and `b` share?",
+    "code": "a = [[1, 2], [3, 4]]\nb = a.copy()",
+    "options": [
+      "The inner lists `[1, 2]` and `[3, 4]`, but not the outer list",
+      "Nothing; `b` is a fully independent copy",
+      "Both the outer list and the inner lists, so `b is a` is True",
+      "Only the first inner list"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "A shallow copy (`a.copy()`, `a[:]`, `list(a)`) makes a new outer list that holds references to the same inner objects. `b.append(...)` won't affect `a`, but `b[0].append(...)` will; use `copy.deepcopy` for full independence."
+  },
+  {
+    "id": "py-066",
+    "track": "python",
+    "topic": "copying",
+    "difficulty": "hard",
+    "type": "multi",
+    "prompt": "Starting from this code, which assignments create a `b` such that `b[0].append(99)` does NOT change `a`? Select all that apply.",
+    "code": "import copy\na = [[1, 2], [3, 4]]",
+    "options": [
+      "`b = [row[:] for row in a]`",
+      "`b = a[:]`",
+      "`b = list(a)`",
+      "`b = copy.deepcopy(a)`",
+      "`b = copy.copy(a)`",
+      "`b = a.copy()`"
+    ],
+    "answer": [
+      0,
+      3
+    ],
+    "explanation": "`a[:]`, `list(a)`, `a.copy()` and `copy.copy(a)` are all shallow: the new outer list holds the same inner lists. `deepcopy` and copying each row with `row[:]` give independent inner lists (the latter is enough here because the rows hold only immutable ints)."
+  },
+  {
+    "id": "py-067",
+    "track": "python",
+    "topic": "truthiness",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "print(0 or \"\" or [] or \"x\", 5 and 0 and 3)",
+    "options": [
+      "True False",
+      "x 0",
+      "x 3",
+      "[] 0"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "`or` returns the first truthy operand (or the last one if none is truthy), and `and` returns the first falsy operand (or the last one). So the `or` chain reaches 'x', and the `and` chain stops at 0."
+  },
+  {
+    "id": "py-068",
+    "track": "python",
+    "topic": "comparisons",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "print(1 < 3 > 2, 1 < 2 == 2.0, (1 < 3) > 2)",
+    "options": [
+      "True True False",
+      "True True True",
+      "False True False",
+      "True False False"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "`a < b > c` means `a < b and b > c`, so the first two expressions are True. With parentheses, `(1 < 3)` becomes True, which equals 1, and `1 > 2` is False."
+  },
+  {
+    "id": "py-069",
+    "track": "python",
+    "topic": "unpacking",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "What is `rest` after this line runs?",
+    "code": "first, *rest = \"abc\"",
+    "options": [
+      "`('b', 'c')`",
+      "`['b', 'c']`",
+      "`'bc'`",
+      "`['bc']`"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "A starred target in unpacking always collects the remaining items into a list, whatever the type of the source. So the string is split into characters and `rest` is `['b', 'c']`."
+  },
+  {
+    "id": "py-070",
+    "track": "python",
+    "topic": "collections",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "from collections import Counter\n\nc = Counter(\"mississippi\")\nprint(c.most_common(2))",
+    "options": [
+      "[('s', 4), ('i', 4)]",
+      "[('i', 4), ('s', 4), ('p', 2)]",
+      "[('i', 4), ('s', 4)]",
+      "[('m', 1), ('i', 4)]"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "'i' and 's' both appear 4 times. `most_common` sorts by count, elements with equal counts keep the order in which they were first seen, and 'i' appears before 's'."
+  },
+  {
+    "id": "py-071",
+    "track": "python",
+    "topic": "collections",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "from collections import defaultdict\n\nd = defaultdict(list)\nfor k, v in [(\"x\", 1), (\"y\", 2), (\"x\", 3)]:\n    d[k].append(v)\nprint(dict(d))\nprint(d[\"z\"], len(d))",
+    "options": [
+      "{'x': [1, 3], 'y': [2]}\nKeyError",
+      "{'x': [1, 3], 'y': [2]}\n[] 2",
+      "{'x': [1, 3], 'y': [2]}\n[] 3",
+      "{'x': [3], 'y': [2]}\n[] 3"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "A missing key in a `defaultdict(list)` gets a fresh empty list, so appending groups values without a KeyError. Even just reading `d['z']` inserts the key, and it happens before `len(d)` is evaluated, so the length is 3."
+  },
+  {
+    "id": "py-072",
+    "track": "python",
+    "topic": "collections",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "Which snippets leave `counts` equal (with `==`) to `{'a': 2, 'b': 1}` for `words = ['a', 'b', 'a']`? Assume `Counter` and `defaultdict` are imported from `collections`. Select all that apply.",
+    "options": [
+      "`counts = {}`, then `for w in words: counts[w] = counts.get(w, 0) + 1`",
+      "`counts = dict.fromkeys(words, 1)`",
+      "`counts = Counter(words)`",
+      "`counts = {}`, then `for w in words: counts[w] += 1`",
+      "`counts = defaultdict(int)`, then `for w in words: counts[w] += 1`"
+    ],
+    "answer": [
+      0,
+      2,
+      4
+    ],
+    "explanation": "A plain dict raises KeyError on `counts[w] += 1` for a new key, and `dict.fromkeys` sets every count to 1. `Counter` and `defaultdict` are dict subclasses, so they compare equal to an ordinary dict with the same items."
+  },
+  {
+    "id": "py-073",
+    "track": "python",
+    "topic": "files",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "with open(\"notes.txt\", \"w\") as f:\n    f.write(\"a\\nb\\n\")\n\nwith open(\"notes.txt\") as f:\n    lines = f.readlines()\nprint(lines, f.closed)",
+    "options": [
+      "['a', 'b'] True",
+      "['a\\n', 'b\\n'] False",
+      "['a\\nb\\n'] True",
+      "['a\\n', 'b\\n'] True"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "`readlines` keeps the trailing newline on each line (use `f.read().splitlines()` or `line.rstrip('\\n')` to drop it). The `with` block closes the file when it exits, so `f.closed` is True afterwards."
+  },
+  {
+    "id": "py-074",
+    "track": "python",
+    "topic": "files",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "What is the main benefit of `with open(path) as f:` over `f = open(path)`?",
+    "options": [
+      "The file is closed automatically when the block exits, even if an exception is raised",
+      "The file is read into memory faster",
+      "The file is locked so other programs can't open it",
+      "A missing file is created automatically"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "`with` uses the file object as a context manager, whose exit step calls `f.close()`. Without it, an exception between `open` and `close` can leave the file open."
+  },
+  {
+    "id": "py-075",
+    "track": "python",
+    "topic": "files",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "You need to process a 5 GB log file line by line. Which loop avoids loading the whole file into memory?",
+    "options": [
+      "`for line in f.readlines():`",
+      "`for line in f.read().split(\"\\n\"):`",
+      "`for line in list(f):`",
+      "`for line in f:` inside a `with open(...) as f:` block"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "A file object is an iterator that reads one line at a time. `readlines()`, `read()` and `list(f)` all load the entire content into memory first."
+  },
+  {
+    "id": "py-076",
+    "track": "python",
+    "topic": "files",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "Which statements about `open()` file modes are correct? Select all that apply.",
+    "options": [
+      "`'w'` truncates an existing file to empty before writing",
+      "`'r'` raises `FileNotFoundError` if the file doesn't exist",
+      "`'a'` writes at the end of the file and creates it if it doesn't exist",
+      "`'x'` overwrites the file if it already exists",
+      "`'r+'` creates the file if it doesn't exist"
+    ],
+    "answer": [
+      0,
+      1,
+      2
+    ],
+    "explanation": "`'x'` is exclusive creation: it raises FileExistsError when the file already exists. `'r+'` opens for reading and writing but, like `'r'`, requires the file to exist."
+  },
+  {
+    "id": "py-077",
+    "track": "python",
+    "topic": "tuples",
+    "difficulty": "hard",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "t = ([1], 2)\ntry:\n    t[0] += [3]\nexcept TypeError:\n    print(\"error\")\nprint(t)",
+    "options": [
+      "([1, 3], 2)",
+      "error\n([1, 3], 2)",
+      "error\n([1], 2)",
+      "TypeError"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "`t[0] += [3]` first extends the list in place (lists support `+=`), then tries to assign the result back into the tuple slot, which fails. The TypeError is raised, but the list was already modified."
+  },
+  {
+    "id": "py-078",
+    "track": "python",
+    "topic": "lists",
+    "difficulty": "hard",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "grid = [[0] * 2] * 3\ngrid[0][0] = 1\nprint(grid)",
+    "options": [
+      "[[1, 0], [1, 0], [1, 0]]",
+      "[[1, 0], [0, 0], [0, 0]]",
+      "[[1, 1], [0, 0], [0, 0]]",
+      "[[1, 1], [1, 1], [1, 1]]"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "Multiplying the outer list repeats a reference to the same inner list three times, so changing one row changes all of them. Build independent rows with `[[0] * 2 for _ in range(3)]`."
+  },
+  {
+    "id": "py-079",
+    "track": "python",
+    "topic": "lists",
+    "difficulty": "hard",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "nums = [1, 2, 2, 3]\nfor n in nums:\n    if n == 2:\n        nums.remove(n)\nprint(nums)",
+    "options": [
+      "[1, 3]",
+      "[1, 2, 2, 3]",
+      "[1, 2, 3]",
+      "RuntimeError"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "Removing the first 2 shifts the remaining items left, so the loop's next index skips the second 2. Lists don't raise RuntimeError when changed during iteration; build a new list instead, e.g. `[n for n in nums if n != 2]`."
+  },
+  {
+    "id": "py-080",
+    "track": "python",
+    "topic": "strings",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "This code raises `TypeError`. Which change makes `label` equal `'3,1,4'`?",
+    "code": "nums = [3, 1, 4]\nlabel = \",\".join(nums)",
+    "options": [
+      "`label = \",\".join(nums, str)`",
+      "`label = \",\".join(map(str, nums))`",
+      "`label = str(nums).join(\",\")`",
+      "`label = \",\".join(list(nums))`"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "`str.join` accepts only an iterable of strings, so convert each element first with `map(str, ...)` or a generator expression. `str(nums)` gives the text '[3, 1, 4]', not the joined values."
+  },
+  {
+    "id": "py-081",
+    "track": "python",
+    "topic": "types",
+    "difficulty": "hard",
+    "type": "mcq",
+    "prompt": "What is the value of `{1: \"a\", True: \"b\", 1.0: \"c\"}`?",
+    "options": [
+      "`{1: 'a', True: 'b', 1.0: 'c'}`",
+      "`{1: 'c'}`",
+      "`{True: 'c'}`",
+      "`{1: 'a', 1.0: 'c'}`"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "`1 == True == 1.0` and they have the same hash, so they count as the same dict key. The first key object (1) is kept, and each later entry overwrites the value, leaving 'c'."
+  },
+  {
+    "id": "py-082",
+    "track": "python",
+    "topic": "sets",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "a = {1, 2, 3}\nb = {2, 3, 4}\nprint(sorted(a - b), sorted(a ^ b), sorted(a & b))",
+    "options": [
+      "[1] [2, 3] [1, 4]",
+      "[1] [1, 4] [2, 3]",
+      "[1, 4] [1] [2, 3]",
+      "[1] [1, 2, 3, 4] [2, 3]"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "`-` is difference (in a but not b), `^` is symmetric difference (in exactly one of them), and `&` is intersection. `|` would be the union [1, 2, 3, 4]."
+  },
+  {
+    "id": "py-083",
+    "track": "python",
+    "topic": "sets",
+    "difficulty": "easy",
+    "type": "multi",
+    "prompt": "Which expressions create an empty set? Select all that apply.",
+    "options": [
+      "`{}`",
+      "`set()`",
+      "`{()}`",
+      "`set([])`",
+      "`set(\"\")`"
+    ],
+    "answer": [
+      1,
+      3,
+      4
+    ],
+    "explanation": "`{}` is an empty dict, not a set; there is no literal for an empty set, so use `set()`. Passing any empty iterable to `set` also gives an empty set, while `{()}` is a set containing one empty tuple."
+  },
+  {
+    "id": "py-084",
+    "track": "python",
+    "topic": "sets",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "For a large collection, which type gives the fastest average-case `x in collection` check?",
+    "options": [
+      "`list`",
+      "`tuple`",
+      "`set`",
+      "`collections.deque`"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "Sets are hash tables, so membership is O(1) on average. Lists, tuples and deques compare element by element, which is O(n)."
+  },
+  {
+    "id": "py-085",
+    "track": "python",
+    "topic": "numbers",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "Which expressions evaluate to `-3`? Assume `math` is imported. Select all that apply.",
+    "options": [
+      "`round(-9 / 4)`",
+      "`divmod(-9, 4)[0]`",
+      "`-(9 // 4)`",
+      "`-9 // 4`",
+      "`int(-9 / 4)`",
+      "`math.floor(-9 / 4)`"
+    ],
+    "answer": [
+      1,
+      3,
+      5
+    ],
+    "explanation": "Floor division and `divmod` round toward negative infinity, like `math.floor`, so -2.25 becomes -3. `int()` truncates toward zero, `-(9 // 4)` negates 2, and `round` goes to the nearest integer, so those three give -2."
+  }
+]

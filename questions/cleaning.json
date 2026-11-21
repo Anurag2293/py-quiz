@@ -1,0 +1,1254 @@
+[
+  {
+    "id": "eda-001",
+    "track": "cleaning",
+    "topic": "first-look",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ndf = pd.DataFrame({'id': [1, 2, 3, 4],\n                   'city': ['Pune', 'Delhi', None, 'Pune'],\n                   'sales': [120.0, None, 90.0, None]})\nprint(df.shape)\nprint(df.isna().sum().tolist())",
+    "options": [
+      "(3, 4)\n[0, 1, 2]",
+      "(4, 3)\n[4, 3, 2]",
+      "(4, 3)\n3",
+      "(4, 3)\n[0, 1, 2]"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "`shape` is (rows, columns), and `isna().sum()` counts missing values per column: none in id, one in city, two in sales. `[4, 3, 2]` would be the non-null counts from `count()`."
+  },
+  {
+    "id": "eda-002",
+    "track": "cleaning",
+    "topic": "first-look",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "You have just loaded a 2-lakh-row CSV. Which single call shows every column's dtype and its non-null count together?",
+    "options": [
+      "`df.shape`",
+      "`df.info()`",
+      "`df.describe()`",
+      "`df.head()`"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "`df.info()` prints each column with its non-null count and dtype, plus memory usage. `describe()` gives summary statistics (only for numeric columns by default), not dtypes."
+  },
+  {
+    "id": "eda-003",
+    "track": "cleaning",
+    "topic": "first-look",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "Which statements about first-look inspection in pandas are true? Select all that apply.",
+    "options": [
+      "`df.describe(include='all')` also reports count, unique, top and freq for text columns.",
+      "`df.info()` returns a DataFrame you can filter.",
+      "`df.head()` returns the first 5 rows by default.",
+      "`df.dtypes` is a Series mapping column names to dtypes."
+    ],
+    "answer": [
+      0,
+      2,
+      3
+    ],
+    "explanation": "`info()` prints its report and returns None, so you cannot filter its result. The other three are standard behaviour; `include='all'` adds the categorical-style statistics for non-numeric columns."
+  },
+  {
+    "id": "eda-004",
+    "track": "cleaning",
+    "topic": "missing-values",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "Which expressions give the number of missing values in each column of `df`? Select all that apply.",
+    "options": [
+      "`len(df) - df.count()`",
+      "`df.count()`",
+      "`df.dropna().sum()`",
+      "`df.isna().sum()`",
+      "`df.isnull().sum()`"
+    ],
+    "answer": [
+      0,
+      3,
+      4
+    ],
+    "explanation": "`isnull` is an alias of `isna`, and `count()` returns non-null counts, so subtracting it from the row count gives the missing counts. `count()` alone is the opposite of what is asked."
+  },
+  {
+    "id": "eda-005",
+    "track": "cleaning",
+    "topic": "missing-values",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "A survey file marks missing scores as `-`, `NA` or an empty field. What does this code print?",
+    "code": "from io import StringIO\nimport pandas as pd\ncsv = \"name,score\\nAsha,78\\nRavi,-\\nMeena,NA\\nJohn,\\n\"\ndf = pd.read_csv(StringIO(csv), na_values=['-'])\nprint(df['score'].isna().sum(), df['score'].dtype)",
+    "options": [
+      "1 float64",
+      "3 float64",
+      "2 float64",
+      "2 object"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "`NA` and empty fields are default missing markers in `read_csv`, and `na_values=['-']` adds `-`, so all three become NaN. With every non-number gone, the column parses as float64."
+  },
+  {
+    "id": "eda-006",
+    "track": "cleaning",
+    "topic": "missing-values",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "In a salary survey, people with very high incomes are more likely to leave the income field blank. What kind of missingness is this?",
+    "options": [
+      "MCAR (missing completely at random)",
+      "Structural missingness that can be ignored",
+      "MNAR (missing not at random)",
+      "MAR (missing at random)"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "When the chance of being missing depends on the unobserved value itself (high income), the data are MNAR. MAR would mean missingness depends only on other observed columns."
+  },
+  {
+    "id": "eda-007",
+    "track": "cleaning",
+    "topic": "missing-values",
+    "difficulty": "hard",
+    "type": "mcq",
+    "prompt": "In a hospital dataset, cholesterol is missing far more often for patients under 30, and age is recorded for everyone. Within any one age group, whether cholesterol is missing is unrelated to the cholesterol value. Which description fits best?",
+    "options": [
+      "MNAR, because young patients have different cholesterol",
+      "MAR, because missingness depends on the observed age column",
+      "MCAR, because the missingness is random within groups",
+      "Not missing data at all, since age explains it"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "MAR means missingness depends only on observed variables (here age), not on the missing value once those are accounted for. It is not MCAR, because the overall missing rate changes with age."
+  },
+  {
+    "id": "eda-008",
+    "track": "cleaning",
+    "topic": "missing-values",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "Which statements about dropping rows with missing values are true? Select all that apply.",
+    "options": [
+      "If values are MCAR, dropping incomplete rows leaves estimates unbiased but reduces sample size.",
+      "`df.dropna()` by default drops a row only when all of its values are missing.",
+      "`df.dropna()` by default drops columns, not rows.",
+      "If missingness depends on the unobserved value itself (MNAR), dropping those rows can bias results."
+    ],
+    "answer": [
+      0,
+      3
+    ],
+    "explanation": "`dropna()` defaults to `axis=0` and `how='any'`: it drops rows with at least one missing value. Under MCAR deletion costs power but not bias; under MNAR it can distort the picture."
+  },
+  {
+    "id": "eda-009",
+    "track": "cleaning",
+    "topic": "imputation",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ns = pd.Series([20, 22, 25, None, 200])\nprint(s.fillna(s.median()).tolist())",
+    "options": [
+      "[20.0, 22.0, 25.0, 0.0, 200.0]",
+      "[20.0, 22.0, 25.0, 66.75, 200.0]",
+      "[20.0, 22.0, 25.0, 23.5, 200.0]",
+      "[20.0, 22.0, 25.0, 25.0, 200.0]"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "The median of 20, 22, 25 and 200 is (22 + 25) / 2 = 23.5. The mean (66.75) is dragged up by the outlier 200, which is why the median is preferred for skewed data."
+  },
+  {
+    "id": "eda-010",
+    "track": "cleaning",
+    "topic": "imputation",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "A `monthly_income` column is strongly right-skewed and has 4% missing values. Which simple imputation is usually the better choice?",
+    "options": [
+      "Fill with the maximum",
+      "Fill with the mean",
+      "Fill with the median",
+      "Fill with 0"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "The median is robust to the long right tail, while the mean is pulled toward the few very high incomes. Filling with 0 invents a value that is far from typical."
+  },
+  {
+    "id": "eda-011",
+    "track": "cleaning",
+    "topic": "imputation",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "A categorical `payment_method` column (UPI, Card, Cash, COD) has a few missing values. Which single-value imputation makes sense?",
+    "options": [
+      "The median of the column",
+      "The mean of the column",
+      "The mode (most frequent category)",
+      "The string length of the longest category"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "Mean and median are not defined for nominal categories; the mode is the standard simple choice. A separate 'Unknown' category is another common option."
+  },
+  {
+    "id": "eda-012",
+    "track": "cleaning",
+    "topic": "imputation",
+    "difficulty": "hard",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ndf = pd.DataFrame({'dept': ['HR', 'HR', 'IT', 'IT', 'IT'],\n                   'salary': [40, None, 80, None, 120]})\ndf['salary'] = df['salary'].fillna(df.groupby('dept')['salary'].transform('mean'))\nprint(df['salary'].tolist())",
+    "options": [
+      "[40.0, 40.0, 80.0, 100.0, 120.0]",
+      "[40.0, 40.0, 80.0, 80.0, 120.0]",
+      "[40.0, 80.0, 80.0, 80.0, 120.0]",
+      "[40.0, nan, 80.0, nan, 120.0]"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "`transform('mean')` returns each row's department mean aligned to the original index (HR 40, IT 100), so each gap is filled with its own group's mean. Filling every gap with the overall mean (80) is the trap."
+  },
+  {
+    "id": "eda-013",
+    "track": "cleaning",
+    "topic": "imputation",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "You will train a model on a train/test split and need to impute missing ages with the median. What is the correct way to do it?",
+    "options": [
+      "Compute the median on the training split and use that same value to fill both train and test",
+      "Compute separate medians for train and test and fill each with its own",
+      "Compute the median on the full dataset, fill, then split",
+      "Drop all test rows with missing age"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "Statistics used for cleaning are part of the model, so they must come from training data only and then be applied to test data. Using the full dataset leaks test information into training."
+  },
+  {
+    "id": "eda-014",
+    "track": "cleaning",
+    "topic": "time-series-fill",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ns = pd.Series([None, 18.5, None, None, 21.0, None])\nprint(s.ffill().tolist())",
+    "options": [
+      "[nan, 18.5, nan, nan, 21.0, nan]",
+      "[nan, 18.5, 18.5, 18.5, 21.0, 21.0]",
+      "[nan, 18.5, 18.5, 18.5, 21.0, nan]",
+      "[18.5, 18.5, 18.5, 18.5, 21.0, 21.0]"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "`ffill()` copies the last valid value forward, so the trailing NaN becomes 21.0. The first value stays NaN because nothing comes before it to copy."
+  },
+  {
+    "id": "eda-015",
+    "track": "cleaning",
+    "topic": "time-series-fill",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "In which situation is forward fill (`ffill`) the most natural way to fill gaps?",
+    "options": [
+      "Missing exam scores in a table of unrelated students",
+      "A temperature sensor log sorted by timestamp, where a value holds until the next reading",
+      "Missing customer ages in a shuffled CRM export",
+      "Missing city names in a randomly ordered list of orders"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "Forward fill assumes the previous row is the best guess for the current one, which only holds when rows are ordered in time and values persist. In unordered data the previous row is unrelated."
+  },
+  {
+    "id": "eda-016",
+    "track": "cleaning",
+    "topic": "time-series-fill",
+    "difficulty": "hard",
+    "type": "mcq",
+    "prompt": "A DataFrame holds readings from sensors S1 and S2, sorted by `sensor` then `timestamp`. The first S2 reading is missing. What goes wrong with `df['temp'] = df['temp'].ffill()`?",
+    "options": [
+      "ffill raises an error because the column has two sensors",
+      "Nothing; ffill always respects groups",
+      "ffill fills backwards, so S1 gets S2's value",
+      "The missing S2 reading is filled with the last S1 reading; use `df.groupby('sensor')['temp'].ffill()` instead"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "A plain `ffill()` looks only at the previous row, which belongs to S1. Grouped forward fill restarts at each sensor, so the first S2 reading stays NaN instead of borrowing another sensor's value."
+  },
+  {
+    "id": "eda-017",
+    "track": "cleaning",
+    "topic": "duplicates",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ndf = pd.DataFrame({'id': [101, 102, 101, 103, 102],\n                   'amt': [500, 300, 500, 700, 350]})\nprint(df.duplicated().sum(), df.duplicated(subset=['id']).sum())",
+    "options": [
+      "2 2",
+      "0 2",
+      "1 2",
+      "1 4"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "Only row 2 repeats an entire earlier row (101, 500). With `subset=['id']`, rows 2 and 4 repeat an earlier id even though row 4's amount differs."
+  },
+  {
+    "id": "eda-018",
+    "track": "cleaning",
+    "topic": "duplicates",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ndf = pd.DataFrame({'cust': ['A', 'B', 'A', 'C', 'B'],\n                   'visit': [1, 2, 3, 4, 5]})\nprint(df.drop_duplicates(subset='cust', keep='last')['visit'].tolist())",
+    "options": [
+      "[1, 2, 4]",
+      "[3, 4, 5]",
+      "[4]",
+      "[3, 5, 4]"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "`keep='last'` keeps the last row for each customer (A at index 2, C at 3, B at 4), and the kept rows stay in their original order. `[1, 2, 4]` is the default `keep='first'`."
+  },
+  {
+    "id": "eda-019",
+    "track": "cleaning",
+    "topic": "duplicates",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "You want to see every row involved in a duplicate `email`, including the first occurrence, before deciding which to keep. Which call does that?",
+    "options": [
+      "`df[df.duplicated(subset='email', keep=False)]`",
+      "`df[df.duplicated(subset='email')]`",
+      "`df.drop_duplicates(subset='email')`",
+      "`df[df.duplicated(subset='email', keep='last')]`"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "`keep=False` marks all members of each duplicate group as True. The default `keep='first'` hides the first occurrence, so you see only the repeats."
+  },
+  {
+    "id": "eda-020",
+    "track": "cleaning",
+    "topic": "type-fixing",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ns = pd.Series(['250', '300', 'N/A', '1,000'])\nprint(pd.to_numeric(s, errors='coerce').tolist())",
+    "options": [
+      "[250.0, 300.0, nan, 1000.0]",
+      "ValueError",
+      "[250, 300, nan, 1000]",
+      "[250.0, 300.0, nan, nan]"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "`errors='coerce'` turns anything that cannot be parsed into NaN instead of raising. `to_numeric` does not understand thousands separators, so '1,000' is lost too; strip commas first."
+  },
+  {
+    "id": "eda-021",
+    "track": "cleaning",
+    "topic": "type-fixing",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "What does `pd.to_datetime(df['order_date'], errors='coerce')` do with a value such as 'not available'?",
+    "options": [
+      "Drops that row from the result",
+      "Raises a ValueError",
+      "Leaves it as the original string",
+      "Converts it to NaT (missing datetime)"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "With `errors='coerce'`, unparseable values become NaT and the result keeps the same length. The default `errors='raise'` would raise instead."
+  },
+  {
+    "id": "eda-022",
+    "track": "cleaning",
+    "topic": "date-parsing",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "A Bengaluru vendor sends dates in DD/MM/YYYY. What does `pd.to_datetime('01/02/2024')` return, with no other arguments?",
+    "options": [
+      "A ValueError because the date is ambiguous",
+      "2024-01-02 (2 January)",
+      "2024-02-01 (1 February)",
+      "NaT"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "pandas assumes month first for slash-separated dates, so '01/02/2024' becomes 2 January. Pass `dayfirst=True` or, better, an explicit `format='%d/%m/%Y'` for Indian-style dates."
+  },
+  {
+    "id": "eda-023",
+    "track": "cleaning",
+    "topic": "date-parsing",
+    "difficulty": "hard",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ns = pd.Series(['31/01/2024', '15/13/2024', '2024-02-10'])\nd = pd.to_datetime(s, format='%d/%m/%Y', errors='coerce')\nprint(d.isna().sum(), d.dt.month.tolist())",
+    "options": [
+      "2 [1.0, nan, nan]",
+      "ValueError",
+      "1 [1, nan, 2]",
+      "1 [1.0, nan, 2.0]"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "With an explicit `format`, values that don't match ('15/13/2024' has month 13, and the ISO date uses a different layout) become NaT under `errors='coerce'`. `.dt.month` returns floats once NaT is present, since NaN can't live in an integer column."
+  },
+  {
+    "id": "eda-024",
+    "track": "cleaning",
+    "topic": "date-parsing",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "Which statements about `pd.to_datetime` are true? Select all that apply.",
+    "options": [
+      "`dayfirst=True` tells pandas to read '05/06/2024' as 5 June 2024.",
+      "`errors='coerce'` returns a shorter Series with the invalid dates removed.",
+      "Passing an explicit `format` such as `'%d/%m/%Y'` removes day/month ambiguity.",
+      "Values that fail to parse under `errors='coerce'` become NaT."
+    ],
+    "answer": [
+      0,
+      2,
+      3
+    ],
+    "explanation": "Coercion keeps the length of the input and marks failures as NaT; it never removes rows. An explicit format is the safest choice because it also makes bad rows visible."
+  },
+  {
+    "id": "eda-025",
+    "track": "cleaning",
+    "topic": "category-dtype",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Which column of a 20-lakh-row orders table is the best candidate for conversion to the `category` dtype?",
+    "options": [
+      "`customer_note`, free-text comments",
+      "`amount`, a float column",
+      "`state`, with 28 distinct values",
+      "`order_id`, unique for every row"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "`category` stores each distinct value once plus small integer codes, so it saves memory when a text column has few distinct values repeated many times. Unique IDs and free text gain nothing."
+  },
+  {
+    "id": "eda-026",
+    "track": "cleaning",
+    "topic": "category-dtype",
+    "difficulty": "easy",
+    "type": "multi",
+    "prompt": "Which are genuine benefits of converting a low-cardinality text column to the `category` dtype? Select all that apply.",
+    "options": [
+      "Lower memory use when the same few labels repeat many times",
+      "It automatically merges spelling variants such as 'Pune' and 'pune'",
+      "Ordered categories allow comparisons such as `size > 'M'`",
+      "It is required before calling `pd.get_dummies` on the column"
+    ],
+    "answer": [
+      0,
+      2
+    ],
+    "explanation": "Categories are taken as they are, so 'Pune' and 'pune' remain two separate categories; you must normalise strings first. `get_dummies` works on plain text columns too."
+  },
+  {
+    "id": "eda-027",
+    "track": "cleaning",
+    "topic": "category-dtype",
+    "difficulty": "hard",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ns = pd.Series(['low', 'high', 'medium', 'low'])\nc = s.astype(pd.CategoricalDtype(['low', 'medium', 'high'], ordered=True))\nprint(c.cat.codes.tolist(), (c > 'low').sum())",
+    "options": [
+      "[1, 0, 2, 1] 2",
+      "[0, 2, 1, 0] 1",
+      "TypeError",
+      "[0, 2, 1, 0] 2"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "The codes follow the order given in the `CategoricalDtype` (low=0, medium=1, high=2), not alphabetical order. Because the dtype is ordered, `c > 'low'` works and is True for 'high' and 'medium'."
+  },
+  {
+    "id": "eda-028",
+    "track": "cleaning",
+    "topic": "messy-strings",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ns = pd.Series(['M', ' male', 'Male ', 'F', 'female', 'm'])\nclean = s.str.strip().str.lower().replace({'m': 'male', 'f': 'female'})\nprint(clean.value_counts().to_dict())",
+    "options": [
+      "{'male': 4, 'female': 2}",
+      "{'male': 2, 'm': 2, 'f': 1, 'female': 1}",
+      "{'male': 3, 'female': 2, 'm': 1}",
+      "{'M': 1, 'male': 3, 'F': 1, 'female': 1}"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "After `strip()` and `lower()` the values are m, male, male, f, female, m; the dict passed to `replace` then maps the short codes to full labels. Without `strip()`, ' male' and 'male ' would stay separate labels."
+  },
+  {
+    "id": "eda-029",
+    "track": "cleaning",
+    "topic": "messy-strings",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Order notes look like 'Order #A12 - qty 3'. What does `notes.str.extract(r'#(\\w)(\\d+)')` return?",
+    "options": [
+      "A DataFrame with two columns, one per capture group",
+      "A list of all matches in each string",
+      "A Series of tuples such as ('A', '12')",
+      "A boolean Series showing which notes match"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "`str.extract` returns one column per capture group (here the letter and the number), taking the first match in each string. `str.findall` gives lists of all matches and `str.contains` gives booleans."
+  },
+  {
+    "id": "eda-030",
+    "track": "cleaning",
+    "topic": "messy-strings",
+    "difficulty": "hard",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ns = pd.Series(['$1.50', '$20.00'])\nprint(s.str.replace('$', '').str.replace('.', '').tolist())",
+    "options": [
+      "['', '']",
+      "['$150', '$2000']",
+      "['1.50', '20.00']",
+      "['150', '2000']"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "Since pandas 2.0, `str.replace` treats the pattern as a literal string by default (`regex=False`), so '$' and '.' are removed literally. As regexes, '.' would match every character and wipe the strings."
+  },
+  {
+    "id": "eda-031",
+    "track": "cleaning",
+    "topic": "currency-units",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ns = pd.Series(['₹1,200', '₹850', '₹2,05,000'])\namt = s.str.replace('₹', '').str.replace(',', '').astype(int)\nprint(amt.sum())",
+    "options": [
+      "22050",
+      "ValueError",
+      "207050",
+      "1200850205000"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "Removing the rupee sign and every comma turns '2,05,000' (Indian lakh grouping) into 205000, so the sum is 1200 + 850 + 205000. Forgetting the comma step would raise ValueError in `astype(int)`."
+  },
+  {
+    "id": "eda-032",
+    "track": "cleaning",
+    "topic": "currency-units",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "A weight column mixes kilograms and grams. What does this code print?",
+    "code": "import pandas as pd\nw = pd.Series(['2kg', '750g', '1.5kg', '250g'])\nkg = w.apply(lambda v: float(v[:-2]) if v.endswith('kg') else float(v[:-1]) / 1000)\nprint(kg.sum())",
+    "options": [
+      "ValueError",
+      "4.5",
+      "1003.5",
+      "4.0"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "Values ending in 'kg' keep their number; gram values are divided by 1000, giving 2 + 0.75 + 1.5 + 0.25. Summing the raw numbers without converting units gives the misleading 1003.5."
+  },
+  {
+    "id": "eda-033",
+    "track": "cleaning",
+    "topic": "outliers",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "For a column with Q1 = 40 and Q3 = 60, what is the upper fence of the 1.5 × IQR outlier rule?",
+    "options": [
+      "100",
+      "90",
+      "80",
+      "75"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "IQR = 60 − 40 = 20, and the upper fence is Q3 + 1.5 × IQR = 60 + 30 = 90. Points above 90 are flagged as potential outliers."
+  },
+  {
+    "id": "eda-034",
+    "track": "cleaning",
+    "topic": "outliers",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ns = pd.Series([10, 12, 13, 14, 15, 16, 21, 100])\nq1, q3 = s.quantile(0.25), s.quantile(0.75)\niqr = q3 - q1\nprint(s[(s < q1 - 1.5 * iqr) | (s > q3 + 1.5 * iqr)].tolist())",
+    "options": [
+      "[21, 100]",
+      "[]",
+      "[10, 100]",
+      "[100]"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "Q1 = 12.75 and Q3 = 17.25 (linear interpolation), so IQR = 4.5 and the fences are 6 and 24. 21 looks large next to its neighbours but sits inside the upper fence."
+  },
+  {
+    "id": "eda-035",
+    "track": "cleaning",
+    "topic": "outliers",
+    "difficulty": "hard",
+    "type": "mcq",
+    "prompt": "Six delivery times are 30, 31, 29, 30, 32 and 300 minutes. A teammate flags outliers with |z| > 3 and finds none. Why?",
+    "options": [
+      "The rule needs |z| > 1.5 instead of 3",
+      "300 is not really an outlier",
+      "z-scores only work for negative outliers",
+      "The extreme value inflates the mean and standard deviation, and with only 6 points no z-score can exceed about 2.2"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "With n points the largest possible |z| is bounded (about 2.04 with the sample standard deviation and 2.24 with the population one for n = 6), so a 3-sigma rule can never fire. The IQR rule or a median-based score copes better in small samples."
+  },
+  {
+    "id": "eda-036",
+    "track": "cleaning",
+    "topic": "outliers",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ns = pd.Series([12, -5, 48, 130, 75])\nprint(s.clip(lower=0, upper=100).tolist())",
+    "options": [
+      "[12, 0, 48, 100, 75]",
+      "[12, 48, 75]",
+      "[12, nan, 48, nan, 75]",
+      "[12, 5, 48, 100, 75]"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "`clip` caps values at the bounds instead of removing them: -5 becomes 0 and 130 becomes 100. This is capping (winsorizing-style), which keeps the row count unchanged."
+  },
+  {
+    "id": "eda-037",
+    "track": "cleaning",
+    "topic": "outliers",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "In which situations should extreme values be kept or investigated rather than deleted? Select all that apply.",
+    "options": [
+      "Retail sales where a few genuine bulk orders drive a large share of revenue",
+      "An `age` column containing 420 because of a typing error",
+      "A temperature column where -999 is a placeholder for 'sensor offline'",
+      "Fraud detection, where the rare extreme transactions are what you want to find"
+    ],
+    "answer": [
+      0,
+      3
+    ],
+    "explanation": "Genuine extremes carry real information and removing them distorts the analysis. Impossible values such as age 420 and sentinel codes such as -999 are data errors: fix them or convert them to NaN."
+  },
+  {
+    "id": "eda-038",
+    "track": "cleaning",
+    "topic": "scaling",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ns = pd.Series([10, 20, 30, 50])\nprint(((s - s.min()) / (s.max() - s.min())).tolist())",
+    "options": [
+      "[0.0, 0.33, 0.67, 1.0]",
+      "[0.2, 0.4, 0.6, 1.0]",
+      "[0.0, 0.25, 0.5, 1.0]",
+      "[10.0, 20.0, 30.0, 50.0]"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "Min-max scaling maps the minimum (10) to 0 and the maximum (50) to 1: (20 − 10) / 40 = 0.25 and (30 − 10) / 40 = 0.5. Dividing by the maximum alone would give [0.2, 0.4, 0.6, 1.0]."
+  },
+  {
+    "id": "eda-039",
+    "track": "cleaning",
+    "topic": "scaling",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "A column has a few extreme values. Which rescaling is least distorted by them?",
+    "options": [
+      "Dividing by the maximum absolute value",
+      "Standardisation with mean and standard deviation",
+      "Subtracting the median and dividing by the IQR",
+      "Min-max scaling to [0, 1]"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "The median and IQR barely move when a few extreme values are added, so robust scaling keeps the bulk of the data spread out. Min-max and max-abs scaling squash most values into a tiny range when one point is huge."
+  },
+  {
+    "id": "eda-040",
+    "track": "cleaning",
+    "topic": "scaling",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "Which methods are sensitive to the scale of the input features, so that a salary in rupees would dominate an age in years? Select all that apply.",
+    "options": [
+      "k-means clustering",
+      "Random forest",
+      "k-nearest neighbours",
+      "PCA",
+      "A single decision tree"
+    ],
+    "answer": [
+      0,
+      2,
+      3
+    ],
+    "explanation": "KNN and k-means use distances, and PCA looks for directions of largest variance, so large-unit features dominate. Tree-based models split on one feature at a time with thresholds, so rescaling a feature does not change them."
+  },
+  {
+    "id": "eda-041",
+    "track": "cleaning",
+    "topic": "binning",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "What is the key difference between `pd.cut(s, 4)` and `pd.qcut(s, 4)`?",
+    "options": [
+      "`cut` makes equal-width bins; `qcut` makes bins with roughly equal numbers of rows",
+      "`qcut` only works on integers",
+      "They are aliases",
+      "`cut` makes equal-frequency bins; `qcut` makes equal-width bins"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "`cut` splits the value range into equal-width intervals, while `qcut` uses quantiles so each bin holds about the same number of observations. On skewed data `qcut` bins therefore have very different widths."
+  },
+  {
+    "id": "eda-042",
+    "track": "cleaning",
+    "topic": "binning",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\nages = pd.Series([0, 18, 19, 60, 75])\ngrp = pd.cut(ages, bins=[0, 18, 60, 100], labels=['minor', 'adult', 'senior'])\nprint(grp.tolist())",
+    "options": [
+      "['minor', 'adult', 'adult', 'senior', 'senior']",
+      "[nan, 'minor', 'adult', 'adult', 'senior']",
+      "['minor', 'minor', 'adult', 'adult', 'senior']",
+      "[nan, 'minor', 'adult', 'senior', 'senior']"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "Bins are right-closed by default: (0, 18], (18, 60], (60, 100]. 0 falls outside the first interval so it becomes NaN, 18 is a minor and 60 is still an adult."
+  },
+  {
+    "id": "eda-043",
+    "track": "cleaning",
+    "topic": "binning",
+    "difficulty": "hard",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ns = pd.Series([0, 0, 0, 0, 0, 5, 8, 12])\nprint(s.nunique())\nprint(pd.qcut(s, q=4).nunique())",
+    "options": [
+      "4\n3",
+      "4\nValueError",
+      "4\n4",
+      "4\n2"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "Most values are 0, so the 0%, 25% and 50% quantiles are all 0 and the bin edges repeat. `qcut` raises ValueError ('Bin edges must be unique') unless you pass `duplicates='drop'`."
+  },
+  {
+    "id": "eda-044",
+    "track": "cleaning",
+    "topic": "binning",
+    "difficulty": "hard",
+    "type": "multi",
+    "prompt": "Which statements about `pd.cut` and `pd.qcut` are true? Select all that apply.",
+    "options": [
+      "`pd.cut(s, bins=4)` creates 4 equal-width intervals.",
+      "On a right-skewed column, `qcut` bins usually have very different widths.",
+      "`pd.qcut` always gives exactly equal counts per bin, even with many tied values.",
+      "Intervals from `pd.cut` are right-closed by default, such as (18, 60].",
+      "With an integer `bins`, `pd.cut` widens the lowest edge slightly so the minimum value is included."
+    ],
+    "answer": [
+      0,
+      1,
+      3,
+      4
+    ],
+    "explanation": "Ties can make `qcut` counts unequal or even raise an error when quantile edges repeat. `cut` extends the range by 0.1% on the low side, which is why its first interval looks like (0.993, 2.75]."
+  },
+  {
+    "id": "eda-045",
+    "track": "cleaning",
+    "topic": "encoding",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ndf = pd.DataFrame({'id': [1, 2, 3], 'city': ['Pune', 'Bengaluru', 'Delhi']})\nprint(pd.get_dummies(df, columns=['city'], drop_first=True).columns.tolist())",
+    "options": [
+      "['id', 'city_Bengaluru', 'city_Delhi', 'city_Pune']",
+      "['id', 'city_Delhi', 'city_Pune']",
+      "['city_Delhi', 'city_Pune']",
+      "['id', 'city_Bengaluru', 'city_Delhi']"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "Dummy columns are created in sorted category order and `drop_first=True` drops the first one, Bengaluru, which becomes the baseline. Columns not listed in `columns` (here `id`) are kept."
+  },
+  {
+    "id": "eda-046",
+    "track": "cleaning",
+    "topic": "encoding",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "You encode `city` (Pune, Delhi, Chennai) as 0, 1, 2 and feed it to a linear regression. What is the main problem?",
+    "options": [
+      "It creates too many columns",
+      "The model treats the codes as ordered and evenly spaced, which has no meaning for cities",
+      "Linear regression cannot accept integers",
+      "It leaks the target into the features"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "Integer codes imply Chennai = 2 × Delhi, an order and distance that nominal categories don't have. One-hot encoding avoids this; integer codes suit ordinal data or tree models better."
+  },
+  {
+    "id": "eda-047",
+    "track": "cleaning",
+    "topic": "encoding",
+    "difficulty": "hard",
+    "type": "multi",
+    "prompt": "Which statements about `pd.get_dummies` are true? Select all that apply.",
+    "options": [
+      "By default, missing values get their own indicator column.",
+      "It creates one indicator column per distinct category.",
+      "`drop_first=True` helps avoid perfect multicollinearity (the dummy variable trap) in a linear model with an intercept.",
+      "Calling it separately on train and test can produce different columns if a category appears in only one of them."
+    ],
+    "answer": [
+      1,
+      2,
+      3
+    ],
+    "explanation": "`dummy_na` defaults to False, so a NaN row simply gets all zeros. Because separate calls can disagree on columns, align test to the training columns (for example with `reindex`)."
+  },
+  {
+    "id": "eda-048",
+    "track": "cleaning",
+    "topic": "validation",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ndf = pd.DataFrame({'age': [25, None, 140, 40]})\nok = df['age'].between(0, 120)\nprint(ok.tolist(), ok.all())",
+    "options": [
+      "[True, False, False, True] True",
+      "[True, nan, False, True] False",
+      "[True, True, False, True] False",
+      "[True, False, False, True] False"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "`between` returns False for NaN, so a missing age fails the range check just like 140 does. That is useful for validation, but it means a failing check can be caused by missing data, not only bad values."
+  },
+  {
+    "id": "eda-049",
+    "track": "cleaning",
+    "topic": "validation",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "What happens when a cleaning script runs `assert df['order_id'].is_unique, 'duplicate order ids'` and the column has duplicates?",
+    "options": [
+      "It prints a warning and continues",
+      "It silently drops the duplicates",
+      "It raises AssertionError with the message 'duplicate order ids'",
+      "It returns False and continues"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "A failing `assert` raises AssertionError and stops the script, which is the point of a validation check. Note that asserts are skipped when Python runs with the `-O` flag, so critical checks in production often use explicit `if ... raise`."
+  },
+  {
+    "id": "eda-050",
+    "track": "cleaning",
+    "topic": "validation",
+    "difficulty": "easy",
+    "type": "multi",
+    "prompt": "Which of these are sensible automated checks to run after cleaning an orders table? Select all that apply.",
+    "options": [
+      "`assert df['amount'].notna().all()`",
+      "`assert df.empty`",
+      "`assert df['quantity'].between(1, 1000).all()`",
+      "`assert df['order_id'].is_unique`"
+    ],
+    "answer": [
+      0,
+      2,
+      3
+    ],
+    "explanation": "Uniqueness, value ranges and completeness are standard validation checks. `assert df.empty` passes only when the table has no rows, which is the opposite of what you want."
+  },
+  {
+    "id": "eda-051",
+    "track": "cleaning",
+    "topic": "eda-types",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Plotting `salary` against `years_of_experience` on a scatter plot is an example of which kind of analysis?",
+    "options": [
+      "Time-series decomposition",
+      "Multivariate",
+      "Bivariate",
+      "Univariate"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "A scatter plot relates exactly two variables, so it is bivariate. A histogram of one column is univariate; adding a third variable such as colour by department makes it multivariate."
+  },
+  {
+    "id": "eda-052",
+    "track": "cleaning",
+    "topic": "eda-types",
+    "difficulty": "easy",
+    "type": "multi",
+    "prompt": "Which of these are bivariate analyses? Select all that apply.",
+    "options": [
+      "`pd.crosstab(df['gender'], df['purchased'])`",
+      "`df['city'].value_counts()`",
+      "A histogram of `age`",
+      "A box plot of `salary` for each `department`",
+      "A scatter plot of `salary` vs `experience`"
+    ],
+    "answer": [
+      0,
+      3,
+      4
+    ],
+    "explanation": "Each correct option relates two variables (numeric vs numeric, numeric by category, category vs category). A histogram and a single `value_counts()` look at one variable, so they are univariate."
+  },
+  {
+    "id": "eda-053",
+    "track": "cleaning",
+    "topic": "eda-types",
+    "difficulty": "hard",
+    "type": "mcq",
+    "prompt": "Overall, landing page A converts better than page B. But within every city segment, page B converts better than A. What best explains this?",
+    "options": [
+      "Simpson's paradox: the segments have very different traffic shares for A and B, so the aggregate reverses the within-segment trend",
+      "Page B has more missing values",
+      "Regression to the mean",
+      "A bug in the data, because this is mathematically impossible"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "When a third variable (city) is unevenly distributed across groups, pooled rates can reverse the within-group comparison. This is why multivariate EDA, which breaks results down by segment, matters."
+  },
+  {
+    "id": "eda-054",
+    "track": "cleaning",
+    "topic": "correlation",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "Which statements about interpreting a correlation matrix are true? Select all that apply.",
+    "options": [
+      "r close to 0 means the two variables have no relationship of any kind.",
+      "Pearson r can be heavily changed by a single extreme point.",
+      "r = -0.9 indicates a strong negative linear relationship.",
+      "The matrix is symmetric with 1s on the diagonal.",
+      "A correlation of 0.95 between ad spend and sales proves ad spend causes sales."
+    ],
+    "answer": [
+      1,
+      2,
+      3
+    ],
+    "explanation": "Pearson r measures only linear association: y = x² on symmetric x can give r near 0 despite a perfect relationship. Correlation alone never establishes causation."
+  },
+  {
+    "id": "eda-055",
+    "track": "cleaning",
+    "topic": "skewness",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "`df['order_value'].skew()` returns 2.3. What does this tell you?",
+    "options": [
+      "The distribution has a long left tail",
+      "Order value is strongly correlated with another column",
+      "The data are normally distributed",
+      "The distribution has a long right tail, with a few very large order values"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "Positive skewness means the tail extends to the right: most orders are small and a few are very large. In such data the mean is usually above the median."
+  },
+  {
+    "id": "eda-056",
+    "track": "cleaning",
+    "topic": "skewness",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "A `purchases_per_month` column is right-skewed and contains zeros. Which statements are true? Select all that apply.",
+    "options": [
+      "Positive skew means the long tail is on the left.",
+      "A log transform tends to reduce right skew.",
+      "The mean is usually pulled above the median.",
+      "`np.log(x)` gives -inf for zeros, so `np.log1p(x)` (log of 1 + x) is a common alternative."
+    ],
+    "answer": [
+      1,
+      2,
+      3
+    ],
+    "explanation": "A log compresses large values more than small ones, pulling in the right tail; `log1p` handles zeros. Positive (right) skew has its long tail on the right."
+  },
+  {
+    "id": "eda-057",
+    "track": "cleaning",
+    "topic": "class-imbalance",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "In a loan dataset, 98% of applicants did not default. A model that always predicts 'no default' gets 98% accuracy. What is the main lesson?",
+    "options": [
+      "Accuracy is misleading on imbalanced data; look at recall, precision or F1 for the minority class",
+      "98% accuracy proves there is no class imbalance",
+      "The model is excellent",
+      "You should remove the defaulters"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "A do-nothing model reaches the majority-class share, so accuracy says little here. Metrics focused on the rare class show whether the model finds any defaulters at all."
+  },
+  {
+    "id": "eda-058",
+    "track": "cleaning",
+    "topic": "class-imbalance",
+    "difficulty": "hard",
+    "type": "multi",
+    "prompt": "You have 3% fraud cases. Which steps are sound? Select all that apply.",
+    "options": [
+      "Use a stratified train/test split so both sets keep about 3% fraud",
+      "Oversample the fraud cases first, then split into train and test",
+      "Evaluate with precision, recall, F1 or PR-AUC rather than accuracy alone",
+      "Oversample the fraud cases in the training set only, after splitting",
+      "Drop the fraud cases because they are too rare to learn from"
+    ],
+    "answer": [
+      0,
+      2,
+      3
+    ],
+    "explanation": "Oversampling before the split puts copies of the same fraud rows in both train and test, which leaks information and inflates scores. Dropping the minority class removes exactly what you need to detect."
+  },
+  {
+    "id": "eda-059",
+    "track": "cleaning",
+    "topic": "sampling",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ndf = pd.DataFrame({'label': ['spam'] * 20 + ['ham'] * 80})\ns = df.groupby('label').sample(frac=0.1, random_state=42)\nprint(s['label'].value_counts().to_dict())",
+    "options": [
+      "{'ham': 80, 'spam': 20}",
+      "{'ham': 8, 'spam': 2}",
+      "{'ham': 10}",
+      "{'ham': 5, 'spam': 5}"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "`groupby(...).sample(frac=0.1)` draws 10% from each group, so the sample keeps the 80:20 class ratio (8 ham, 2 spam). This is stratified sampling, whatever the random seed."
+  },
+  {
+    "id": "eda-060",
+    "track": "cleaning",
+    "topic": "leakage",
+    "difficulty": "hard",
+    "type": "multi",
+    "prompt": "Which cleaning steps leak information from the test set into training? Select all that apply.",
+    "options": [
+      "Encoding each city by its average target value computed over the full dataset",
+      "Filling missing values with the mean of the full dataset before splitting",
+      "Computing the median on the training set and using it to fill the test set",
+      "Fixing the typo 'Banglore' to 'Bengaluru' everywhere before splitting",
+      "Min-max scaling with the minimum and maximum of the full dataset before splitting"
+    ],
+    "answer": [
+      0,
+      1,
+      4
+    ],
+    "explanation": "Any statistic computed with test rows (mean, min/max, target averages) carries test information into training. A fixed rule such as a spelling correction uses no data statistics, so it is safe to apply anywhere."
+  },
+  {
+    "id": "eda-061",
+    "track": "cleaning",
+    "topic": "documentation",
+    "difficulty": "easy",
+    "type": "multi",
+    "prompt": "Which items belong in a data-cleaning log that a reviewer can follow? Select all that apply.",
+    "options": [
+      "How many rows were dropped at each step and why",
+      "The imputation method and the value used, such as 'median age = 31 from training data'",
+      "Nothing: only the final cleaned file matters",
+      "Assumptions made, such as 'dates are DD/MM/YYYY'"
+    ],
+    "answer": [
+      0,
+      1,
+      3
+    ],
+    "explanation": "Recording counts, methods and assumptions makes the analysis reproducible and lets others challenge a decision. Shipping only the final file hides choices that can change the results."
+  },
+  {
+    "id": "eda-062",
+    "track": "cleaning",
+    "topic": "sql-thinking",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ndf = pd.DataFrame({'city': ['Pune', 'Pune', 'Delhi', 'Delhi', 'Mumbai'],\n                   'amount': [120, 80, 300, 50, 90]})\nout = df[df['amount'] >= 90].groupby('city')['amount'].sum()\nprint(out.to_dict())",
+    "options": [
+      "{'Delhi': 350, 'Mumbai': 90, 'Pune': 200}",
+      "{'Delhi': 300, 'Mumbai': 90, 'Pune': 120}",
+      "{'Pune': 120, 'Delhi': 300, 'Mumbai': 90}",
+      "{'Delhi': 300, 'Pune': 120}"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "The filter (like SQL WHERE) runs first and keeps 120, 300 and 90; then groups are summed. `groupby` sorts keys by default, so the result is in alphabetical order, not order of appearance."
+  },
+  {
+    "id": "eda-063",
+    "track": "cleaning",
+    "topic": "sql-thinking",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "Which SQL-to-pandas mappings are correct? Select all that apply.",
+    "options": [
+      "HAVING SUM(amount) > 1000 → filter the aggregated result, e.g. `totals[totals > 1000]`",
+      "WHERE amount > 100 → `df[df['amount'] > 100]`",
+      "COUNT(DISTINCT customer_id) → `df['customer_id'].count()`",
+      "GROUP BY city with SUM(amount) → `df.groupby('city')['amount'].sum()`",
+      "ORDER BY amount DESC → `df.sort_values('amount', ascending=False)`"
+    ],
+    "answer": [
+      0,
+      1,
+      3,
+      4
+    ],
+    "explanation": "`count()` counts non-null values, including repeats; COUNT(DISTINCT ...) is `nunique()`. HAVING filters after aggregation, so it applies to the grouped result, not the raw rows."
+  },
+  {
+    "id": "eda-064",
+    "track": "cleaning",
+    "topic": "type-fixing",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "After `pd.read_csv`, `df.info()` shows the `sales` column as a text dtype instead of a number. What is the most likely cause?",
+    "options": [
+      "The column has duplicate values",
+      "pandas always reads CSV columns as text",
+      "The file has too many rows for a numeric dtype",
+      "Some entries contain non-numeric text, such as '₹1,200' or 'N/A'"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "A single unparseable entry makes `read_csv` keep the whole column as text. Find the offending values (for example with `pd.to_numeric(..., errors='coerce')` and `isna()`), clean them, then convert."
+  },
+  {
+    "id": "eda-065",
+    "track": "cleaning",
+    "topic": "sampling",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "For a quick look at a large orders table sorted by date, why use `df.sample(n=1000, random_state=42)` instead of `df.head(1000)`?",
+    "options": [
+      "`head` returns only the earliest orders, which may not represent the whole table; a seeded random sample is representative and reproducible",
+      "`head` cannot return more than 5 rows",
+      "`head` is slower on large tables",
+      "`sample` returns the 1000 largest orders"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "The first rows of a sorted file reflect one period or segment only. A random sample spreads across the whole table, and `random_state` lets others reproduce the same sample."
+  },
+  {
+    "id": "eda-066",
+    "track": "cleaning",
+    "topic": "imputation",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "When filling missing salaries with each department's median, why use `df.groupby('dept')['salary'].transform('median')` rather than `.agg('median')`?",
+    "options": [
+      "`transform` returns a value for every original row, aligned to `df`'s index, so it can be passed straight to `fillna`",
+      "`transform` is the only one that computes medians",
+      "`agg` ignores missing values while `transform` does not",
+      "`agg` modifies the DataFrame in place"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "`agg` returns one row per department, indexed by department, which does not line up with the original rows. `transform` broadcasts each group's statistic back to the rows of that group."
+  }
+]

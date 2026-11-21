@@ -1,0 +1,1911 @@
+[
+  {
+    "id": "pd-001",
+    "track": "pandas",
+    "topic": "series",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ns = pd.Series([10, 20, 30], index=['a', 'b', 'c'])\nprint(s['b'] + s.iloc[-1])",
+    "options": [
+      "30",
+      "50",
+      "KeyError",
+      "40"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "`s['b']` looks up the label 'b' (20) and `s.iloc[-1]` takes the last position (30), so the sum is 50."
+  },
+  {
+    "id": "pd-002",
+    "track": "pandas",
+    "topic": "dataframe-creation",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ndf = pd.DataFrame({'a': 1, 'b': 2})\nprint(df.shape)",
+    "options": [
+      "(2, 1)",
+      "(1, 2)",
+      "(0, 2)",
+      "ValueError"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "When every value in the dict is a scalar, pandas cannot infer how many rows to create and raises ValueError ('If using all scalar values, you must pass an index'). Passing `index=[0]` or wrapping values in lists gives shape (1, 2)."
+  },
+  {
+    "id": "pd-003",
+    "track": "pandas",
+    "topic": "dataframe-creation",
+    "difficulty": "easy",
+    "type": "multi",
+    "prompt": "Which of these create a 2-row DataFrame with columns `name` and `age`? Select all that apply.",
+    "options": [
+      "`pd.DataFrame([['A', 20], ['B', 30]], columns=['name', 'age'])`",
+      "`pd.DataFrame({'name': ['A', 'B'], 'age': [20, 30]})`",
+      "`pd.DataFrame([{'name': 'A', 'age': 20}, {'name': 'B', 'age': 30}])`",
+      "`pd.DataFrame(['A', 'B'], [20, 30])`",
+      "`pd.DataFrame({'name': ['A', 'B'], 'age': [20]})`"
+    ],
+    "answer": [
+      0,
+      1,
+      2
+    ],
+    "explanation": "A dict of lists, a list of rows with `columns=`, and a list of dicts all work. `pd.DataFrame(['A', 'B'], [20, 30])` treats the second argument as the index, giving one column named 0, and lists of unequal length raise ValueError."
+  },
+  {
+    "id": "pd-004",
+    "track": "pandas",
+    "topic": "index-alignment",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ns1 = pd.Series([1, 2, 3], index=['a', 'b', 'c'])\ns2 = pd.Series([10, 20, 30], index=['b', 'c', 'd'])\nprint((s1 + s2).tolist())",
+    "options": [
+      "[1.0, 12.0, 23.0, 30.0]",
+      "[nan, 12.0, 23.0, nan]",
+      "[11, 22, 33]",
+      "[12.0, 23.0]"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "Arithmetic aligns on index labels, not positions. The result has the union of labels a-d; 'a' and 'd' exist in only one Series, so they become NaN and the dtype turns float."
+  },
+  {
+    "id": "pd-005",
+    "track": "pandas",
+    "topic": "index-alignment",
+    "difficulty": "hard",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ndf = pd.DataFrame({'a': [1, 2, 3]}, index=[0, 1, 2])\ndf['b'] = pd.Series([10, 20, 30], index=[2, 1, 0])\nprint(df['b'].tolist())",
+    "options": [
+      "[nan, 20.0, nan]",
+      "[10, 20, 30]",
+      "ValueError",
+      "[30, 20, 10]"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "Assigning a Series to a column aligns it on the index: row 0 gets the value labelled 0 (30), row 2 gets the value labelled 2 (10). Pandas does not paste the values in their listed order."
+  },
+  {
+    "id": "pd-006",
+    "track": "pandas",
+    "topic": "index-alignment",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "`s1` has index ['a', 'b', 'c'] and `s2` has index ['b', 'c', 'd']. Which call adds them so that a label present in only one Series keeps that Series' value instead of becoming NaN?",
+    "options": [
+      "`s1.add(s2, fill_value=0)`",
+      "`s1 + s2.fillna(0)`",
+      "`(s1 + s2).fillna(0)`",
+      "`s1.add(s2, axis=0)`"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "`add(..., fill_value=0)` treats a missing side as 0 before adding, so 'a' keeps s1's value and 'd' keeps s2's. `(s1 + s2).fillna(0)` turns those labels into 0 instead, and `s2.fillna(0)` changes nothing because s2 itself has no NaN; the NaN appear only after alignment."
+  },
+  {
+    "id": "pd-007",
+    "track": "pandas",
+    "topic": "loc-iloc",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ns = pd.Series([10, 20, 30, 40, 50], index=['a', 'b', 'c', 'd', 'e'])\nprint(s.loc['b':'d'].tolist(), s.iloc[1:3].tolist())",
+    "options": [
+      "[20, 30, 40] [20, 30]",
+      "[20, 30, 40] [20, 30, 40]",
+      "[20, 30] [20, 30]",
+      "[20, 30] [20, 30, 40]"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "Label slicing with `.loc` includes the end label ('d'), while positional slicing with `.iloc` excludes the end position like normal Python slicing."
+  },
+  {
+    "id": "pd-008",
+    "track": "pandas",
+    "topic": "loc-iloc",
+    "difficulty": "hard",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ns = pd.Series([10, 20, 30, 40], index=[3, 2, 1, 0])\nprint(s.loc[:1].tolist(), s.iloc[:1].tolist())",
+    "options": [
+      "[40] [10]",
+      "[10, 20, 30] [10]",
+      "[40, 30] [10]",
+      "[10] [10]"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "With `.loc`, `1` is a label: the slice runs from the first row up to and including the row labelled 1 (labels 3, 2, 1). `.iloc[:1]` is positional and returns only the first row. The trap is reading the integer labels as positions."
+  },
+  {
+    "id": "pd-009",
+    "track": "pandas",
+    "topic": "loc-iloc",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "`df` has index ['a', 'b', 'c']. What does `df.loc[['a', 'z']]` do?",
+    "options": [
+      "Returns row 'a' plus a row 'z' filled with NaN",
+      "Raises KeyError because 'z' is not in the index",
+      "Returns only row 'a' and silently ignores 'z'",
+      "Returns an empty DataFrame"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "Since pandas 1.0, passing a list to `.loc` that contains any missing label raises KeyError. Use `df.reindex(['a', 'z'])` if you want NaN rows for missing labels."
+  },
+  {
+    "id": "pd-010",
+    "track": "pandas",
+    "topic": "boolean-filtering",
+    "difficulty": "hard",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ndf = pd.DataFrame({'a': [1, 2, 3, 4], 'b': [4, 3, 2, 1]})\nprint(len(df[df['a'] > 1 & df['b'] > 1]))",
+    "options": [
+      "2",
+      "TypeError",
+      "3",
+      "ValueError"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "`&` binds tighter than `>`, so this parses as `df['a'] > (1 & df['b']) > 1`, a chained comparison that Python evaluates with `and`. Calling `bool()` on a Series raises ValueError ('truth value of a Series is ambiguous'). Wrap each condition in parentheses."
+  },
+  {
+    "id": "pd-011",
+    "track": "pandas",
+    "topic": "boolean-filtering",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "What does `s.where(s > 0, 0)` return?",
+    "options": [
+      "A Series of the same length that replaces the positive values with 0",
+      "The index labels where `s > 0`",
+      "A Series of the same length that keeps the positive values and puts 0 everywhere else",
+      "A shorter Series containing only the positive values"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "`where` keeps values where the condition is True and replaces the rest with `other`. It never drops rows; `s[s > 0]` is the filter that shortens the Series. `mask` is the method that replaces where the condition is True."
+  },
+  {
+    "id": "pd-012",
+    "track": "pandas",
+    "topic": "boolean-filtering",
+    "difficulty": "hard",
+    "type": "multi",
+    "prompt": "`df` has numeric columns `a` and `b`. Which expressions select the rows where `a > 1` and `b < 5`? Select all that apply.",
+    "options": [
+      "`df[(df['a'] > 1) & (df['b'] < 5)]`",
+      "`df.query('a > 1 and b < 5')`",
+      "`df.loc[(df.a > 1) & (df.b < 5)]`",
+      "`df[df['a'] > 1 & df['b'] < 5]`",
+      "`df[(df['a'] > 1) and (df['b'] < 5)]`"
+    ],
+    "answer": [
+      0,
+      1,
+      2
+    ],
+    "explanation": "Element-wise conditions need `&` with each comparison in parentheses; `query` strings accept `and`. Python's `and` calls `bool()` on a Series and raises ValueError, and without parentheses `&` binds before `>` and `<`."
+  },
+  {
+    "id": "pd-013",
+    "track": "pandas",
+    "topic": "query",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Inside a `df.query()` string, how do you refer to a Python variable `limit` defined in the surrounding code?",
+    "options": [
+      "`{limit}`",
+      "`$limit`",
+      "`@limit`",
+      "`:limit`"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "`query` resolves names prefixed with `@` from the local or global scope, e.g. `df.query('salary > @limit')`. Bare names are looked up as column names."
+  },
+  {
+    "id": "pd-014",
+    "track": "pandas",
+    "topic": "selecting-columns",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ndf = pd.DataFrame({'a': [1, 2], 'b': [3, 4]})\nprint(type(df['a']).__name__, type(df[['a']]).__name__)",
+    "options": [
+      "list DataFrame",
+      "DataFrame DataFrame",
+      "Series Series",
+      "Series DataFrame"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "A single label returns a Series; a list of labels, even a one-item list, returns a DataFrame."
+  },
+  {
+    "id": "pd-015",
+    "track": "pandas",
+    "topic": "selecting-columns",
+    "difficulty": "easy",
+    "type": "multi",
+    "prompt": "`df` has columns `a` and `b`. Which of these return a DataFrame rather than a Series? Select all that apply.",
+    "options": [
+      "`df.iloc[:, 0]`",
+      "`df['a']`",
+      "`df[['a']]`",
+      "`df.iloc[:, 0:1]`",
+      "`df.loc[:, ['a', 'b']]`"
+    ],
+    "answer": [
+      2,
+      3,
+      4
+    ],
+    "explanation": "Selecting with a list or a slice keeps the result two-dimensional. A single label (`df['a']`) or a single integer position (`df.iloc[:, 0]`) returns a Series."
+  },
+  {
+    "id": "pd-016",
+    "track": "pandas",
+    "topic": "add-drop",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ndf = pd.DataFrame({'a': [1, 2], 'b': [3, 4]})\nprint(df.drop('b').shape)",
+    "options": [
+      "(1, 2)",
+      "(2, 1)",
+      "KeyError",
+      "(2, 2)"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "`drop` defaults to `axis=0`, so it looks for a row labelled 'b' and raises KeyError. Use `df.drop(columns='b')` or `df.drop('b', axis=1)` to drop the column."
+  },
+  {
+    "id": "pd-017",
+    "track": "pandas",
+    "topic": "sorting",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ndf = pd.DataFrame({'team': ['x', 'y', 'x', 'y'], 'pts': [3, 5, 5, 1]})\nprint(df.sort_values(['team', 'pts'], ascending=[True, False])['pts'].tolist())",
+    "options": [
+      "[3, 5, 1, 5]",
+      "[1, 3, 5, 5]",
+      "[5, 5, 3, 1]",
+      "[5, 3, 5, 1]"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "Rows are sorted by team ascending (x before y), then by pts descending within each team: x gives 5, 3 and y gives 5, 1."
+  },
+  {
+    "id": "pd-018",
+    "track": "pandas",
+    "topic": "sorting",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Which call returns the rows of the 3 highest-paid employees in `df`?",
+    "options": [
+      "`df['salary'].max(3)`",
+      "`df.sort_values('salary').head(3)`",
+      "`df.top(3, 'salary')`",
+      "`df.nlargest(3, 'salary')`"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "`nlargest(n, column)` returns the n rows with the largest values, like `df.sort_values('salary', ascending=False).head(3)`. Sorting ascending and taking the head gives the lowest-paid instead."
+  },
+  {
+    "id": "pd-019",
+    "track": "pandas",
+    "topic": "value-counts",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ns = pd.Series(['UPI', 'Card', 'UPI', 'UPI', 'Cash'])\nprint(s.value_counts(normalize=True)['UPI'])",
+    "options": [
+      "60.0",
+      "0.6",
+      "3",
+      "0.75"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "`normalize=True` returns proportions instead of counts: UPI appears 3 times out of 5, so 0.6."
+  },
+  {
+    "id": "pd-020",
+    "track": "pandas",
+    "topic": "value-counts",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ns = pd.Series(['x', None, 'x', None, None])\nprint(s.value_counts().tolist(), s.value_counts(dropna=False).tolist())",
+    "options": [
+      "[3, 2] [3, 2]",
+      "[2] [2, 3]",
+      "[2] [3, 2]",
+      "[2, 3] [3, 2]"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "`value_counts` drops missing values by default, leaving only x (2). With `dropna=False` the 3 missing values get their own row, and counts are sorted descending, so NaN comes first."
+  },
+  {
+    "id": "pd-021",
+    "track": "pandas",
+    "topic": "value-counts",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "By default, how is the result of `s.value_counts()` ordered?",
+    "options": [
+      "Alphabetically by the values",
+      "In order of first appearance in `s`",
+      "By count, from least to most frequent",
+      "By count, from most to least frequent"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "`value_counts` sorts by frequency descending by default (`sort=True, ascending=False`). Use `.sort_index()` on the result to order it by value."
+  },
+  {
+    "id": "pd-022",
+    "track": "pandas",
+    "topic": "unique",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "What is the difference between `s.unique()` and `s.nunique()`?",
+    "options": [
+      "`unique()` removes duplicates from `s` in place; `nunique()` returns a copy",
+      "`unique()` returns the distinct values; `nunique()` returns how many distinct values there are",
+      "They are aliases and return the same thing",
+      "`unique()` returns the values that appear exactly once; `nunique()` counts them"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "`unique()` gives an array of distinct values (including NaN if present), and `nunique()` gives their count, excluding NaN by default. Neither means 'values that occur only once'."
+  },
+  {
+    "id": "pd-023",
+    "track": "pandas",
+    "topic": "merge",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\na = pd.DataFrame({'id': [1, 2], 'score': [50, 60]})\nb = pd.DataFrame({'id': [1, 2], 'score': [70, 80]})\nprint(a.merge(b, on='id').columns.tolist())",
+    "options": [
+      "['id', 'score_left', 'score_right']",
+      "['id_x', 'score_x', 'id_y', 'score_y']",
+      "['id', 'score', 'score']",
+      "['id', 'score_x', 'score_y']"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "Overlapping non-key columns get the default suffixes `_x` (left) and `_y` (right); the key `id` appears once. Pass `suffixes=('_a', '_b')` to choose your own."
+  },
+  {
+    "id": "pd-024",
+    "track": "pandas",
+    "topic": "groupby-transform",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ndf = pd.DataFrame({'city': ['Pune', 'Pune', 'Goa'], 'amt': [100, 300, 50]})\ndf['share'] = df['amt'] / df.groupby('city')['amt'].transform('sum')\nprint(df['share'].tolist())",
+    "options": [
+      "[0.5, 0.5, 1.0]",
+      "[0.25, 0.75, 1.0]",
+      "ValueError",
+      "[0.25, 0.75]"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "`transform('sum')` returns the group total on every original row (400, 400, 50), so each amount is divided by its own city's total. `.sum()` alone would return one row per city and would not line up with the rows."
+  },
+  {
+    "id": "pd-025",
+    "track": "pandas",
+    "topic": "groupby-filter",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ndf = pd.DataFrame({'team': ['x', 'y', 'x', 'y', 'z'], 'pts': [3, 5, 5, 1, 9]})\nprint(df.groupby('team').filter(lambda g: len(g) > 1)['pts'].tolist())",
+    "options": [
+      "[3, 5, 5, 1, 9]",
+      "[3, 5, 5, 1]",
+      "[9]",
+      "[8, 6]"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "`filter` keeps all original rows of the groups for which the function returns True. Teams x and y have 2 rows each and pass; z has 1 row and is dropped. It does not aggregate."
+  },
+  {
+    "id": "pd-026",
+    "track": "pandas",
+    "topic": "named-aggregation",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ndf = pd.DataFrame({'dept': ['IT', 'HR', 'IT'], 'salary': [70, 40, 90]})\nout = df.groupby('dept').agg(avg_sal=('salary', 'mean'), n=('salary', 'size'))\nprint(out.columns.tolist(), out.loc['IT'].tolist())",
+    "options": [
+      "['salary'] [80.0, 2.0]",
+      "['avg_sal', 'n'] [80.0, 2.0]",
+      "['avg_sal', 'n'] [80, 2]",
+      "[('salary', 'mean'), ('salary', 'size')] [80.0, 2.0]"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "Named aggregation uses the keyword names as flat column names. Selecting a row mixes a float mean with an integer count, so the row Series is upcast to float: [80.0, 2.0]."
+  },
+  {
+    "id": "pd-027",
+    "track": "pandas",
+    "topic": "size-vs-count",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\nimport numpy as np\ndf = pd.DataFrame({'g': ['a', 'a', 'b'], 'v': [1, np.nan, 3]})\nprint(df.groupby('g').size().tolist(), df.groupby('g')['v'].count().tolist())",
+    "options": [
+      "[2, 1] [2, 1]",
+      "[1, 1] [2, 1]",
+      "[1, 1] [1, 1]",
+      "[2, 1] [1, 1]"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "`size()` counts rows per group, NaN or not. `count()` counts only non-missing values, so group a has 1 non-NaN `v`."
+  },
+  {
+    "id": "pd-028",
+    "track": "pandas",
+    "topic": "groupby",
+    "difficulty": "hard",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ndf = pd.DataFrame({'g': ['a', None, 'a', 'b'], 'v': [1, 2, 3, 4]})\nprint(df.groupby('g')['v'].sum().sum())",
+    "options": [
+      "10",
+      "TypeError",
+      "6",
+      "8"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "groupby drops rows whose key is missing by default (`dropna=True`), so the row with v=2 vanishes: a=4, b=4, total 8. Pass `dropna=False` to keep a NaN group."
+  },
+  {
+    "id": "pd-029",
+    "track": "pandas",
+    "topic": "groupby",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "What does `df.groupby('dept', as_index=False)['salary'].mean()` return?",
+    "options": [
+      "A Series of mean salaries indexed by `dept`",
+      "The original `df` with a new column holding each row's department mean",
+      "An error, because `as_index=False` needs `.agg()`",
+      "A DataFrame with `dept` as a regular column next to the mean salary"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "`as_index=False` keeps the group keys as columns instead of moving them into the index, the same as calling `.reset_index()` afterwards. A department mean on every row would need `transform`."
+  },
+  {
+    "id": "pd-030",
+    "track": "pandas",
+    "topic": "named-aggregation",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "`df` has columns `dept` and `salary`. Which of these produce one row per `dept` with the total and the average salary? Select all that apply.",
+    "options": [
+      "`df.groupby('dept').agg(total=('salary', 'sum'), avg=('salary', 'mean'))`",
+      "`df.pivot_table(index='dept', values='salary', aggfunc=['sum', 'mean'])`",
+      "`df.groupby('dept')['salary'].sum().mean()`",
+      "`df.groupby('dept')['salary'].agg(['sum', 'mean'])`",
+      "`df.groupby('dept')['salary'].transform('sum')`"
+    ],
+    "answer": [
+      0,
+      1,
+      3
+    ],
+    "explanation": "Named aggregation, a list passed to `agg`, and `pivot_table` with a list `aggfunc` all give one row per department with two statistics. `transform` returns one value per original row, and `.sum().mean()` collapses to a single number."
+  },
+  {
+    "id": "pd-031",
+    "track": "pandas",
+    "topic": "groupby-transform",
+    "difficulty": "hard",
+    "type": "mcq",
+    "prompt": "You want to fill missing `salary` values with the mean salary of that employee's `dept`. Which line does it?",
+    "options": [
+      "`df['salary'] = df['salary'].fillna(df['salary'].mean())`",
+      "`df['salary'] = df.groupby('dept')['salary'].mean()`",
+      "`df['salary'] = df['salary'].fillna(df.groupby('dept')['salary'].transform('mean'))`",
+      "`df['salary'] = df['salary'].fillna(df.groupby('dept')['salary'].mean())`"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "`transform('mean')` returns a Series aligned to df's rows, so `fillna` can match row by row. A plain `.mean()` is indexed by dept names, which do not match df's row labels, so nothing is filled (or everything becomes NaN when assigned). The last option uses the overall mean, not the department mean."
+  },
+  {
+    "id": "pd-032",
+    "track": "pandas",
+    "topic": "shift-diff",
+    "difficulty": "hard",
+    "type": "mcq",
+    "prompt": "`df` is sorted by `store` and `date`. Which line computes each store's day-over-day change in `sales` without subtracting one store's last day from the next store's first day?",
+    "options": [
+      "`df['chg'] = df['sales'].diff()`",
+      "`df['chg'] = df.groupby('store')['sales'].sum().diff()`",
+      "`df['chg'] = df['sales'] - df['sales'].shift(-1)`",
+      "`df['chg'] = df.groupby('store')['sales'].diff()`"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "`groupby(...).diff()` restarts at each group, so every store's first row is NaN. A plain `diff()` crosses store boundaries, the `.sum().diff()` version compares store totals, and `shift(-1)` subtracts the next row, not the previous one."
+  },
+  {
+    "id": "pd-033",
+    "track": "pandas",
+    "topic": "merge",
+    "difficulty": "hard",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\nleft = pd.DataFrame({'k': [1, 1, 2], 'a': [10, 11, 12]})\nright = pd.DataFrame({'k': [1, 1, 1, 3], 'b': [5, 6, 7, 8]})\nprint(len(left.merge(right, on='k')))",
+    "options": [
+      "3",
+      "2",
+      "5",
+      "6"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "An inner merge pairs every matching left row with every matching right row. k=1 appears 2 times on the left and 3 on the right, giving 2 x 3 = 6 rows; k=2 and k=3 have no partner."
+  },
+  {
+    "id": "pd-034",
+    "track": "pandas",
+    "topic": "merge",
+    "difficulty": "hard",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\nleft = pd.DataFrame({'k': [1, 2, 3]})\nright = pd.DataFrame({'k': [1, 1, 3], 'w': [10, 11, 30]})\nprint(left.merge(right, on='k', how='left')['w'].tolist())",
+    "options": [
+      "[10.0, nan, 30.0]",
+      "[10, nan, 30]",
+      "[10.0, 11.0, nan, 30.0]",
+      "[10, 11, 30]"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "A left join keeps every left row but duplicates it for each match, so k=1 yields two rows. k=2 has no match and gets NaN, which upcasts the integer column to float."
+  },
+  {
+    "id": "pd-035",
+    "track": "pandas",
+    "topic": "merge",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\na = pd.DataFrame({'k': [1, 2]})\nb = pd.DataFrame({'k': [2, 3]})\nm = a.merge(b, on='k', how='outer', indicator=True)\nprint(m['k'].tolist(), m['_merge'].tolist())",
+    "options": [
+      "[2] ['both']",
+      "[1, 2, 3] ['left_only', 'both', 'right_only']",
+      "[1, 2, 3] ['left', 'both', 'right']",
+      "[1, 2, 2, 3] ['left_only', 'both', 'both', 'right_only']"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "An outer merge keeps keys from both sides, and `indicator=True` adds a `_merge` column with 'left_only', 'right_only' or 'both'. The matching key 2 appears once, not twice."
+  },
+  {
+    "id": "pd-036",
+    "track": "pandas",
+    "topic": "merge",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "`emp` has key column `id` and `pay` has key column `emp_id` holding the same values. Which call joins them?",
+    "options": [
+      "`emp.merge(pay, on=['id', 'emp_id'])`",
+      "`emp.join(pay, on='emp_id')`",
+      "`emp.merge(pay, on='id')`",
+      "`emp.merge(pay, left_on='id', right_on='emp_id')`"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "When the key columns have different names, use `left_on` and `right_on`; both columns are kept in the result. `on=` requires the column to exist in both frames, so the other options raise KeyError."
+  },
+  {
+    "id": "pd-037",
+    "track": "pandas",
+    "topic": "merge",
+    "difficulty": "hard",
+    "type": "mcq",
+    "prompt": "`orders` has 1,000 rows. After `orders.merge(customers, on='cust_id', how='left')` the result has 1,180 rows. What is the most likely cause?",
+    "options": [
+      "Some orders have no matching customer, so the left join adds extra rows for them",
+      "`how='left'` also appends the customers that have no orders",
+      "Some `cust_id` values in `orders` are NaN",
+      "Some `cust_id` values appear more than once in `customers`"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "A left join returns each left row once per matching right row, so duplicate keys in the right table multiply rows. Unmatched orders are kept once with NaN, and unmatched customers are not added. Check with `customers['cust_id'].duplicated().sum()` or merge with `validate='many_to_one'`."
+  },
+  {
+    "id": "pd-038",
+    "track": "pandas",
+    "topic": "merge",
+    "difficulty": "hard",
+    "type": "multi",
+    "prompt": "`orders` and `customers` share a `cust_id` column. Which statements about `orders.merge(customers, on='cust_id', how='left')` are true? Select all that apply.",
+    "options": [
+      "Adding `validate='many_to_one'` raises a MergeError if `customers` has duplicate `cust_id` values",
+      "Every customer in `customers` appears at least once in the result",
+      "Orders whose `cust_id` is not in `customers` are kept, with NaN in the customer columns",
+      "Duplicate `cust_id` rows in `customers` are dropped automatically, keeping the first",
+      "Customers who have no orders do not appear in the result"
+    ],
+    "answer": [
+      0,
+      2,
+      4
+    ],
+    "explanation": "A left join keeps all left rows and only matching right rows. `validate` checks key uniqueness and raises MergeError on a violation. Pandas never de-duplicates the right table for you; duplicates multiply rows instead."
+  },
+  {
+    "id": "pd-039",
+    "track": "pandas",
+    "topic": "concat",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Monthly sales files with identical columns are loaded as `jan`, `feb` and `mar`. Which call stacks them into one DataFrame with a clean index?",
+    "options": [
+      "`pd.concat([jan, feb, mar], axis=1)`",
+      "`pd.merge(jan, feb, mar)`",
+      "`jan.join([feb, mar])`",
+      "`pd.concat([jan, feb, mar], ignore_index=True)`"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "`pd.concat` stacks rows by default (`axis=0`), and `ignore_index=True` renumbers 0..n-1. `axis=1` places the frames side by side, and `merge`/`join` match rows on keys instead of stacking them."
+  },
+  {
+    "id": "pd-040",
+    "track": "pandas",
+    "topic": "concat",
+    "difficulty": "easy",
+    "type": "multi",
+    "prompt": "Which statements about `pd.concat([df1, df2])` are true? Select all that apply.",
+    "options": [
+      "A column present in only one frame is filled with NaN for the other frame's rows",
+      "`ignore_index=True` gives the result a fresh 0..n-1 index",
+      "It drops rows that are duplicated across the two frames",
+      "It matches rows on a shared key column, like `merge`",
+      "By default it stacks the frames vertically (`axis=0`)"
+    ],
+    "answer": [
+      0,
+      1,
+      4
+    ],
+    "explanation": "concat glues frames along an axis, taking the union of columns and filling gaps with NaN. It does no key matching and no de-duplication; use `merge` and `drop_duplicates` for those."
+  },
+  {
+    "id": "pd-041",
+    "track": "pandas",
+    "topic": "join",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "With default arguments, what does `df1.join(df2)` do?",
+    "options": [
+      "Stacks `df2` below `df1`",
+      "Matches rows on the index and keeps every row of `df1` (a left join)",
+      "Matches rows on columns with the same name and keeps only matching rows",
+      "Matches rows on the index and keeps rows from both frames (an outer join)"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "`DataFrame.join` joins on the index by default with `how='left'`. `merge` is the one that defaults to an inner join on common columns."
+  },
+  {
+    "id": "pd-042",
+    "track": "pandas",
+    "topic": "pivot-table",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ndf = pd.DataFrame({'region': ['N', 'N', 'S', 'S', 'N'],\n                   'q': ['Q1', 'Q2', 'Q1', 'Q1', 'Q1'],\n                   'amt': [10, 20, 30, 40, 50]})\npt = df.pivot_table(index='region', columns='q', values='amt',\n                    aggfunc='sum', fill_value=0)\nprint(pt.values.tolist())",
+    "options": [
+      "[[60, 20], [70, nan]]",
+      "[[60, 70], [20, 0]]",
+      "[[30, 20], [35, 0]]",
+      "[[60, 20], [70, 0]]"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "Rows are regions (N, S) and columns are quarters (Q1, Q2). N/Q1 sums 10 + 50, S/Q1 sums 30 + 40, and S has no Q2 rows, so `fill_value=0` puts 0 there instead of NaN. Without `aggfunc='sum'` the default would be the mean."
+  },
+  {
+    "id": "pd-043",
+    "track": "pandas",
+    "topic": "pivot",
+    "difficulty": "hard",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ndf = pd.DataFrame({'day': ['Mon', 'Mon', 'Tue'],\n                   'item': ['tea', 'tea', 'tea'],\n                   'qty': [2, 3, 4]})\nprint(df.pivot(index='day', columns='item', values='qty').shape)",
+    "options": [
+      "(2, 1)",
+      "ValueError",
+      "(2, 2)",
+      "(3, 1)"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "`pivot` only reshapes; it cannot combine two values for the same (Mon, tea) cell, so it raises ValueError about duplicate entries. `pivot_table` with an `aggfunc` handles duplicates."
+  },
+  {
+    "id": "pd-044",
+    "track": "pandas",
+    "topic": "pivot-table",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "What does `margins=True` add to `df.pivot_table(index='region', columns='q', values='amt', aggfunc='mean', margins=True)`?",
+    "options": [
+      "An 'All' row and an 'All' column, computed with the same aggfunc over the underlying rows",
+      "Empty padding rows between regions",
+      "An 'All' row and column that always hold sums, whatever the aggfunc",
+      "Extra columns with each cell's percentage of the grand total"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "Margins apply the pivot's own aggfunc to all rows in each row or column, so with 'mean' the 'All' cells are means of the raw data, not sums and not means of the cell means."
+  },
+  {
+    "id": "pd-045",
+    "track": "pandas",
+    "topic": "pivot-table",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Which call builds a table counting how many employees fall in each (gender, dept) combination?",
+    "options": [
+      "`pd.crosstab(df['gender'], df['dept'])`",
+      "`df.melt(id_vars='gender')`",
+      "`df.pivot(index='gender', columns='dept')`",
+      "`df.groupby('gender')['dept'].sum()`"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "`pd.crosstab` computes a frequency table of two factors. `pivot` reshapes without counting (and fails on duplicates), and `melt` goes from wide to long."
+  },
+  {
+    "id": "pd-046",
+    "track": "pandas",
+    "topic": "melt",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ndf = pd.DataFrame({'id': [1, 2], 'jan': [100, 200], 'feb': [150, 250]})\nlong = df.melt(id_vars='id', var_name='month', value_name='sales')\nprint(long.shape, long.columns.tolist())",
+    "options": [
+      "(6, 3) ['id', 'month', 'sales']",
+      "(4, 2) ['month', 'sales']",
+      "(2, 3) ['id', 'jan', 'feb']",
+      "(4, 3) ['id', 'month', 'sales']"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "`melt` turns wide into long: each of the 2 ids gets one row per melted column (jan, feb), giving 4 rows with the id, the former column name and the value."
+  },
+  {
+    "id": "pd-047",
+    "track": "pandas",
+    "topic": "stack-unstack",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ndf = pd.DataFrame({'Q1': [1, 2], 'Q2': [3, 4]}, index=['A', 'B'])\ns = df.stack()\nprint(len(s), s.loc[('B', 'Q1')])",
+    "options": [
+      "2 2",
+      "4 2",
+      "4 3",
+      "KeyError"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "`stack` moves the columns into an inner index level, giving a Series with a (row, column) MultiIndex: 2 rows x 2 columns = 4 entries. ('B', 'Q1') is 2."
+  },
+  {
+    "id": "pd-048",
+    "track": "pandas",
+    "topic": "stack-unstack",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "`s` is a Series with a two-level MultiIndex (city, year). What does `s.unstack()` do by default?",
+    "options": [
+      "Moves the outer level (city) into the columns, giving one row per year",
+      "Joins the two levels into single string labels such as 'Pune_2024'",
+      "Moves the inner level (year) into the columns, giving one row per city",
+      "Drops the inner level and keeps the outer one"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "`unstack` defaults to `level=-1`, the innermost level. Combinations that don't exist become NaN unless you pass `fill_value`."
+  },
+  {
+    "id": "pd-049",
+    "track": "pandas",
+    "topic": "reshaping",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "Which pairs are (roughly) inverse reshaping operations? Select all that apply.",
+    "options": [
+      "`melt` and `pivot`",
+      "`set_index` and `reset_index`",
+      "`concat` and `merge`",
+      "`stack` and `unstack`",
+      "`groupby().sum()` and `transform('sum')`"
+    ],
+    "answer": [
+      0,
+      1,
+      3
+    ],
+    "explanation": "melt goes wide to long and pivot goes back; stack and unstack move a level between columns and index; set_index and reset_index move columns into and out of the index. concat and merge both combine frames, and an aggregation cannot be undone by transform."
+  },
+  {
+    "id": "pd-050",
+    "track": "pandas",
+    "topic": "missing-data",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\nimport numpy as np\ndf = pd.DataFrame({'a': [1, np.nan, 3], 'b': [np.nan, np.nan, 6]})\nprint(df.isna().sum().tolist(), int(df.isna().sum().sum()))",
+    "options": [
+      "[1, 2] 3",
+      "[2, 1] 3",
+      "[1, 2] 2",
+      "[1, 2, 0] 3"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "`isna()` gives a Boolean frame and `.sum()` counts True per column (a: 1, b: 2). Summing again gives the total of 3 missing cells."
+  },
+  {
+    "id": "pd-051",
+    "track": "pandas",
+    "topic": "missing-data",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\nimport numpy as np\ndf = pd.DataFrame({'a': [1, np.nan, np.nan, 4],\n                   'b': [np.nan, np.nan, 3, 4],\n                   'c': [np.nan, np.nan, 3, np.nan]})\nprint(df.dropna(thresh=2).index.tolist(), df.dropna(how='all').index.tolist())",
+    "options": [
+      "[2, 3] [0, 2, 3]",
+      "[1] [1]",
+      "[2, 3] [1]",
+      "[0, 2, 3] [2, 3]"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "`thresh=2` keeps rows with at least 2 non-missing values: rows 2 and 3. `how='all'` drops only rows where every value is missing (row 1), so row 0, with a single value, survives."
+  },
+  {
+    "id": "pd-052",
+    "track": "pandas",
+    "topic": "missing-data",
+    "difficulty": "hard",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\nimport numpy as np\ns = pd.Series([np.nan, np.nan])\nprint(s.sum(), s.mean(), s.count())",
+    "options": [
+      "0.0 nan 0",
+      "nan nan 2",
+      "0.0 0.0 2",
+      "nan nan 0"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "Aggregations skip NaN. With nothing left, `sum` returns its identity 0.0 (`min_count=0` by default), while `mean` has no values to average and returns NaN. `count` counts non-missing values: 0."
+  },
+  {
+    "id": "pd-053",
+    "track": "pandas",
+    "topic": "missing-data",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Which call drops only the rows where the `email` column is missing, ignoring NaN in other columns?",
+    "options": [
+      "`df.dropna(subset=['email'])`",
+      "`df['email'].dropna()`",
+      "`df.dropna(axis=1, subset=['email'])`",
+      "`df.dropna(how='any')`"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "`subset` limits which columns are checked. `how='any'` checks every column, `df['email'].dropna()` returns only the email Series, and with `axis=1` the subset would refer to row labels, so this raises KeyError."
+  },
+  {
+    "id": "pd-054",
+    "track": "pandas",
+    "topic": "missing-data",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "How do you fill missing `age` with the column median and missing `city` with 'Unknown' in one call?",
+    "options": [
+      "`df.fillna([df['age'].median(), 'Unknown'])`",
+      "`df.fillna(value='Unknown', subset=['city'])`",
+      "`df.fillna(method={'age': 'median', 'city': 'Unknown'})`",
+      "`df.fillna({'age': df['age'].median(), 'city': 'Unknown'})`"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "`fillna` accepts a dict mapping column names to fill values. It does not accept a list, has no `subset` parameter, and `method` only ever meant forward/backward fill (it was removed in pandas 3)."
+  },
+  {
+    "id": "pd-055",
+    "track": "pandas",
+    "topic": "missing-data",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "Which statements about missing values in pandas are true? Select all that apply.",
+    "options": [
+      "`s == np.nan` is a reliable way to find missing values",
+      "`len(s)` excludes missing values",
+      "`s.count()` counts only the non-missing values",
+      "`df.dropna()` with default arguments drops every row that has at least one NaN",
+      "`df.isna()` and `df.isnull()` return the same result"
+    ],
+    "answer": [
+      2,
+      3,
+      4
+    ],
+    "explanation": "`isnull` is an alias of `isna`, `count` skips NaN, and `dropna` defaults to `how='any'`. NaN is not equal to anything, including itself, so `s == np.nan` is all False; use `s.isna()`. `len` counts every row."
+  },
+  {
+    "id": "pd-056",
+    "track": "pandas",
+    "topic": "type-conversion",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ns = pd.Series(['12', '7', 'n/a', '3.5'])\nprint(pd.to_numeric(s, errors='coerce').tolist())",
+    "options": [
+      "ValueError",
+      "[12.0, 7.0, nan, 3.5]",
+      "[12, 7, 3.5]",
+      "[12.0, 7.0, 0.0, 3.5]"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "`errors='coerce'` turns anything that can't be parsed into NaN instead of raising. NaN and 3.5 force a float result."
+  },
+  {
+    "id": "pd-057",
+    "track": "pandas",
+    "topic": "type-conversion",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "`df['age'].astype(int)` raises an error. The column holds whole numbers stored as float, with a few NaN. What is the cause and a fix?",
+    "options": [
+      "`astype` works only on string columns; use `pd.to_numeric` instead",
+      "`astype` needs `inplace=True` to change a column",
+      "NaN can't be stored in a NumPy int column; fill or drop the NaN first, or use the nullable `'Int64'` dtype",
+      "Floats can never be cast to int in pandas; round them first"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "NumPy integer arrays have no missing-value marker, so casting NaN to int fails. `astype('Int64')` (capital I) keeps missing values as `<NA>`. Floats without NaN cast to int fine."
+  },
+  {
+    "id": "pd-058",
+    "track": "pandas",
+    "topic": "type-conversion",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "A `city` column has 1 million rows but only 20 distinct values. What is the main benefit of `df['city'].astype('category')`?",
+    "options": [
+      "The column is sorted alphabetically",
+      "Duplicate rows are removed",
+      "Each distinct value is stored once and rows hold small integer codes, which cuts memory sharply",
+      "The column becomes numeric, so you can average it"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "Categorical dtype stores the 20 categories once plus a compact integer code per row. It changes neither row order nor row count, and averaging the categories is not supported."
+  },
+  {
+    "id": "pd-059",
+    "track": "pandas",
+    "topic": "type-conversion",
+    "difficulty": "hard",
+    "type": "multi",
+    "prompt": "`s` holds strings like `'1,200'`, `'850'` and `'2,450'`. Which expressions convert it to numbers correctly? Select all that apply.",
+    "options": [
+      "`pd.to_numeric(s.str.replace(',', ''))`",
+      "`pd.to_numeric(s, errors='coerce')`",
+      "`s.str.replace(',', '').astype(int)`",
+      "`s.str.replace(',', '').astype(float)`",
+      "`s.astype(float)`"
+    ],
+    "answer": [
+      0,
+      2,
+      3
+    ],
+    "explanation": "The thousands separator must be removed first. `s.astype(float)` raises ValueError on '1,200', and `to_numeric(..., errors='coerce')` silently turns every comma value into NaN, losing data without an error."
+  },
+  {
+    "id": "pd-060",
+    "track": "pandas",
+    "topic": "duplicates",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ns = pd.Series(['a', 'b', 'a', 'c', 'a'])\nprint(s.duplicated().sum(), s.duplicated(keep=False).sum())",
+    "options": [
+      "1 3",
+      "2 2",
+      "3 3",
+      "2 3"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "By default (`keep='first'`) the first 'a' is not marked, only its 2 repeats. `keep=False` marks every occurrence of a duplicated value, so all 3 'a's are True."
+  },
+  {
+    "id": "pd-061",
+    "track": "pandas",
+    "topic": "duplicates",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ndf = pd.DataFrame({'user': ['u1', 'u2', 'u1', 'u2'], 'day': [1, 1, 2, 3]})\nprint(df.drop_duplicates(subset='user', keep='last')['day'].tolist())",
+    "options": [
+      "[1, 1, 2, 3]",
+      "[]",
+      "[2, 3]",
+      "[1, 1]"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "`subset='user'` compares only the user column, and `keep='last'` keeps the last row of each user (u1 on day 2, u2 on day 3), a common way to get each user's latest record."
+  },
+  {
+    "id": "pd-062",
+    "track": "pandas",
+    "topic": "duplicates",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "With default arguments, `df.duplicated()` marks a row True when:",
+    "options": [
+      "Its value in the first column matches an earlier row",
+      "It shares any single column value with an earlier row",
+      "Its index label is repeated",
+      "It matches an earlier row in every column"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "By default `duplicated` compares all columns and marks every repeat after the first occurrence. Pass `subset=` to compare only some columns; the index is never considered."
+  },
+  {
+    "id": "pd-063",
+    "track": "pandas",
+    "topic": "datetime",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ns = pd.to_datetime(pd.Series(['2024-01-15', '2024-03-01']))\nprint(s.dt.month.tolist(), s.dt.day_name().tolist())",
+    "options": [
+      "[1, 3] ['Sunday', 'Thursday']",
+      "[1, 3] ['Mon', 'Fri']",
+      "[1, 3] ['Monday', 'Friday']",
+      "[15, 1] ['Monday', 'Friday']"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "The `.dt` accessor exposes datetime parts: `month` gives 1 and 3, and `day_name()` gives full weekday names. 15 January 2024 was a Monday and 1 March 2024 a Friday."
+  },
+  {
+    "id": "pd-064",
+    "track": "pandas",
+    "topic": "resample",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\nidx = pd.date_range('2024-01-01', periods=6, freq='D')\ns = pd.Series([1, 2, 3, 4, 5, 6], index=idx)\nprint(s.resample('3D').sum().tolist())",
+    "options": [
+      "[6, 15]",
+      "[1, 4]",
+      "[3, 3]",
+      "[2.0, 5.0]"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "`resample('3D')` groups the daily index into 3-day bins (1-3 Jan, 4-6 Jan) and `sum` adds each bin: 1+2+3 and 4+5+6. It works like a groupby on time buckets."
+  },
+  {
+    "id": "pd-065",
+    "track": "pandas",
+    "topic": "resample",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "`df` has a RangeIndex and a datetime column `order_date`. `df.resample('W')` raises a TypeError. Which change fixes it?",
+    "options": [
+      "`df['order_date'].dt.resample('W')`",
+      "`df.resample('W', axis=1)`",
+      "`df.set_index('order_date').resample('W')`, or pass `on='order_date'`",
+      "`df.sort_values('order_date').resample('W')`"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "`resample` needs a DatetimeIndex (or a datetime column named with `on=`). Sorting doesn't change the index type, and there is no `.dt.resample`."
+  },
+  {
+    "id": "pd-066",
+    "track": "pandas",
+    "topic": "datetime",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "A CSV column holds Indian-style dates such as `05/03/2024`, meaning 5 March 2024. What should you pass to `pd.to_datetime` to parse them correctly?",
+    "options": [
+      "`errors='coerce'`",
+      "`yearfirst=True`",
+      "`dayfirst=True` (or `format='%d/%m/%Y'`)",
+      "`utc=True`"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "pandas assumes month-first for ambiguous slash dates, so 05/03/2024 would become 3 May. `dayfirst=True` or an explicit `format` fixes that; `errors='coerce'` only turns unparseable values into NaT."
+  },
+  {
+    "id": "pd-067",
+    "track": "pandas",
+    "topic": "date-range",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Which call produces the first day of every month in 2024 (12 timestamps)?",
+    "options": [
+      "`pd.date_range('2024-01-01', '2024-12-31', freq='MS')`",
+      "`pd.date_range('2024-01-01', '2024-12-31', periods=30)`",
+      "`pd.date_range('2024-01-01', '2024-12-31', freq='W')`",
+      "`pd.date_range('2024-01-01', periods=12, freq='D')`"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "`freq='MS'` means month start. `freq='D'` with 12 periods gives 1-12 January, `freq='W'` gives weekly Sundays, and `periods=30` spaces 30 timestamps evenly."
+  },
+  {
+    "id": "pd-068",
+    "track": "pandas",
+    "topic": "datetime",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "`s` is a datetime64 Series. Which expressions run without error? Select all that apply.",
+    "options": [
+      "`s.dt.days`",
+      "`s.dt.dayofweek`",
+      "`s.year`",
+      "`s.dt.month_name()`",
+      "`s.dt.year`"
+    ],
+    "answer": [
+      1,
+      3,
+      4
+    ],
+    "explanation": "Date parts live under the `.dt` accessor, so `s.year` raises AttributeError. `.dt.days` exists only for timedelta Series, such as the difference of two dates."
+  },
+  {
+    "id": "pd-069",
+    "track": "pandas",
+    "topic": "datetime",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "`df['date']` is a datetime64 column. Which expressions keep only the rows from the year 2024? Select all that apply.",
+    "options": [
+      "`df[df['date'].str.startswith('2024')]`",
+      "`df.set_index('date').loc['2024']`",
+      "`df[df['date'].dt.year == 2024]`",
+      "`df[(df['date'] >= '2024-01-01') & (df['date'] < '2025-01-01')]`",
+      "`df[df['date'] == 2024]`"
+    ],
+    "answer": [
+      1,
+      2,
+      3
+    ],
+    "explanation": "Comparing datetimes with date strings works, and a DatetimeIndex supports partial string indexing like `.loc['2024']`. Comparing a datetime with the integer 2024 matches nothing, and `.str` raises AttributeError on a datetime column."
+  },
+  {
+    "id": "pd-070",
+    "track": "pandas",
+    "topic": "string-methods",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ns = pd.Series(['  Asha ', 'RAVI', 'meera'])\nprint(s.str.strip().str.title().tolist())",
+    "options": [
+      "['Asha', 'Ravi', 'Meera']",
+      "AttributeError",
+      "['ASHA', 'RAVI', 'MEERA']",
+      "['  Asha ', 'Ravi', 'Meera']"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "`.str` methods chain: `strip()` removes the surrounding spaces and `title()` capitalises each word, a standard cleanup before grouping on names."
+  },
+  {
+    "id": "pd-071",
+    "track": "pandas",
+    "topic": "string-methods",
+    "difficulty": "hard",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ns = pd.Series(['a.b', 'axb', 'ab'])\nprint(s.str.contains('a.b').tolist(), s.str.contains('a.b', regex=False).tolist())",
+    "options": [
+      "[True, True, False] [True, True, False]",
+      "[True, False, False] [True, False, False]",
+      "[True, True, True] [True, False, False]",
+      "[True, True, False] [True, False, False]"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "`str.contains` treats the pattern as a regex by default, and '.' matches any character, so 'axb' matches too. `regex=False` searches for the literal text 'a.b'."
+  },
+  {
+    "id": "pd-072",
+    "track": "pandas",
+    "topic": "string-methods",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "`df['name'].upper()` raises AttributeError. Which line upper-cases the column?",
+    "options": [
+      "`df['name'].str.upper()`",
+      "`df['name'].astype(str).upper()`",
+      "`upper(df['name'])`",
+      "`df['name'].apply(upper)`"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "String methods on a Series live under the `.str` accessor. `astype(str)` still returns a Series without an `upper` method, and `upper` alone is not a defined name."
+  },
+  {
+    "id": "pd-073",
+    "track": "pandas",
+    "topic": "string-methods",
+    "difficulty": "easy",
+    "type": "multi",
+    "prompt": "`s` is a Series of city names. Which expressions return a Boolean Series you can use to filter rows? Select all that apply.",
+    "options": [
+      "`s.str.lower()`",
+      "`s.str.len()`",
+      "`s.str.startswith('B')`",
+      "`s.isin(['Pune', 'Goa'])`",
+      "`s.str.contains('pur')`"
+    ],
+    "answer": [
+      2,
+      3,
+      4
+    ],
+    "explanation": "`contains`, `startswith` and `isin` return True/False per row. `str.len()` returns integers and `str.lower()` returns strings."
+  },
+  {
+    "id": "pd-074",
+    "track": "pandas",
+    "topic": "apply-map",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ns = pd.Series(['M', 'F', 'X', 'M'])\nprint(s.map({'M': 'Male', 'F': 'Female'}).tolist())",
+    "options": [
+      "['Male', 'Female', nan, 'Male']",
+      "['Male', 'Female', None, 'Male']",
+      "['Male', 'Female', 'X', 'Male']",
+      "KeyError"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "`Series.map` with a dict replaces each value by its lookup, and values missing from the dict become NaN; they are not left unchanged. Use `replace` to keep unmapped values."
+  },
+  {
+    "id": "pd-075",
+    "track": "pandas",
+    "topic": "apply-map",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ndf = pd.DataFrame({'a': [1, 5, 3], 'b': [4, 2, 9]})\nprint(df.apply(lambda col: col.max() - col.min()).tolist(), df.apply(max, axis=1).tolist())",
+    "options": [
+      "[4, 7] [4, 5, 9]",
+      "[4, 7] [5, 9]",
+      "[3, 3, 6] [5, 9]",
+      "[3, 3, 6] [4, 5, 9]"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "`DataFrame.apply` defaults to `axis=0`, passing each column: ranges 4 and 7. With `axis=1` each row is passed, giving each row's maximum."
+  },
+  {
+    "id": "pd-076",
+    "track": "pandas",
+    "topic": "apply-map",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "Which line adds a `status` column that is 'pass' when `score >= 40` and 'fail' otherwise?",
+    "options": [
+      "`df['status'] = np.where(df['score'] >= 40, 'pass', 'fail')`",
+      "`df['status'] = 'pass' if df['score'] >= 40 else 'fail'`",
+      "`df['status'] = df['score'].where(df['score'] >= 40, 'fail')`",
+      "`df['status'] = df['score'] >= 40 and 'pass' or 'fail'`"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "`np.where` picks values element-wise. A Python `if` or `and` on a Series raises ValueError (ambiguous truth value), and `Series.where` keeps the numeric score for passing rows instead of 'pass'."
+  },
+  {
+    "id": "pd-077",
+    "track": "pandas",
+    "topic": "apply-map",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "Which statements are true? Select all that apply.",
+    "options": [
+      "`s.apply(f)` is vectorized and runs as fast as NumPy arithmetic",
+      "`df.apply(f, axis=1)` passes each column to `f`",
+      "`Series.map` accepts a dict, a Series or a function",
+      "For a function `f` that takes one value, `s.map(f)` and `s.apply(f)` both call `f` once per element",
+      "`df.apply(f)` with the default `axis=0` calls `f` once per column"
+    ],
+    "answer": [
+      2,
+      3,
+      4
+    ],
+    "explanation": "`apply` with a Python function loops in Python, so it is much slower than built-in vectorized operations. `axis=1` passes rows, not columns."
+  },
+  {
+    "id": "pd-078",
+    "track": "pandas",
+    "topic": "vectorization",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "`df` has numeric columns `a` and `b`. Which of these are vectorized, with no Python-level function call per row? Select all that apply.",
+    "options": [
+      "`[x * 2 for x in df['a']]`",
+      "`df.apply(lambda r: r['a'] + r['b'], axis=1)`",
+      "`df['a'].clip(0, 100)`",
+      "`df['a'] + df['b']`",
+      "`df['a'].cumsum()`"
+    ],
+    "answer": [
+      2,
+      3,
+      4
+    ],
+    "explanation": "Arithmetic and built-in methods like `clip` and `cumsum` run in compiled code over the whole column. Row-wise `apply` and list comprehensions call Python code once per row and are far slower on large data."
+  },
+  {
+    "id": "pd-079",
+    "track": "pandas",
+    "topic": "cut-qcut",
+    "difficulty": "hard",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ns = pd.Series([0, 5, 10])\nb = pd.cut(s, bins=[0, 5, 10])\nprint(b.isna().sum(), b.cat.codes.tolist())",
+    "options": [
+      "1 [-1, 0, 1]",
+      "0 [0, 1, 1]",
+      "1 [0, 1, -1]",
+      "0 [0, 0, 1]"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "Bins are right-closed and left-open by default: (0, 5] and (5, 10]. 0 falls outside (0, 5], so it becomes NaN (code -1); 5 lands in the first bin and 10 in the second. Use `include_lowest=True` to include 0."
+  },
+  {
+    "id": "pd-080",
+    "track": "pandas",
+    "topic": "cut-qcut",
+    "difficulty": "hard",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ns = pd.Series([1, 2, 3, 4, 5, 6, 7, 100])\nprint(pd.qcut(s, 4, labels=False).tolist(), pd.cut(s, 4, labels=False).tolist())",
+    "options": [
+      "[0, 0, 0, 0, 0, 0, 0, 3] [0, 0, 0, 0, 0, 0, 0, 3]",
+      "[0, 0, 0, 0, 0, 0, 0, 3] [0, 0, 1, 1, 2, 2, 3, 3]",
+      "[0, 0, 1, 1, 2, 2, 3, 3] [0, 0, 0, 0, 0, 0, 0, 3]",
+      "[0, 0, 1, 1, 2, 2, 3, 3] [0, 0, 1, 1, 2, 2, 3, 3]"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "`qcut` makes quantile bins with equal counts (2 values each). `cut` with 4 bins splits the range 1-100 into equal widths of about 25, so the outlier 100 sits alone in the last bin and the rest share the first."
+  },
+  {
+    "id": "pd-081",
+    "track": "pandas",
+    "topic": "cut-qcut",
+    "difficulty": "hard",
+    "type": "mcq",
+    "prompt": "`pd.qcut(df['refunds'], 4)` raises `ValueError: Bin edges must be unique`. Most values in `refunds` are 0. What is happening?",
+    "options": [
+      "`qcut` needs explicit bin edges, like `pd.cut`",
+      "Several quantile edges are equal (all 0), so the bins would be empty; pass `duplicates='drop'` or bin a ranked version of the column",
+      "`qcut` doesn't accept zeros; replace them with NaN first",
+      "The column must be sorted before calling `qcut`"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "With mostly zeros, the 25th and 50th percentiles are both 0, giving duplicate edges. `duplicates='drop'` merges them into fewer bins, and `qcut(s.rank(method='first'), 4)` forces equal-sized groups."
+  },
+  {
+    "id": "pd-082",
+    "track": "pandas",
+    "topic": "rank",
+    "difficulty": "hard",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ns = pd.Series([50, 80, 80, 60])\nprint(s.rank(ascending=False).tolist(), s.rank(ascending=False, method='dense').tolist())",
+    "options": [
+      "[4.0, 1.5, 1.5, 3.0] [3.0, 1.0, 1.0, 2.0]",
+      "[4.0, 1.0, 1.0, 3.0] [3.0, 1.0, 1.0, 2.0]",
+      "[4.0, 1.5, 1.5, 3.0] [4.0, 1.0, 1.0, 3.0]",
+      "[1.0, 3.5, 3.5, 2.0] [1.0, 3.0, 3.0, 2.0]"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "The default method 'average' gives tied values the mean of the ranks they span: the two 80s share ranks 1 and 2, so 1.5 each. 'dense' gives ties the same rank and doesn't skip the next one, so 60 is 2 and 50 is 3."
+  },
+  {
+    "id": "pd-083",
+    "track": "pandas",
+    "topic": "rank",
+    "difficulty": "medium",
+    "type": "mcq",
+    "prompt": "In a leaderboard two students tie for 2nd place. You want the next student ranked 3rd, not 4th. Which `rank` method gives that?",
+    "options": [
+      "`method='dense'`",
+      "`method='first'`",
+      "`method='average'`",
+      "`method='min'`"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "'dense' doesn't leave gaps after ties (1, 2, 2, 3). 'min' gives the tied students 2 but the next one 4, 'average' gives the ties 2.5, and 'first' breaks ties by order of appearance."
+  },
+  {
+    "id": "pd-084",
+    "track": "pandas",
+    "topic": "shift-diff",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ns = pd.Series([100, 110, 99])\nprint(s.diff().tolist(), s.pct_change().round(2).tolist())",
+    "options": [
+      "[nan, 10.0, -11.0] [nan, 10.0, -10.0]",
+      "[nan, 10.0, -11.0] [nan, 0.1, -0.1]",
+      "[nan, -10.0, 11.0] [nan, -0.1, 0.1]",
+      "[10.0, -11.0] [0.1, -0.1]"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "`diff()` is the current value minus the previous one, and `pct_change()` is current / previous - 1 (a fraction, not a percent). The first row has no previous value, so both start with NaN and keep the original length."
+  },
+  {
+    "id": "pd-085",
+    "track": "pandas",
+    "topic": "rolling",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ns = pd.Series([2, 4, 6, 8, 10])\nprint(s.rolling(3).mean().tolist(), s.rolling(3, min_periods=1).sum().tolist())",
+    "options": [
+      "[nan, nan, 4.0, 6.0, 8.0] [2.0, 6.0, 12.0, 18.0, 24.0]",
+      "[nan, nan, 4.0, 6.0, 8.0] [nan, nan, 12.0, 18.0, 24.0]",
+      "[4.0, 6.0, 8.0] [2.0, 6.0, 12.0, 18.0, 24.0]",
+      "[2.0, 3.0, 4.0, 6.0, 8.0] [2.0, 6.0, 12.0, 18.0, 24.0]"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "A window of 3 needs 3 values by default, so the first two results are NaN. `min_periods=1` computes from whatever is available, so the early windows sum 1 and 2 values."
+  },
+  {
+    "id": "pd-086",
+    "track": "pandas",
+    "topic": "cumsum",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ndf = pd.DataFrame({'g': ['a', 'b', 'a', 'b'], 'v': [1, 2, 3, 4]})\nprint(df['v'].cumsum().tolist(), df.groupby('g')['v'].cumsum().tolist())",
+    "options": [
+      "[1, 2, 4, 6] [1, 3, 6, 10]",
+      "[1, 3, 6, 10] [1, 3, 6, 10]",
+      "[1, 3, 6, 10] [4, 6]",
+      "[1, 3, 6, 10] [1, 2, 4, 6]"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "A plain `cumsum` is a running total over all rows. Grouped, it keeps a separate running total per group (a: 1, 4; b: 2, 6) and returns them in the original row order."
+  },
+  {
+    "id": "pd-087",
+    "track": "pandas",
+    "topic": "window-functions",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "`s` is a numeric Series with 100 values. Which of these return a Series with 100 values? Select all that apply.",
+    "options": [
+      "`s.value_counts()`",
+      "`s.describe()`",
+      "`s.rolling(7).mean()`",
+      "`s.diff()`",
+      "`s.shift(1)`",
+      "`s.cumsum()`"
+    ],
+    "answer": [
+      2,
+      3,
+      4,
+      5
+    ],
+    "explanation": "cumsum, shift, rolling and diff keep the original length, using NaN where no value can be computed. `value_counts` returns one row per distinct value and `describe` returns 8 summary statistics."
+  },
+  {
+    "id": "pd-088",
+    "track": "pandas",
+    "topic": "reset-index",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "After `g = df.groupby(['city', 'year'])['sales'].sum()`, how do you turn `city` and `year` back into ordinary columns?",
+    "options": [
+      "`g.droplevel([0, 1])`",
+      "`g.flatten()`",
+      "`g.unstack()`",
+      "`g.reset_index()`"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "`reset_index()` moves the index levels into columns and gives a fresh RangeIndex. `unstack` moves a level into the columns as headers, and `droplevel` throws the levels away."
+  },
+  {
+    "id": "pd-089",
+    "track": "pandas",
+    "topic": "multiindex",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ndf = pd.DataFrame({'city': ['Pune', 'Pune', 'Goa'],\n                   'year': [2023, 2024, 2024],\n                   'sales': [10, 20, 5]})\ns = df.groupby(['city', 'year'])['sales'].sum()\nprint(s.index.nlevels, s.loc[('Pune', 2024)], s.loc['Pune'].tolist())",
+    "options": [
+      "2 20 [10, 20]",
+      "1 20 [10, 20]",
+      "2 30 [10, 20]",
+      "2 20 [20]"
+    ],
+    "answer": [
+      0
+    ],
+    "explanation": "Grouping by two keys gives a two-level MultiIndex. A full tuple selects one value, and a partial key on the outer level selects every year for Pune."
+  },
+  {
+    "id": "pd-090",
+    "track": "pandas",
+    "topic": "axis",
+    "difficulty": "easy",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ndf = pd.DataFrame({'a': [1, 2], 'b': [10, 20]})\nprint(df.sum().tolist(), df.sum(axis=1).tolist())",
+    "options": [
+      "[33] [33]",
+      "[11, 22] [3, 30]",
+      "[3, 30] [11, 22]",
+      "[3, 30] [3, 30]"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "The default `axis=0` aggregates down the rows, giving one result per column. `axis=1` aggregates across the columns, giving one result per row."
+  },
+  {
+    "id": "pd-091",
+    "track": "pandas",
+    "topic": "inplace",
+    "difficulty": "medium",
+    "type": "output",
+    "prompt": "What does this code print?",
+    "code": "import pandas as pd\ndf = pd.DataFrame({'a': [3, 1, 2]})\nresult = df.sort_values('a', inplace=True)\nprint(result, df['a'].tolist())",
+    "options": [
+      "[1, 2, 3] [3, 1, 2]",
+      "[1, 2, 3] [1, 2, 3]",
+      "None [3, 1, 2]",
+      "None [1, 2, 3]"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "With `inplace=True` the method modifies `df` and returns None, so writing `df = df.sort_values(..., inplace=True)` would replace your DataFrame with None."
+  },
+  {
+    "id": "pd-092",
+    "track": "pandas",
+    "topic": "describe-info",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "Which information does `df.info()` show?",
+    "options": [
+      "The mean, standard deviation, min and max of each numeric column",
+      "The number of rows, each column's non-null count and dtype, and memory usage",
+      "The first five rows",
+      "The number of unique values in each column"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "`info()` is the quick structural check: index range, columns, non-null counts (which reveal missing values), dtypes and memory. Summary statistics come from `describe()` and the first rows from `head()`."
+  },
+  {
+    "id": "pd-093",
+    "track": "pandas",
+    "topic": "describe-info",
+    "difficulty": "hard",
+    "type": "multi",
+    "prompt": "Which statements about `df.describe()` are true? Select all that apply.",
+    "options": [
+      "The 'std' row uses the population formula (`ddof=0`)",
+      "The 'count' row includes missing values",
+      "`include='all'` also reports count, unique, top and freq for non-numeric columns",
+      "The '50%' row is the median",
+      "With default arguments it summarizes only the numeric columns"
+    ],
+    "answer": [
+      2,
+      3,
+      4
+    ],
+    "explanation": "pandas computes the sample standard deviation (`ddof=1`), unlike NumPy's `np.std` default. 'count' is the number of non-missing values."
+  },
+  {
+    "id": "pd-094",
+    "track": "pandas",
+    "topic": "shape",
+    "difficulty": "easy",
+    "type": "multi",
+    "prompt": "Which expressions give the number of rows in `df`? Select all that apply.",
+    "options": [
+      "`len(df)`",
+      "`df.size`",
+      "`df.shape[0]`",
+      "`len(df.index)`",
+      "`df.count()`"
+    ],
+    "answer": [
+      0,
+      2,
+      3
+    ],
+    "explanation": "`df.size` is rows times columns, and `df.count()` returns the non-missing count of each column, which can be lower than the row count."
+  },
+  {
+    "id": "pd-095",
+    "track": "pandas",
+    "topic": "rename",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "Which of these rename column `amt` to `amount` in `df`? Select all that apply.",
+    "options": [
+      "`df = df.rename({'amt': 'amount'})`",
+      "`df.columns = ['amount' if c == 'amt' else c for c in df.columns]`",
+      "`df.rename(columns={'amt': 'amount'}, inplace=True)`",
+      "`df.rename(columns={'amt': 'amount'})` on its own line",
+      "`df = df.rename(columns={'amt': 'amount'})`"
+    ],
+    "answer": [
+      1,
+      2,
+      4
+    ],
+    "explanation": "A dict passed to `rename` without `columns=` applies to the index labels by default, so the column keeps its name. Calling `rename` without assigning the result or using `inplace=True` changes nothing."
+  },
+  {
+    "id": "pd-096",
+    "track": "pandas",
+    "topic": "row-count",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "Which operations can return a different number of rows than `df` has? Select all that apply.",
+    "options": [
+      "`df.fillna(0)`",
+      "`df.merge(other, on='k', how='left')`",
+      "`df.dropna()`",
+      "`df.melt(id_vars='id')`",
+      "`df.assign(x=1)`",
+      "`df.groupby('k')['v'].transform('sum')`"
+    ],
+    "answer": [
+      1,
+      2,
+      3
+    ],
+    "explanation": "A left merge multiplies rows when the right table has duplicate keys, dropna removes rows, and melt creates one row per melted column. fillna, transform and assign keep the row count."
+  },
+  {
+    "id": "pd-097",
+    "track": "pandas",
+    "topic": "read-csv",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "A 2 GB CSV has 80 columns, but you need only `order_id`, `amount` and `date`. Which `read_csv` argument loads just those?",
+    "options": [
+      "`names=['order_id', 'amount', 'date']`",
+      "`usecols=['order_id', 'amount', 'date']`",
+      "`columns=['order_id', 'amount', 'date']`",
+      "`index_col=['order_id', 'amount', 'date']`"
+    ],
+    "answer": [
+      1
+    ],
+    "explanation": "`usecols` reads only the listed columns, which saves memory and time. `names` assigns column names instead of selecting, and `read_csv` has no `columns` argument."
+  },
+  {
+    "id": "pd-098",
+    "track": "pandas",
+    "topic": "read-csv",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "After `df = pd.read_csv('orders.csv')`, `df['order_date'].dt.month` raises AttributeError. Which read call fixes it?",
+    "options": [
+      "`pd.read_csv('orders.csv', dtype={'order_date': 'date'})`",
+      "`pd.read_csv('orders.csv', index_col='order_date')`",
+      "`pd.read_csv('orders.csv', parse_dates=['order_date'])`",
+      "`pd.read_csv('orders.csv', usecols=['order_date'])`"
+    ],
+    "answer": [
+      2
+    ],
+    "explanation": "Without `parse_dates`, date columns are read as text, which has no `.dt` accessor. `parse_dates` converts them to datetime64 (as would `pd.to_datetime` afterwards); 'date' is not a valid dtype."
+  },
+  {
+    "id": "pd-099",
+    "track": "pandas",
+    "topic": "read-csv",
+    "difficulty": "easy",
+    "type": "mcq",
+    "prompt": "A survey CSV marks missing answers as `-` and `NA?`. How do you make `read_csv` treat them as NaN?",
+    "options": [
+      "`skip_blank_lines=True`",
+      "`keep_default_na=['-', 'NA?']`",
+      "`na_filter=False`",
+      "`na_values=['-', 'NA?']`"
+    ],
+    "answer": [
+      3
+    ],
+    "explanation": "`na_values` adds extra markers to the default missing-value list. `na_filter=False` turns missing-value detection off, and `keep_default_na` is a True/False switch."
+  },
+  {
+    "id": "pd-100",
+    "track": "pandas",
+    "topic": "read-csv",
+    "difficulty": "medium",
+    "type": "multi",
+    "prompt": "Which statements about `pd.read_csv` options are true? Select all that apply.",
+    "options": [
+      "`usecols` renames the selected columns",
+      "`header=None` throws away the first line of the file",
+      "`sep=';'` reads a semicolon-separated file",
+      "`skiprows=2` skips the first two lines of the file",
+      "`nrows=1000` reads only the first 1000 data rows"
+    ],
+    "answer": [
+      2,
+      3,
+      4
+    ],
+    "explanation": "`header=None` says the file has no header, so the first line is read as data and columns are numbered 0, 1, 2... `usecols` only selects columns; `names` renames them."
+  }
+]
