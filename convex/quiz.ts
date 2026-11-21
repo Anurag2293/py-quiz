@@ -71,9 +71,9 @@ async function pickQuestions(ctx: MutationCtx, userId: Id<'users'>) {
 }
 
 function isCorrect(question: Doc<'questions'>, selected: number[]) {
-  if (selected.length !== question.answer.length) return false
+  const picked = new Set(selected)
   const want = new Set(question.answer)
-  return selected.every((i) => want.has(i))
+  return picked.size === want.size && [...picked].every((i) => want.has(i))
 }
 
 async function finalize(ctx: MutationCtx, quiz: Doc<'quizzes'>, responses: number[][], auto: boolean) {

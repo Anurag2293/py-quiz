@@ -124,6 +124,10 @@ def check_schema(q: dict, track: str, errors: list[str]) -> None:
 
 
 def main(selected: list[str]) -> int:
+    missing = [str(py) for py in ENVS.values() if not py.exists()]
+    if missing:
+        print("Missing Python environment(s): " + ", ".join(missing) + " (see README)")
+        return 1
     tracks = selected or list(TRACKS)
     errors: list[str] = []
     all_q: list[dict] = []
@@ -150,7 +154,7 @@ def main(selected: list[str]) -> int:
 
     def verify(q: dict) -> list[str]:
         errs = []
-        results = {name: run_snippet(py, q["code"]) for name, py in ENVS.items() if py.exists()}
+        results = {name: run_snippet(py, q["code"]) for name, py in ENVS.items()}
         cur = results.get("current")
         if len(set(results.values())) > 1:
             errs.append(f"{q['id']}: output differs between environments: {results!r}")
