@@ -106,10 +106,10 @@ function HistoryPage() {
       <section className="rounded-2xl border bg-card p-4 sm:p-6">
         <h2 className="text-base font-semibold">Scores over time</h2>
         <ChartContainer config={chartConfig} className="mt-4 aspect-auto h-56 w-full sm:h-64">
-          <LineChart data={derived.chart} margin={{ left: -16, right: 8, top: 8 }}>
+          <LineChart data={derived.chart} margin={{ left: 0, right: 8, top: 8 }}>
             <CartesianGrid vertical={false} />
             <XAxis dataKey="label" tickLine={false} axisLine={false} tickMargin={8} minTickGap={24} />
-            <YAxis domain={[0, 100]} ticks={[0, 25, 50, 75, 100]} tickLine={false} axisLine={false} width={40} />
+            <YAxis domain={[0, 100]} ticks={[0, 25, 50, 75, 100]} tickLine={false} axisLine={false} width={36} />
             <ReferenceLine y={derived.avg} stroke="var(--muted-foreground)" strokeDasharray="4 4" strokeOpacity={0.5} />
             <ChartTooltip content={<ChartTooltipContent />} />
             <Line

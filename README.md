@@ -1,187 +1,65 @@
-Welcome to your new TanStack Start app!
+# PyQuiz
 
-# Getting Started
+One 30-question quiz a day for Data Analyst interview prep: core Python, NumPy, pandas,
+matplotlib/seaborn, data cleaning and EDA, statistics, and scikit-learn basics.
 
-To run this application:
+Stack: TanStack Start (React, Vite, Nitro), Clerk for auth, Convex for data, Vercel for hosting.
+
+## How it works
+
+- **Daily quiz.** The first visit each day (midnight in the user's time zone, default
+  Asia/Kolkata) assigns 30 questions: Python 5, NumPy 4, pandas 6, viz 4, cleaning 4, stats 4,
+  scikit-learn 3, with about 9 easy, 14 medium and 7 hard. Questions she has already seen are
+  skipped until a track runs out; after that the ones she got wrong, then the oldest, come back
+  first.
+- **Timer.** 50 minutes by default, 45 to 60 in Settings. The deadline is stored on the server
+  when the quiz starts, and a Convex scheduled function submits the quiz at the deadline even
+  if the tab is closed. Answers save as she picks them.
+- **Review and progress.** Score, time taken, per-track breakdown, and every question with its
+  correct answer and explanation. The Progress page shows streaks, scores over time, a 12-week
+  calendar, weakest tracks, and how much of each track's bank she has seen.
+
+## Question bank
+
+`questions/<track>.json` holds 505 hand-written questions; `questions/AUTHORING.md` has the format
+and rules. Every predict-the-output answer is checked by running the snippet:
+
+```bash
+uv venv .venv -p 3.12 && uv pip install -p .venv numpy pandas matplotlib seaborn scikit-learn scipy
+uv venv .venv-pandas2 -p 3.12 && uv pip install -p .venv-pandas2 "numpy<2.1" "pandas>=2.2,<2.3" "matplotlib<3.11" seaborn "scikit-learn<1.7" scipy
+.venv/bin/python questions/verify.py          # all tracks
+.venv/bin/python questions/verify.py pandas   # one track
+```
+
+The verifier runs each snippet under both environments (pandas 3 and pandas 2.2), so an answer
+that depends on the library version fails.
+
+After editing the bank, push it to Convex. The seed is an upsert keyed by question id, and
+questions removed from the files are deactivated:
+
+```bash
+npx convex run seed:questions          # dev
+npx convex run --prod seed:questions   # production
+```
+
+## Running locally
 
 ```bash
 npm install
-npm run dev
+npx convex dev      # terminal 1: syncs convex/ to the dev deployment
+npm run dev         # terminal 2: http://localhost:3000
 ```
 
-# Building For Production
+`.env.local` (gitignored) holds the Clerk keys and the Convex URL. Convex needs
+`CLERK_JWT_ISSUER_DOMAIN` set on each deployment, and the Clerk instance needs a JWT template
+named `convex` (audience `convex`).
 
-To build this application for production:
+## Deploying
 
 ```bash
-npm run build
+npx convex deploy        # push functions to the production deployment
+vercel deploy --prod     # build and deploy the site
 ```
 
-## Styling
-
-This project uses [Tailwind CSS](https://tailwindcss.com/) for styling.
-
-### Removing Tailwind CSS
-
-If you prefer not to use Tailwind CSS:
-
-1. Remove the demo pages in `src/routes/demo/`
-2. Replace the Tailwind import in `src/styles.css` with your own styles
-3. Remove `tailwindcss()` from the plugins array in `vite.config.ts`
-4. Remove `@tailwindcss/vite` and `tailwindcss` from `package.json`
-
-
-
-## Routing
-
-This project uses [TanStack Router](https://tanstack.com/router) with file-based routing. Routes are managed as files in `src/routes`.
-
-### Adding A Route
-
-To add a new route to your application just add a new file in the `./src/routes` directory.
-
-TanStack will automatically generate the content of the route file for you.
-
-Now that you have two routes you can use a `Link` component to navigate between them.
-
-### Adding Links
-
-To use SPA (Single Page Application) navigation you will need to import the `Link` component from `@tanstack/react-router`.
-
-```tsx
-import { Link } from "@tanstack/react-router";
-```
-
-Then anywhere in your JSX you can use it like so:
-
-```tsx
-<Link to="/about">About</Link>
-```
-
-This will create a link that will navigate to the `/about` route.
-
-More information on the `Link` component can be found in the [Link documentation](https://tanstack.com/router/v1/docs/framework/react/api/router/linkComponent).
-
-### Using A Layout
-
-In the File Based Routing setup the layout is located in `src/routes/__root.tsx`. Anything you add to the root route will appear in all the routes. The route content will appear in the JSX where you render `{children}` in the `shellComponent`.
-
-Here is an example layout that includes a header:
-
-```tsx
-import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
-
-export const Route = createRootRoute({
-  head: () => ({
-    meta: [
-      { charSet: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { title: 'My App' },
-    ],
-  }),
-  shellComponent: ({ children }) => (
-    <html lang="en">
-      <head>
-        <HeadContent />
-      </head>
-      <body>
-        <header>
-          <nav>
-            <Link to="/">Home</Link>
-            <Link to="/about">About</Link>
-          </nav>
-        </header>
-        {children}
-        <Scripts />
-      </body>
-    </html>
-  ),
-})
-```
-
-More information on layouts can be found in the [Layouts documentation](https://tanstack.com/router/latest/docs/framework/react/guide/routing-concepts#layouts).
-
-## Server Functions
-
-TanStack Start provides server functions that allow you to write server-side code that seamlessly integrates with your client components.
-
-```tsx
-import { createServerFn } from '@tanstack/react-start'
-
-const getServerTime = createServerFn({
-  method: 'GET',
-}).handler(async () => {
-  return new Date().toISOString()
-})
-
-// Use in a component
-function MyComponent() {
-  const [time, setTime] = useState('')
-  
-  useEffect(() => {
-    getServerTime().then(setTime)
-  }, [])
-  
-  return <div>Server time: {time}</div>
-}
-```
-
-## API Routes
-
-You can create API routes by using the `server` property in your route definitions:
-
-```tsx
-import { createFileRoute } from '@tanstack/react-router'
-import { json } from '@tanstack/react-start'
-
-export const Route = createFileRoute('/api/hello')({
-  server: {
-    handlers: {
-      GET: () => json({ message: 'Hello, World!' }),
-    },
-  },
-})
-```
-
-## Data Fetching
-
-There are multiple ways to fetch data in your application. You can use TanStack Query to fetch data from a server. But you can also use the `loader` functionality built into TanStack Router to load the data for a route before it's rendered.
-
-For example:
-
-```tsx
-import { createFileRoute } from '@tanstack/react-router'
-
-export const Route = createFileRoute('/people')({
-  loader: async () => {
-    const response = await fetch('https://swapi.dev/api/people')
-    return response.json()
-  },
-  component: PeopleComponent,
-})
-
-function PeopleComponent() {
-  const data = Route.useLoaderData()
-  return (
-    <ul>
-      {data.results.map((person) => (
-        <li key={person.name}>{person.name}</li>
-      ))}
-    </ul>
-  )
-}
-```
-
-Loaders simplify your data fetching logic dramatically. Check out more information in the [Loader documentation](https://tanstack.com/router/latest/docs/framework/react/guide/data-loading#loader-parameters).
-
-
-# Demo files
-
-Files prefixed with `demo` can be safely deleted. They are there to provide a starting point for you to play around with the features you've installed.
-
-
-# Learn More
-
-You can learn more about all of the offerings from TanStack in the [TanStack documentation](https://tanstack.com).
-
-For TanStack Start specific documentation, visit [TanStack Start](https://tanstack.com/start).
+Vercel production env: `VITE_CONVEX_URL` (production deployment URL), `VITE_CLERK_PUBLISHABLE_KEY`,
+`CLERK_SECRET_KEY`, and the `VITE_CLERK_SIGN_*` URLs.

@@ -25,12 +25,14 @@ function SettingsPage() {
   }, [me])
 
   const zones = useMemo(() => {
+    let list: string[]
     try {
-      return Intl.supportedValuesOf('timeZone')
+      list = Intl.supportedValuesOf('timeZone').filter((z) => z !== 'Asia/Calcutta')
     } catch {
-      return ['Asia/Kolkata', 'UTC']
+      list = ['UTC']
     }
-  }, [])
+    return [...new Set(['Asia/Kolkata', me?.timezone ?? 'Asia/Kolkata', ...list])].sort()
+  }, [me?.timezone])
 
   if (!me) return <FullPageSpinner />
   const dirty = minutes !== me.timerMinutes || timezone !== me.timezone
