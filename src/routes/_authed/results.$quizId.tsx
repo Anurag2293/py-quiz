@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { Link, createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useQuery } from 'convex/react'
 import { CheckCircle2Icon, CircleDashedIcon, ClockIcon, LightbulbIcon, XCircleIcon } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
@@ -68,6 +68,25 @@ function ResultsPage() {
           </p>
           {data.date === today && <RetryButton quizId={data._id} />}
         </div>
+        {data.attempts.length > 1 && (
+          <div className="mt-3 flex flex-wrap gap-1.5 text-sm">
+            {data.attempts.map((a) => (
+              <Link
+                key={a._id}
+                to={a.status === 'submitted' ? '/results/$quizId' : '/quiz/$quizId'}
+                params={{ quizId: a._id }}
+                className={cn(
+                  'rounded-md border px-2 py-0.5 text-muted-foreground transition-colors hover:bg-accent/40',
+                  a._id === data._id && 'border-primary font-medium text-foreground',
+                )}
+              >
+                {a.attempt === 1 ? 'First try' : `Retry ${a.attempt - 1}`}
+                {' · '}
+                {a.status === 'submitted' ? `${a.score ?? 0}/${a.total}` : 'running'}
+              </Link>
+            ))}
+          </div>
+        )}
         <div className="mt-4 flex flex-col gap-6 sm:flex-row sm:items-center">
           <ScoreRing value={score} total={data.total} size={128} />
           <div className="grid flex-1 grid-cols-2 gap-3 sm:grid-cols-4">

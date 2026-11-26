@@ -210,6 +210,19 @@ export const byDate = query({
   },
 })
 
+export const running = query({
+  args: {},
+  handler: async (ctx) => {
+    const user = await currentUser(ctx)
+    if (!user) return null
+    const quiz = await ctx.db
+      .query('quizzes')
+      .withIndex('by_user_status', (q) => q.eq('userId', user._id).eq('status', 'in_progress'))
+      .first()
+    return quiz ? summary(quiz) : null
+  },
+})
+
 export const start = mutation({
   args: { quizId: v.id('quizzes') },
   handler: async (ctx, { quizId }) => {
@@ -331,10 +344,19 @@ export const review = query({
     const user = await currentUser(ctx)
     const quiz = await ctx.db.get(quizId)
     if (!user || !quiz || quiz.userId !== user._id) return null
-    if (quiz.status !== 'submitted') return { ...summary(quiz), questions: [], responses: null, correct: null }
+    if (quiz.status !== 'submitted')
+      return { ...summary(quiz), questions: [], responses: null, correct: null, attempts: [] }
     const questions = await Promise.all(quiz.questionIds.map((id) => ctx.db.get(id)))
+    const attempts = (await quizzesOn(ctx, user._id, quiz.date)).map((q) => ({
+      _id: q._id,
+      attempt: q.attempt ?? 1,
+      status: q.status,
+      score: q.score,
+      total: q.questionIds.length,
+    }))
     return {
       ...summary(quiz),
+      attempts,
       responses: quiz.responses,
       correct: quiz.correct ?? [],
       questions: questions.map((q) =>

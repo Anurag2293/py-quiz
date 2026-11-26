@@ -19,6 +19,7 @@ function Dashboard() {
   const me = useQuery(api.users.me)
   const today = useToday(me?.timezone)
   const quiz = useQuery(api.quiz.byDate, today ? { date: today } : 'skip')
+  const running = useQuery(api.quiz.running)
   const history = useQuery(api.stats.history)
   const ensureToday = useMutation(api.quiz.ensureToday)
   const requested = useRef<string | null>(null)
@@ -44,6 +45,7 @@ function Dashboard() {
         </h1>
       </div>
 
+      {running && running.date !== today && <EarlierRunningCard quiz={running} />}
       <TodayCard quiz={quiz} timerMinutes={me.timerMinutes} />
       {history && <QuickStats history={history} today={today} />}
     </div>
@@ -158,6 +160,12 @@ function TodayCard({ quiz, timerMinutes }: { quiz: QuizSummary; timerMinutes: nu
       </div>
     </section>
   )
+}
+
+function EarlierRunningCard({ quiz }: { quiz: NonNullable<QuizSummary['latestRetry']> }) {
+  const now = useNow(1000)
+  const label = quiz.attempt > 1 ? `Retry ${quiz.attempt - 1} of ${formatDate(quiz.date, { day: 'numeric', month: 'long' })}` : `The quiz for ${formatDate(quiz.date, { day: 'numeric', month: 'long' })}`
+  return <RunningCard quiz={quiz} title={`${label} is still running`} now={now} />
 }
 
 function RunningCard({ quiz, title, now }: { quiz: QuizSummary | NonNullable<QuizSummary['latestRetry']>; title: string; now: number }) {
