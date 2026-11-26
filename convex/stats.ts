@@ -1,5 +1,6 @@
 import { query } from './_generated/server'
 import { TRACKS } from './lib/tracks'
+import { isRetry } from './quiz'
 import { currentUser } from './users'
 
 export const history = query({
@@ -12,6 +13,7 @@ export const history = query({
       .withIndex('by_user_status', (q) => q.eq('userId', user._id).eq('status', 'submitted'))
       .collect()
     const attempts = quizzes
+      .filter((q) => !isRetry(q))
       .map((q) => ({
         _id: q._id,
         date: q.date,

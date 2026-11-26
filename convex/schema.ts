@@ -49,6 +49,7 @@ export default defineSchema({
   quizzes: defineTable({
     userId: v.id('users'),
     date: v.string(),
+    attempt: v.optional(v.number()),
     questionIds: v.array(v.id('questions')),
     status: v.union(v.literal('ready'), v.literal('in_progress'), v.literal('submitted')),
     responses: v.array(v.array(v.number())),
