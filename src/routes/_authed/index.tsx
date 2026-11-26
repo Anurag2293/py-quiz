@@ -45,7 +45,9 @@ function Dashboard() {
         </h1>
       </div>
 
-      {running && running.date !== today && <EarlierRunningCard quiz={running} />}
+      {running
+        ?.filter((r) => r.date !== today)
+        .map((r) => <EarlierRunningCard key={r._id} quiz={r} />)}
       <TodayCard quiz={quiz} timerMinutes={me.timerMinutes} />
       {history && <QuickStats history={history} today={today} />}
     </div>

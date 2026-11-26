@@ -214,12 +214,12 @@ export const running = query({
   args: {},
   handler: async (ctx) => {
     const user = await currentUser(ctx)
-    if (!user) return null
-    const quiz = await ctx.db
+    if (!user) return []
+    const quizzes = await ctx.db
       .query('quizzes')
       .withIndex('by_user_status', (q) => q.eq('userId', user._id).eq('status', 'in_progress'))
-      .first()
-    return quiz ? summary(quiz) : null
+      .collect()
+    return quizzes.map(summary)
   },
 })
 
