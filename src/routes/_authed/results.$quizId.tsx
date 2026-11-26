@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { Link, createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useQuery } from 'convex/react'
 import { CheckCircle2Icon, CircleDashedIcon, ClockIcon, LightbulbIcon, XCircleIcon } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
@@ -11,7 +11,8 @@ import { RichText } from '@/components/RichText'
 import { ScoreRing } from '@/components/ScoreRing'
 import { FullPageSpinner } from '@/components/Spinner'
 import { TrackChip } from '@/components/TrackChip'
-import { formatDate, formatDuration, pct } from '@/lib/format'
+import { RetryButton } from '@/components/RetryButton'
+import { formatDate, formatDuration, pct, useToday } from '@/lib/format'
 import { TRACK_COLORS } from '@/lib/tracks-ui'
 import { cn } from '@/lib/utils'
 
@@ -22,6 +23,8 @@ type Filter = 'all' | 'wrong' | 'right' | 'skipped'
 function ResultsPage() {
   const { quizId } = Route.useParams()
   const data = useQuery(api.quiz.review, { quizId: quizId as Id<'quizzes'> })
+  const me = useQuery(api.users.me)
+  const today = useToday(me?.timezone)
   const navigate = useNavigate()
   const [filter, setFilter] = useState<Filter>('all')
   const [track, setTrack] = useState<string | null>(null)
@@ -58,9 +61,32 @@ function ResultsPage() {
   return (
     <div className="space-y-8">
       <section className="rounded-2xl border bg-card p-5 sm:p-7">
-        <p className="text-sm text-muted-foreground">
-          {formatDate(data.date, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
-        </p>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <p className="text-sm text-muted-foreground">
+            {formatDate(data.date, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+            {data.attempt > 1 && ` · Retry ${data.attempt - 1}`}
+          </p>
+          {data.date === today && <RetryButton quizId={data._id} />}
+        </div>
+        {data.attempts.length > 1 && (
+          <div className="mt-3 flex flex-wrap gap-1.5 text-sm">
+            {data.attempts.map((a) => (
+              <Link
+                key={a._id}
+                to={a.status === 'submitted' ? '/results/$quizId' : '/quiz/$quizId'}
+                params={{ quizId: a._id }}
+                className={cn(
+                  'rounded-md border px-2 py-0.5 text-muted-foreground transition-colors hover:bg-accent/40',
+                  a._id === data._id && 'border-primary font-medium text-foreground',
+                )}
+              >
+                {a.attempt === 1 ? 'First try' : `Retry ${a.attempt - 1}`}
+                {' · '}
+                {a.status === 'submitted' ? `${a.score ?? 0}/${a.total}` : 'running'}
+              </Link>
+            ))}
+          </div>
+        )}
         <div className="mt-4 flex flex-col gap-6 sm:flex-row sm:items-center">
           <ScoreRing value={score} total={data.total} size={128} />
           <div className="grid flex-1 grid-cols-2 gap-3 sm:grid-cols-4">

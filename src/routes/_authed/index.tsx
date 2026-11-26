@@ -9,6 +9,7 @@ import { FullPageSpinner } from '@/components/Spinner'
 import { ScoreRing } from '@/components/ScoreRing'
 import { TrackChip } from '@/components/TrackChip'
 import { ButtonLink } from '@/components/ButtonLink'
+import { RetryButton } from '@/components/RetryButton'
 import { Button } from '@/components/ui/button'
 import { formatClock, formatDate, formatDuration, pct, streaks, useNow, useToday } from '@/lib/format'
 
@@ -18,6 +19,7 @@ function Dashboard() {
   const me = useQuery(api.users.me)
   const today = useToday(me?.timezone)
   const quiz = useQuery(api.quiz.byDate, today ? { date: today } : 'skip')
+  const running = useQuery(api.quiz.running)
   const history = useQuery(api.stats.history)
   const ensureToday = useMutation(api.quiz.ensureToday)
   const requested = useRef<string | null>(null)
@@ -43,6 +45,9 @@ function Dashboard() {
         </h1>
       </div>
 
+      {running
+        ?.filter((r) => r.date !== today)
+        .map((r) => <EarlierRunningCard key={r._id} quiz={r} />)}
       <TodayCard quiz={quiz} timerMinutes={me.timerMinutes} />
       {history && <QuickStats history={history} today={today} />}
     </div>
@@ -75,6 +80,11 @@ function TodayCard({ quiz, timerMinutes }: { quiz: QuizSummary; timerMinutes: nu
     }
   }
 
+  const retry = quiz.latestRetry
+  if (quiz.status === 'submitted' && retry?.status === 'in_progress') {
+    return <RunningCard quiz={retry} title={`Retry ${retry.attempt - 1} is running`} now={now} />
+  }
+
   if (quiz.status === 'submitted') {
     const score = quiz.score ?? 0
     return (
@@ -90,10 +100,24 @@ function TodayCard({ quiz, timerMinutes }: { quiz: QuizSummary; timerMinutes: nu
               Finished in {formatDuration(quiz.durationSec ?? 0)}
               {quiz.autoSubmitted ? ' (auto-submitted when time ran out)' : ''}. A new quiz unlocks at midnight.
             </p>
+            {retry?.status === 'submitted' && (
+              <p className="text-sm text-muted-foreground">
+                {quiz.retries === 1 ? 'Retried once' : `Retried ${quiz.retries} times`}. Latest retry:{' '}
+                <ButtonLink
+                  variant="link"
+                  className="h-auto p-0"
+                  to="/results/$quizId"
+                  params={{ quizId: retry._id }}
+                >
+                  {retry.score ?? 0} / {retry.total} ({pct(retry.score ?? 0, retry.total)}%)
+                </ButtonLink>
+              </p>
+            )}
             <div className="flex flex-wrap gap-2 pt-2">
               <ButtonLink to="/results/$quizId" params={{ quizId: quiz._id }}>
                 Review answers <ArrowRightIcon data-icon="inline-end" />
               </ButtonLink>
+              <RetryButton quizId={quiz._id} />
               <ButtonLink variant="outline" to="/history">
                 See progress
               </ButtonLink>
@@ -105,24 +129,7 @@ function TodayCard({ quiz, timerMinutes }: { quiz: QuizSummary; timerMinutes: nu
   }
 
   if (quiz.status === 'in_progress') {
-    const left = Math.max(0, ((quiz.deadline ?? 0) - now) / 1000)
-    return (
-      <section className="rounded-2xl border bg-card p-5 sm:p-7">
-        <p className="text-sm font-medium text-primary">In progress</p>
-        <h2 className="mt-1 text-xl font-semibold">You have a quiz running</h2>
-        <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted-foreground">
-          <span className="inline-flex items-center gap-1.5">
-            <ClockIcon className="size-4" /> {formatClock(left)} left
-          </span>
-          <span className="inline-flex items-center gap-1.5">
-            <ListChecksIcon className="size-4" /> {quiz.answered} of {quiz.total} answered
-          </span>
-        </div>
-        <ButtonLink size="lg" className="mt-5 h-10 px-4" to="/quiz/$quizId" params={{ quizId: quiz._id }}>
-          Resume quiz <ArrowRightIcon data-icon="inline-end" />
-        </ButtonLink>
-      </section>
-    )
+    return <RunningCard quiz={quiz} title="You have a quiz running" now={now} />
   }
 
   return (
@@ -153,6 +160,33 @@ function TodayCard({ quiz, timerMinutes }: { quiz: QuizSummary; timerMinutes: nu
           .
         </p>
       </div>
+    </section>
+  )
+}
+
+function EarlierRunningCard({ quiz }: { quiz: NonNullable<QuizSummary['latestRetry']> }) {
+  const now = useNow(1000)
+  const label = quiz.attempt > 1 ? `Retry ${quiz.attempt - 1} of ${formatDate(quiz.date, { day: 'numeric', month: 'long' })}` : `The quiz for ${formatDate(quiz.date, { day: 'numeric', month: 'long' })}`
+  return <RunningCard quiz={quiz} title={`${label} is still running`} now={now} />
+}
+
+function RunningCard({ quiz, title, now }: { quiz: QuizSummary | NonNullable<QuizSummary['latestRetry']>; title: string; now: number }) {
+  const left = Math.max(0, ((quiz.deadline ?? 0) - now) / 1000)
+  return (
+    <section className="rounded-2xl border bg-card p-5 sm:p-7">
+      <p className="text-sm font-medium text-primary">In progress</p>
+      <h2 className="mt-1 text-xl font-semibold">{title}</h2>
+      <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted-foreground">
+        <span className="inline-flex items-center gap-1.5">
+          <ClockIcon className="size-4" /> {formatClock(left)} left
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <ListChecksIcon className="size-4" /> {quiz.answered} of {quiz.total} answered
+        </span>
+      </div>
+      <ButtonLink size="lg" className="mt-5 h-10 px-4" to="/quiz/$quizId" params={{ quizId: quiz._id }}>
+        Resume quiz <ArrowRightIcon data-icon="inline-end" />
+      </ButtonLink>
     </section>
   )
 }

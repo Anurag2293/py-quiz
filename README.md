@@ -15,6 +15,10 @@ Stack: TanStack Start (React, Vite, Nitro), Clerk for auth, Convex for data, Ver
 - **Timer.** 50 minutes by default, 45 to 60 in Settings. The deadline is stored on the server
   when the quiz starts, and a Convex scheduled function submits the quiz at the deadline even
   if the tab is closed. Answers save as she picks them.
+- **Retries.** Once today's quiz is submitted she can retake the same 30 questions, in a new
+  order and with a fresh timer, as many times as she likes. Each retry gets its own results
+  page. Only the first attempt counts toward streaks, scores, weakest tracks and the seen
+  history that picks future questions.
 - **Review and progress.** Score, time taken, per-track breakdown, and every question with its
   correct answer and explanation. The Progress page shows streaks, scores over time, a 12-week
   calendar, weakest tracks, and how much of each track's bank she has seen.

@@ -2,7 +2,7 @@ import { v } from 'convex/values'
 import { internal } from './_generated/api'
 import type { Doc, Id } from './_generated/dataModel'
 import { internalMutation, mutation, query } from './_generated/server'
-import type { MutationCtx } from './_generated/server'
+import type { MutationCtx, QueryCtx } from './_generated/server'
 import { TRACKS, dateInTimezone, difficultyTargets } from './lib/tracks'
 import type { Difficulty, TrackId } from './lib/tracks'
 import { currentUser, requireUser } from './users'
@@ -103,6 +103,7 @@ async function finalize(ctx: MutationCtx, quiz: Doc<'quizzes'>, responses: numbe
     trackStats,
   })
 
+  if (isRetry(quiz)) return
   for (const [i, q] of questions.entries()) {
     if (!q) continue
     const row = await ctx.db
@@ -137,10 +138,32 @@ async function ownQuiz(ctx: MutationCtx, quizId: Id<'quizzes'>) {
   return { user, quiz }
 }
 
+export function isRetry(quiz: Doc<'quizzes'>) {
+  return (quiz.attempt ?? 1) > 1
+}
+
+async function quizzesOn(ctx: QueryCtx, userId: Id<'users'>, date: string) {
+  const all = await ctx.db
+    .query('quizzes')
+    .withIndex('by_user_date', (q) => q.eq('userId', userId).eq('date', date))
+    .collect()
+  return all.sort((a, b) => (a.attempt ?? 1) - (b.attempt ?? 1))
+}
+
+async function begin(ctx: MutationCtx, quizId: Id<'quizzes'>, timerMinutes: number) {
+  const startedAt = Date.now()
+  const timeLimitSec = timerMinutes * 60
+  const deadline = startedAt + timeLimitSec * 1000
+  await ctx.db.patch(quizId, { status: 'in_progress', startedAt, timeLimitSec, deadline })
+  await ctx.scheduler.runAt(deadline + 2_000, internal.quiz.autoSubmit, { quizId })
+  return deadline
+}
+
 function summary(quiz: Doc<'quizzes'>) {
   return {
     _id: quiz._id,
     date: quiz.date,
+    attempt: quiz.attempt ?? 1,
     status: quiz.status,
     total: quiz.questionIds.length,
     answered: quiz.responses.filter((r) => r.length > 0).length,
@@ -158,10 +181,7 @@ export const ensureToday = mutation({
   handler: async (ctx) => {
     const user = await requireUser(ctx)
     const date = dateInTimezone(Date.now(), user.timezone)
-    const existing = await ctx.db
-      .query('quizzes')
-      .withIndex('by_user_date', (q) => q.eq('userId', user._id).eq('date', date))
-      .unique()
+    const [existing] = await quizzesOn(ctx, user._id, date)
     if (existing) return { quizId: existing._id, date }
 
     const questionIds = await pickQuestions(ctx, user._id)
@@ -183,11 +203,23 @@ export const byDate = query({
   handler: async (ctx, { date }) => {
     const user = await currentUser(ctx)
     if (!user) return null
-    const quiz = await ctx.db
+    const [quiz, ...retries] = await quizzesOn(ctx, user._id, date)
+    if (!quiz) return null
+    const latest = retries.at(-1)
+    return { ...summary(quiz), retries: retries.length, latestRetry: latest ? summary(latest) : null }
+  },
+})
+
+export const running = query({
+  args: {},
+  handler: async (ctx) => {
+    const user = await currentUser(ctx)
+    if (!user) return []
+    const quizzes = await ctx.db
       .query('quizzes')
-      .withIndex('by_user_date', (q) => q.eq('userId', user._id).eq('date', date))
-      .unique()
-    return quiz ? summary(quiz) : null
+      .withIndex('by_user_status', (q) => q.eq('userId', user._id).eq('status', 'in_progress'))
+      .collect()
+    return quizzes.map(summary)
   },
 })
 
@@ -198,12 +230,34 @@ export const start = mutation({
     if (quiz.status !== 'ready') return { deadline: quiz.deadline ?? 0 }
     const today = dateInTimezone(Date.now(), user.timezone)
     if (quiz.date !== today) throw new Error("This quiz was for another day. Open today's quiz instead.")
-    const startedAt = Date.now()
-    const timeLimitSec = user.timerMinutes * 60
-    const deadline = startedAt + timeLimitSec * 1000
-    await ctx.db.patch(quizId, { status: 'in_progress', startedAt, timeLimitSec, deadline })
-    await ctx.scheduler.runAt(deadline + 2_000, internal.quiz.autoSubmit, { quizId })
-    return { deadline }
+    return { deadline: await begin(ctx, quizId, user.timerMinutes) }
+  },
+})
+
+export const retry = mutation({
+  args: { quizId: v.id('quizzes') },
+  handler: async (ctx, { quizId }) => {
+    const { user, quiz } = await ownQuiz(ctx, quizId)
+    const today = dateInTimezone(Date.now(), user.timezone)
+    if (quiz.date !== today) throw new Error("Only today's quiz can be retried.")
+    const all = await quizzesOn(ctx, user._id, today)
+    const running = all.find((q) => q.status !== 'submitted')
+    if (running) {
+      if (running.status === 'ready') await begin(ctx, running._id, user.timerMinutes)
+      return running._id
+    }
+    const questionIds = shuffle(all[0].questionIds)
+    const retryId = await ctx.db.insert('quizzes', {
+      userId: user._id,
+      date: today,
+      attempt: (all.at(-1)!.attempt ?? 1) + 1,
+      questionIds,
+      status: 'ready',
+      responses: questionIds.map(() => []),
+      flagged: [],
+    })
+    await begin(ctx, retryId, user.timerMinutes)
+    return retryId
   },
 })
 
@@ -290,10 +344,19 @@ export const review = query({
     const user = await currentUser(ctx)
     const quiz = await ctx.db.get(quizId)
     if (!user || !quiz || quiz.userId !== user._id) return null
-    if (quiz.status !== 'submitted') return { ...summary(quiz), questions: [], responses: null, correct: null }
+    if (quiz.status !== 'submitted')
+      return { ...summary(quiz), questions: [], responses: null, correct: null, attempts: [] }
     const questions = await Promise.all(quiz.questionIds.map((id) => ctx.db.get(id)))
+    const attempts = (await quizzesOn(ctx, user._id, quiz.date)).map((q) => ({
+      _id: q._id,
+      attempt: q.attempt ?? 1,
+      status: q.status,
+      score: q.score,
+      total: q.questionIds.length,
+    }))
     return {
       ...summary(quiz),
+      attempts,
       responses: quiz.responses,
       correct: quiz.correct ?? [],
       questions: questions.map((q) =>
